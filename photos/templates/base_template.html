@@ -14,7 +14,7 @@
   		{% load static %}
 		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/bgcolor.css' %}">
-		{% block script %} {% endblock %}
+        <script src="https://kit.fontawesome.com/bb5d018091.js" crossorigin="anonymous"></script>
 
 	</head>
 
@@ -40,5 +40,13 @@
 		<div class="container-fluid">
 			{% block content %}{% endblock %}
 		</div>
+
+        {% if username %}
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
+              <a class="nav-item nav-link" href="#"><i class="fas fa-id-badge fa-2x"></i></a>
+              <a class="nav-item nav-link" href="#"><i class="fas fa-clipboard fa-2x"></i></a>
+              <a class="nav-item nav-link" href="#"><i class="fas fa-bars fa-2x"></i></a>
+            </nav>
+        {% endif %}
 	</body>
 </html>
