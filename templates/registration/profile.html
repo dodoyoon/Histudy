@@ -1,0 +1,10 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+<div class="container">
+  {% if username %}
+          <h2>Welcome <span style="color: #F46404;">{{ username }} </h2>
+  {% endif %}
+</div>
+
+{% endblock %}

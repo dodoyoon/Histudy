@@ -1,0 +1,17 @@
+{% extends "base_template.html" %}
+{% block script %}
+{% load static %}
+<script src="{% static 'js/list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<h1>Photo List</h1>
+<p id="ex">please change</p>
+{% for photo in list %}
+	<h2>{{photo.content}}</h2>
+	<p>{{photo.studyDate}}</p>
+	<p><a href="{{ photo.get_absolute_url }}"><img class="img-fluid" src="{{photo.image.url}}" /></a></p>
+{% endfor %}
+
+{% endblock %}
