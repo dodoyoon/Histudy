@@ -21,17 +21,12 @@
 
 		</div>
 		<nav class="navbar navbar-expand-md navbar-light bg-dark mb-4">
-			<div class="container">
-				<a class="navbar-brand" href="{% url 'home' %}">
-					<p class="h4">{{ username }}</p>
-				</a>
-			</div>
 			<div class="d-flex justify-content-end">
 				{% if username %}
-					<a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
+					<a class="btn btn-secondary btn-lg btn-outline-secondary active" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 				{% else %}
-				<a class="btn btn-sm btn-outline-secondary mr-2" href="{% url 'signup' %}">Sign Up</a>
-					<a class="btn btn-sm btn-outline-secondary" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
+					<a class="btn btn-secondary btn-lg btn-outline-secondary active" href="{% url 'signup' %}">Sign Up</a>
+					<a class="btn btn-secondary btn-lg btn-outline-secondary active" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
 				{% endif %}
 			</div>
 		</nav>

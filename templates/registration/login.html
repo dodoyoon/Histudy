@@ -1,35 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		{% block title %}
-		<title>CSEE Study Group</title>
-		{% endblock %}
-		<meta charset="utf-8">
-  		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-		  <!-- Add additional CSS in static file -->
-      {% load static %}
-
-	</head>
-<body>
-  <nav class="navbar navbar-expand-md navbar-light bg-dark mb-4">
-    <div class="container">
-      <a class="navbar-brand" href="{% url 'home' %}">
-        <p class="h4">log in</p>
-      </a>
-    </div>
-    <div class="d-flex justify-content-end">
-      {% if username %}
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
-      {% else %}
-      <a class="btn btn-sm btn-outline-secondary mr-2" href="{% url 'signup' %}">Sign Up</a>
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
-      {% endif %}
-    </div>
-  </nav>
+{% extends "base_template.html" %}
+{% block content %}
 <div class="container" id="login">
   <form>
     {% for field in form %}
@@ -55,5 +25,4 @@
         <div class="clear"></div> </div>
      </form>
 </div>
-</body>
-</html>
+{% endblock %}
