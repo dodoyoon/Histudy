@@ -82,6 +82,9 @@ def homepage(request):
 
     return render(request, 'home.html', ctx)
 
+# for Infinite Scroll
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def main(request):
     username  = request.COOKIES.get('username', '')
 
@@ -96,9 +99,20 @@ def main(request):
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
 
+    paginator = Paginator(dataList, 4)
+    page = request.GET.get('page', 1)
+
+    try:
+        pics = paginator.page(page)
+    except PageNotAnInteger:
+        pics = paginator.page(1)
+    except EmptyPage:
+        pics = paginator.page(paginator.num_pages)
+
+
     ctx = {
             'form': form,
-            'list': dataList,
+            'pics': pics,
     }
 
     if username:

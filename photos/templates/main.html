@@ -1,9 +1,21 @@
 {% extends "base_template.html" %}
 {% block script %}
 {% load static %}
+
+<!-- for infinite scroll -->
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous">
+</script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="{% static 'js/button.js' %}"></script>
 {% endblock %}
+
 {% block content %}
 
 <form
@@ -19,11 +31,37 @@
     </p>
 </form>
 
-{% for photo in list %}
+<div class="infinite-container">
+{% for photo in pics %}
+    <div class="infinite-item">
         <p>{{photo.text}}</p>
         <p>{{photo.date}}</p>
-	<p><a href="{{ photo.get_absolute_url }}">
+	    <p><a href="{{ photo.get_absolute_url }}">
 		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
-	</a></p>
+	    </a></p>
+    </div>
 {% endfor %}
+</div>
+
+{% if pics.has_next %}
+    <a class="infinite-more-link" href="?page={{ pics.next_page_number }}">More</a>
+{% endif %}
+
+<div class="loading" style="display: none;">
+    Loading...
+</div>
+
+<script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+      onBeforePageLoad: function () {
+        $('.loading').show();
+      },
+      onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+      }
+    });
+</script>
+
+
 {% endblock %}
