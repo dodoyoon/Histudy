@@ -6,20 +6,6 @@
 {% endblock %}
 {% block content %}
 
-<form method="POST" id="add_form" action="">
-    {% csrf_token %}
-    <div class="form-group">
-        <div class="input"><input type="text" name="text" required="required" style="width:80%; height:100px;"></div>
-        <div class="clear"></div>
-    </div>
-    <div class="form-group">
-        <label></label>
-        <div class="submit">
-            <button type="submit" class="btn-primary">Login</button>
-        </div>
-        <div class="clear"></div> </div>
-</form>
-
 <form
     method="POST"
     action=""
@@ -29,15 +15,15 @@
     {% csrf_token %}
     {{ form.as_p }}
     <p>
-    <i class="fa fa-plus-square fa-5x" type="submit" id="actasbutton"></i>
-    <p><i class="icon-camera-retro icon-large"></i> icon-camera-retro</p>
+	<button type="submit" class="btn-primary btn-block">+</button>
     </p>
 </form>
 
 {% for photo in list %}
         <p>{{photo.text}}</p>
         <p>{{photo.date}}</p>
-        <p><a href="{{ photo.get_absolute_url }}"><img class="img-fluid" src="{{photo.image.url}}" /></a></p>
+	<p><a href="{{ photo.get_absolute_url }}">
+		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+	</a></p>
 {% endfor %}
-
 {% endblock %}
