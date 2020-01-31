@@ -84,7 +84,6 @@ def homepage(request):
 
 # for Infinite Scroll
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.utils.crypto import get_random_string
 
 def main(request):
     username  = request.COOKIES.get('username', '')
@@ -110,12 +109,10 @@ def main(request):
     except EmptyPage:
         pics = paginator.page(paginator.num_pages)
 
-    unique_id = get_random_string(length=10)
 
     ctx = {
             'form': form,
             'pics': pics,
-            'string': unique_id,
     }
 
     if username:

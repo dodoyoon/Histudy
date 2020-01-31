@@ -10,7 +10,6 @@
 </script>
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
-<script src="{% static 'js/list.js' %}"></script>
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -18,7 +17,6 @@
 {% endblock %}
 
 {% block content %}
-<p>{{ string }}</p>
 
 <form
     method="POST"
@@ -27,7 +25,6 @@
     id="dataform"
 >
     {% csrf_token %}
-    <input type="file" accept="image/*" capture="camera">
     {{ form.as_p }}
     <p>
 	<button type="submit" class="btn-primary btn-block">+</button>
