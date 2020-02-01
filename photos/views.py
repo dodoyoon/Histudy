@@ -122,6 +122,10 @@ def main(request):
 
     return render(request, 'main.html', ctx)
 
+def delete_data(request, pk):
+    Data.objects.filter(id=pk).delete()
+    return redirect('main')
+    
 # User Login Customization
 
 from django.contrib.auth.models import User

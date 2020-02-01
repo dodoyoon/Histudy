@@ -12,6 +12,7 @@
 <script src="{% static 'js/infinite.min.js' %}"></script>
 
 
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="{% static 'js/button.js' %}"></script>
 {% endblock %}
@@ -25,9 +26,13 @@
     id="dataform"
 >
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.text }}
+    <br>
+    {{ form.image }}
+    <br>
     <p>
-	<button type="submit" class="btn-primary btn-block">+</button>
+        <br>
+        <button type="submit" class="btn-primary btn-block">+</button>
     </p>
 </form>
 
@@ -36,6 +41,9 @@
     <div class="infinite-item">
         <p>{{photo.text}}</p>
         <p>{{photo.date}}</p>
+        <p>
+            <a href="{% url 'delete_data' photo.pk %}" class = "btn btn-danger btn-sm" role = "button"> x </a>
+        </p>
 	    <p><a href="{{ photo.get_absolute_url }}">
 		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
 	    </a></p>
