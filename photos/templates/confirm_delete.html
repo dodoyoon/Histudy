@@ -1,0 +1,15 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+<p>Do you really want to delete this?</p>
+<p>{{ item.text }} {{ item.date }}</p>
+<p>
+    {% if item.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+</p>
+
+<p>
+    <a href="{% url 'confirm_delete' pk %}" class = "btn btn-danger btn-sm" role = "button"> DELETE </a>
+    <a href="{% url 'main' %}" class = "btn btn-primary btn-sm" role = "button"> CANCEL </a>
+</p>
+
+{% endblock %}

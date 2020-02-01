@@ -123,8 +123,17 @@ def main(request):
     return render(request, 'main.html', ctx)
 
 def delete_data(request, pk):
+    item = Data.objects.filter(id=pk)
+    ctx = {
+        'item' : item,
+        'pk' : pk,
+    }
+    return render(request, 'confirm_delete.html', ctx)
+
+def confirm_delete(request, pk):
     Data.objects.filter(id=pk).delete()
     return redirect('main')
+
 
 import random
 

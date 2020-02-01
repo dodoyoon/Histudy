@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from photos.views import detail
-from photos.views import upload, photoList, homepage, allList, main, delete_data
+from photos.views import upload, photoList, homepage, allList, main, delete_data, confirm_delete
 from django.urls import include
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -35,7 +35,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('', main, name='main'),
     path('', include('photos.urls')),
-    url(r'^delete/(?P<pk>\d+)$', delete_data, name='delete_data'),
+    url(r'^delete_data/(?P<pk>\d+)$', delete_data, name='delete_data'),
+    url(r'^delete_confirm/(?P<pk>\d+)$', confirm_delete, name='confirm_delete'),
 ]
 
 urlpatterns += static('/upload_files/', document_root=settings.MEDIA_ROOT)
