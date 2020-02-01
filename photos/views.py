@@ -126,7 +126,7 @@ def delete_data(request, pk):
     Data.objects.filter(id=pk).delete()
     return redirect('main')
 
-import secrets, random
+import random
 
 def popup(request):
     ctx = {}
