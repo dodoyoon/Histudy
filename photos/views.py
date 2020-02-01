@@ -125,7 +125,21 @@ def main(request):
 def delete_data(request, pk):
     Data.objects.filter(id=pk).delete()
     return redirect('main')
-    
+
+import secrets, random
+
+def popup(request):
+    ctx = {}
+
+    all_pins = [format(i, '04') for i in range(1000, 10000)]
+    possible = [i for i in all_pins if len(set(i)) > 3]
+
+    verify_code = random.choice(possible)
+
+    ctx['code'] = verify_code
+
+    return render(request, 'popup.html', ctx)
+
 # User Login Customization
 
 from django.contrib.auth.models import User
