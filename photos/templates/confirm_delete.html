@@ -2,9 +2,16 @@
 {% block content %}
 
 <p>Do you really want to delete this?</p>
+{% for photo in list %}
+<p>{{ photo.text }} </p>
+<p>{{ photo.date }}   </p>
+<p>
+    {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+</p>
+{% endfor %}
 <p>{{ item.text }} {{ item.date }}</p>
 <p>
-    {% if item.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+    {% if item.image %}<img class="img-fluid" src="{{item.image.url}}" />{% endif %}
 </p>
 
 <p>

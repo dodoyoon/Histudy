@@ -124,7 +124,9 @@ def main(request):
 
 def delete_data(request, pk):
     item = Data.objects.filter(id=pk)
+    picList = Photo.objects.raw('SELECT * FROM photos_data WHERE id = %s', [pk])
     ctx = {
+        'list' : picList,
         'item' : item,
         'pk' : pk,
     }
