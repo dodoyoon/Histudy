@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.urls import reverse_lazy
 import datetime
+from django.utils import timezone
 
 class Photo(models.Model):
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
@@ -22,7 +23,7 @@ class Photo(models.Model):
 class Data(models.Model):
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
     text = models.TextField(max_length=500, null=True, blank=True)
-    date = models.DateTimeField(default=datetime.date.today)
+    date = models.DateTimeField(default=timezone.now)
     author = models.TextField(max_length=100, null=True, blank=True)
     code = models.IntegerField(blank=True, null=True)
 
