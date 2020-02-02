@@ -32,6 +32,7 @@
     <br>
     {{ form.image }}
     <br>
+
     <p>
         <br>
         <button type="submit" class="btn-primary btn-block">+</button>
@@ -43,6 +44,7 @@
     <div class="infinite-item border border-primary m-3 p-3">
         <p>{{photo.text}}</p>
         <p>{{photo.date}}</p>
+        <p>Verification Code: {{photo.code}}</p>
         <p>
             <a href="{% url 'delete_data' photo.pk %}" class = "btn btn-danger btn-sm" role = "button"> x </a>
         </p>

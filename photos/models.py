@@ -22,8 +22,9 @@ class Photo(models.Model):
 class Data(models.Model):
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
     text = models.TextField(max_length=500, null=True, blank=True)
-    date = models.DateField(default=datetime.date.today)
+    date = models.DateTimeField(default=datetime.date.today)
     author = models.TextField(max_length=100, null=True, blank=True)
+    code = models.IntegerField(blank=True, null=True)
 
     def delete(self, *args, **kwargs):
         self.image.delete()

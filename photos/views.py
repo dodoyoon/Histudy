@@ -9,6 +9,9 @@ from .models import Photo, Data
 from .forms import PhotoForm, DataForm
 
 from django.views.generic import ListView
+from datetime import datetime, timedelta
+import json, random
+
 
 def detail(request, pk):
     # photo = Photo.objects.get(pk=pk)
@@ -88,6 +91,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def main(request):
     username  = request.COOKIES.get('username', '')
 
+    verify_code = request.session.get('verify_code', None)
+
     if request.method == "GET":
         form = DataForm()
     elif request.method == "POST":
@@ -95,6 +100,12 @@ def main(request):
         if form.is_valid():
             obj = form.save()
             obj.author = username
+
+            if verify_code:
+                obj.code = verify_code
+                del request.session['verify_code']
+                del request.session['save_time']
+
             obj.save()
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
@@ -114,6 +125,9 @@ def main(request):
             'form': form,
             'pics': pics,
     }
+
+    if verify_code:
+        ctx['code'] = verify_code
 
     if username:
         ctx['username'] = username
@@ -137,17 +151,45 @@ def confirm_delete(request, pk):
     return redirect('main')
 
 
-import random
-
+# For verification popup
 def popup(request):
     ctx = {}
 
     all_pins = [format(i, '04') for i in range(1000, 10000)]
     possible = [i for i in all_pins if len(set(i)) > 3]
 
-    verify_code = random.choice(possible)
+    now_time = datetime.now()
+    save_time = request.session.get('save_time', None)
 
-    ctx['code'] = verify_code
+    if not save_time:
+        request.session['save_time'] = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
+        save_time = request.session.get('save_time', None)
+        verify_code = random.choice(possible)
+        request.session['verify_code'] = verify_code
+        ctx['code'] = verify_code
+
+
+    real_save_time = datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
+
+    time_diff = now_time - real_save_time
+
+    verify_code = request.session.get('verify_code', None)
+
+    if (time_diff.seconds)/3600 >= 1:
+        verify_code = random.choice(possible)
+        request.session['verify_code'] = verify_code
+        ctx['code'] = verify_code
+        request.session['save_time'] = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
+    else:
+        if not verify_code:
+            verify_code = random.choice(possible)
+            request.session['verify_code'] = verify_code
+            ctx['code'] = verify_code
+            request.session['save_time'] = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
+        else:
+            ctx['code'] = verify_code
+
+
 
     return render(request, 'popup.html', ctx)
 
