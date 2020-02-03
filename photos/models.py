@@ -4,9 +4,6 @@ from django.db import models
 from django.urls import reverse_lazy
 import datetime
 from django.utils import timezone
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 class Photo(models.Model):
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
@@ -38,17 +35,3 @@ class Data(models.Model):
     def get_absolute_url(self):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
         return url
-
-class Verification(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    code = models.IntegerField(null=True, blank=True)
-    when_saved = models.DateTimeField(null=True, blank=True)
-
-@receiver(post_save, sender=User)
-def create_user_verification(sender, instance, created, **kwargs):
-    if created:
-        Verification.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_verification(sender, instance, **kwargs):
-    instance.verification.save()
