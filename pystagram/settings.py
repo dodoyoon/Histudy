@@ -28,6 +28,7 @@ ALLOWED_HOSTS = ['34.84.151.146', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -64,6 +65,17 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = 'pystagram.routing.application'
+#channel_layers 추가
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 WSGI_APPLICATION = 'pystagram.wsgi.application'
 

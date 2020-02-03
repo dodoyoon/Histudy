@@ -14,7 +14,6 @@
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="{% static 'js/button.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -35,7 +34,7 @@
 
     <p>
         <br>
-        <button type="submit" class="btn-primary btn-block">+</button>
+        <button id='submit' type="submit" class="btn-primary btn-block">+</button>
     </p>
 </form>
 
@@ -64,6 +63,32 @@
 </div>
 
 <script>
+//chat
+var username  = "{{ username }}"
+var chatSocket = new WebSocket(
+    'ws://' + window.location.host +
+    '/ws/chat/' + username + '/');
+
+chatSocket.onmessage = function(e) {
+    console.log(e);
+    var data = JSON.parse(e.data);
+    var message = data['message'];
+    document.querySelector('#alarm').style="";
+};
+
+chatSocket.onclose = function(e) {
+    console.error('Chat socket closed unexpectedly');
+};
+
+
+document.querySelector('#submit').onclick = function(e) {
+    chatSocket.send(JSON.stringify({
+        'message': "button has been pushed"
+    }));
+
+};
+
+
     var infinite = new Waypoint.Infinite({
       element: $('.infinite-container')[0],
       onBeforePageLoad: function () {
