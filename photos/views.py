@@ -5,11 +5,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Photo, Data
+from .models import Photo, Data, Verification
 from .forms import PhotoForm, DataForm
 
 from django.views.generic import ListView
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json, random
 
 
@@ -91,7 +91,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def main(request):
     username  = request.COOKIES.get('username', '')
 
-    verify_code = request.session.get('verify_code', None)
+    if username:
+        user = User.objects.get(username=username)
 
     if request.method == "GET":
         form = DataForm()
@@ -101,10 +102,11 @@ def main(request):
             obj = form.save()
             obj.author = username
 
-            if verify_code:
-                obj.code = verify_code
-                del request.session['verify_code']
-                del request.session['save_time']
+            if user.verification.code is not None:
+                obj.code = user.verification.code
+                user.verification.code = None
+                user.verification.when_saved = None
+                user.save()
 
             obj.save()
 
@@ -125,9 +127,6 @@ def main(request):
             'form': form,
             'pics': pics,
     }
-
-    if verify_code:
-        ctx['code'] = verify_code
 
     if username:
         ctx['username'] = username
@@ -154,44 +153,47 @@ def confirm_delete(request, pk):
 # For verification popup
 def popup(request):
     ctx = {}
+    username = request.COOKIES.get('username', '')
 
-    all_pins = [format(i, '04') for i in range(1000, 10000)]
-    possible = [i for i in all_pins if len(set(i)) > 3]
+    if username:
+        user = User.objects.get(username=username)
+        orig, created = Verification.objects.get_or_create(user=user)
 
-    now_time = datetime.now()
-    save_time = request.session.get('save_time', None)
-
-    if not save_time:
-        request.session['save_time'] = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
-        save_time = request.session.get('save_time', None)
-        verify_code = random.choice(possible)
-        request.session['verify_code'] = verify_code
-        ctx['code'] = verify_code
+        now_time = datetime.now(timezone.utc)
+        all_pins = [format(i, '04') for i in range(1000, 10000)]
+        possible = [i for i in all_pins if len(set(i)) > 3]
 
 
-    real_save_time = datetime.strptime(save_time, "%Y-%m-%d %H:%M:%S")
-
-    time_diff = now_time - real_save_time
-
-    verify_code = request.session.get('verify_code', None)
-
-    if (time_diff.seconds)/3600 >= 1:
-        verify_code = random.choice(possible)
-        request.session['verify_code'] = verify_code
-        ctx['code'] = verify_code
-        request.session['save_time'] = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
-    else:
-        if not verify_code:
+        if user.verification.when_saved is None:
+            user.verification.when_saved = datetime.now(timezone.utc)
             verify_code = random.choice(possible)
-            request.session['verify_code'] = verify_code
+            user.verification.code = verify_code
+            user.save()
             ctx['code'] = verify_code
-            request.session['save_time'] = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
+
+        save_time = user.verification.when_saved
+
+        time_diff = now_time - save_time
+
+        if (time_diff.seconds)/3600 >= 1:
+            verify_code = random.choice(possible)
+            user.verification.code = verify_code
+            user.verification.when_saved = now_time
+            user.save()
+            ctx['code'] = verify_code
         else:
-            ctx['code'] = verify_code
+            if user.verification.code is None:
+                verify_code = random.choice(possible)
+                user.verification.code = verify_code
+                user.verification.when_saved = now_time
+                user.save()
+                ctx['code'] = verify_code
+            else:
+                ctx['code'] = user.verification.code
 
-
-
-    return render(request, 'popup.html', ctx)
+        return render(request, 'popup.html', ctx)
+    else:
+        return redirect("main")
 
 # User Login Customization
 
