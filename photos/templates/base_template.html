@@ -19,12 +19,12 @@
 
 	<body>
 
-		<nav id = "alarm" class="navbar" style="display:none;"> 
+		<nav id = "alarm" class="navbar" style="display:none;">
 			<a class="nav-item text-light bg-primary fixed-top text-center" href="{% url 'main' %}">
 				New Data Added!
 			</a>
 		</nav>
-		
+
 		<nav class="navbar navbar-expand-md navbar-light bg-dark mb-4">
 			<div class="navbar justify-content-start">
 				<a class="navbar-brand" href="{% url 'profile' %}">
@@ -36,7 +36,7 @@
 
 			<div class="navbar justify-content-end">
 				<div class="d-flex">
-					{% if username %}
+					{% if username or user.is_staff %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 					{% else %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'signup' %}">Sign Up</a>
@@ -49,7 +49,7 @@
 			{% block content %}{% endblock %}
 		</div>
 
-        {% if username %}
+        {% if username or user.is_staff %}
             <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
               <a class="nav-item nav-link" href="{% url 'profile' %}"><i class="fas fa-id-badge fa-2x"></i></a>
               <a class="nav-item nav-link" href="{% url 'main' %}"><i class="fas fa-clipboard fa-2x"></i></a>
