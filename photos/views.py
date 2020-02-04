@@ -52,13 +52,10 @@ def upload(request):
 def photoList(request, user):
     username = request.COOKIES.get('username', '')
     picList = Photo.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
-    if username:
-        userobj = User.objects.get(username=username)
 
     ctx = {
         'list' : picList,
         'user' : user,
-        'userobj' : userobj,
     }
 
     if username:
@@ -92,24 +89,18 @@ def userList(request):
 
     ctx = {
         'list' : userlist,
-        'userobj' : user,
     }
-    if username:
-        ctx['username'] = username
     
     return render(request, 'userlist.html', ctx)
 
 def homepage(request):
     username = request.COOKIES.get('username', '')
-
-    userlist = User.objects.raw('SELECT * FROM photos_userinfo')
-    ctx = {
-        'userlist' : userlist,
-    }
-    
     if username:
         user = User.objects.get(username=username)
-        ctx['userobj'] = user
+
+    ctx = {
+        'userobj' : user,
+    }
 
     if username:
         ctx['username'] = username
@@ -122,32 +113,43 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def main(request):
     username  = request.COOKIES.get('username', '')
 
+    ctx={}
+
+    if username:
+        ctx['username'] = username
+    else:
+        return redirect('loginpage')
+
     if username:
         user = User.objects.get(username=username)
         if user.is_staff is True:
             return redirect('userList')
+
 
     if request.method == "GET":
         form = DataForm()
     elif request.method == "POST":
         form = DataForm(request.POST, request.FILES)
         if form.is_valid():
-            obj = form.save()
-            obj.author = username
+            if user.verification.code is None:
+                msg = "코드를 생성해주세요"
+                ctx['msg'] = msg
+            else:
+                obj = form.save()
+                obj.author = username
 
-            if user.userinfo:
+                if user.verification.code is not None:
+                    obj.code = user.verification.code
+                    user.verification.code = None
+                    user.verification.when_saved = None
+
                 num = user.userinfo.num_posts
                 user.userinfo.num_posts = num + 1
                 user.userinfo.most_recent = obj.date
+                user.userinfo.name = username
                 user.save()
 
-            if user.verification.code is not None:
-                obj.code = user.verification.code
-                user.verification.code = None
-                user.verification.when_saved = None
-                user.save()
-
-            obj.save()
+                obj.save()
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
 
@@ -161,18 +163,9 @@ def main(request):
     except EmptyPage:
         pics = paginator.page(paginator.num_pages)
 
-
-    ctx = {
-            'form': form,
-            'pics': pics,
-    }
-
-
-    if username:
-        ctx['username'] = username
-        ctx['userobj'] = user
-    else:
-        return redirect('loginpage')
+    ctx['form'] = form
+    ctx['pics'] = pics
+    ctx['userobj'] = user
 
     return render(request, 'main.html', ctx)
 
@@ -233,6 +226,8 @@ def popup(request):
             else:
                 ctx['code'] = user.verification.code
 
+
+
         return render(request, 'popup.html', ctx)
     else:
         return redirect("main")
@@ -276,24 +271,13 @@ def logout(request):
 
 
 def signup(request):
-    username  = request.COOKIES.get('username', '')
-
-    if username:
-        user = User.objects.get(username=username)
-        if user.is_staff is False:
-            return redirect('main')
-    else:
-        return redirect('loginpage')
-
-    ctx = {'username' : username}
-
     if request.method == 'POST':
         if request.POST["password1"] == request.POST["password2"]:
             user = User.objects.create_user(
                     username=request.POST["username"],
                     password=request.POST["password1"])
             auth.login(request, user)
-            return redirect("profile")
-        return render(request, 'signup.html', ctx)
+            return redirect("main")
+        return render(request, 'signup.html')
 
-    return render(request, 'signup.html', ctx)
+    return render(request, 'signup.html')

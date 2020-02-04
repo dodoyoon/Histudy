@@ -29,19 +29,17 @@
 			<div class="navbar justify-content-start">
 				<a class="navbar-brand" href="{% url 'main' %}">
 					<font color=white>
-						<p class="h4">{{ username }}</p>
+						<p class="h4">CSEE Study Group</p>
 					</font>
 				</a>
 			</div>
 
 			<div class="navbar justify-content-end">
 				<div class="d-flex">
-					{% if username %}
-						{% if userobj.is_staff %}
-						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'signup' %}">Create New User</a>
-						{% endif %}
+					{% if username or user.is_staff %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 					{% else %}
+						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'signup' %}">Sign Up</a>
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
 					{% endif %}
 				</div>
