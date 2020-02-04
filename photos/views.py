@@ -85,12 +85,12 @@ def userList(request):
     else:
         return redirect('main')
 
-    userlist = User.objects.raw('SELECT * FROM auth_user')
+    userlist = User.objects.raw('SELECT * FROM photos_userinfo')
 
     ctx = {
         'list' : userlist,
     }
-
+    
     return render(request, 'userlist.html', ctx)
 
 def homepage(request):
@@ -142,7 +142,12 @@ def main(request):
                     obj.code = user.verification.code
                     user.verification.code = None
                     user.verification.when_saved = None
-                    user.save()
+
+                num = user.userinfo.num_posts
+                user.userinfo.num_posts = num + 1
+                user.userinfo.most_recent = obj.date
+                user.userinfo.name = username
+                user.save()
 
                 obj.save()
 

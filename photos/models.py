@@ -53,3 +53,19 @@ def create_user_verification(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_verification(sender, instance, **kwargs):
     instance.verification.save()
+
+class UserInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.TextField()
+    img = models.ImageField(upload_to='profile/', null=True)
+    num_posts = models.IntegerField(default=0)
+    most_recent = models.DateTimeField(null=True, blank=True)
+
+@receiver(post_save, sender=User)
+def create_user(sender, instance, created, **kwargs):
+    if created:
+        UserInfo.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_data(sender, instance, **kwargs):
+    instance.userinfo.save()

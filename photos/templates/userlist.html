@@ -1,10 +1,20 @@
 {% extends "base_template.html" %}
 {% block content %}
-
+<table style="width:100%">
+    <tr>
+        <th>ID</th>
+        <th>username</th>
+        <th>posts</th>
+        <th>most recent date</th>
+    </tr>
 {% for user in list %}
-    <p>
-    <a href="{% url 'list' user.username %}"> {{ user.username }} </a>
-    </p>
+    <tr>
+        <th>{{ user.id }}</th>
+        <th><a href="{% url 'list' user.name %}"> {{ user.name }} </a></th>
+        <th>{{ user.num_posts }}</th>
+        <th>{{ user.most_recent }}</th>
+    </tr>
 {% endfor %}
+</table>
 
 {% endblock %}
