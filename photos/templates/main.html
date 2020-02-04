@@ -99,4 +99,7 @@ document.querySelector('#submit').onclick = function(e) {
 </script>
 
 
+{% if msg %} <script>alert("{{ msg }}")</script> {% endif %}
+
+
 {% endblock %}

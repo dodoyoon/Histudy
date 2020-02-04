@@ -90,7 +90,7 @@ def userList(request):
     ctx = {
         'list' : userlist,
     }
-    
+
     return render(request, 'userlist.html', ctx)
 
 def homepage(request):
@@ -113,6 +113,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def main(request):
     username  = request.COOKIES.get('username', '')
 
+    ctx={}
+
+    if username:
+        ctx['username'] = username
+    else:
+        return redirect('loginpage')
+
     if username:
         user = User.objects.get(username=username)
         if user.is_staff is True:
@@ -124,16 +131,20 @@ def main(request):
     elif request.method == "POST":
         form = DataForm(request.POST, request.FILES)
         if form.is_valid():
-            obj = form.save()
-            obj.author = username
+            if user.verification.code is None:
+                msg = "코드를 생성해주세요"
+                ctx['msg'] = msg
+            else:
+                obj = form.save()
+                obj.author = username
 
-            if user.verification.code is not None:
-                obj.code = user.verification.code
-                user.verification.code = None
-                user.verification.when_saved = None
-                user.save()
+                if user.verification.code is not None:
+                    obj.code = user.verification.code
+                    user.verification.code = None
+                    user.verification.when_saved = None
+                    user.save()
 
-            obj.save()
+                obj.save()
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
 
@@ -147,18 +158,9 @@ def main(request):
     except EmptyPage:
         pics = paginator.page(paginator.num_pages)
 
-
-    ctx = {
-            'form': form,
-            'pics': pics,
-    }
-
-
-    if username:
-        ctx['username'] = username
-        ctx['userobj'] = user
-    else:
-        return redirect('loginpage')
+    ctx['form'] = form
+    ctx['pics'] = pics
+    ctx['userobj'] = user
 
     return render(request, 'main.html', ctx)
 
