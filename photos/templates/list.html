@@ -1,17 +1,54 @@
 {% extends "base_template.html" %}
 {% block script %}
 {% load static %}
-<script src="{% static 'js/list.js' %}"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous">
+</script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
 
-<h1>Photo List</h1>
-<p id="ex">please change</p>
+<div class="infinite-container border border-dark m-1">
 {% for photo in list %}
-	<h2>{{photo.content}}</h2>
-	<p>{{photo.studyDate}}</p>
-	<p><a href="{{ photo.get_absolute_url }}"><img class="img-fluid" src="{{photo.image.url}}" /></a></p>
+    <div class="infinite-item border border-primary m-3 p-3">
+        <p>{{photo.text}}</p>
+        <p>{{photo.date}}</p>
+        <p>Verification Code: {{photo.code}}</p>
+        <p>
+            <a href="{% url 'delete_data' photo.pk %}" class = "btn btn-danger btn-sm" role = "button"> x </a>
+        </p>
+	    <p><a href="{{ photo.get_absolute_url }}">
+		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+	    </a></p>
+    </div>
 {% endfor %}
+</div>
+
+{% if pics.has_next %}
+    <a class="infinite-more-link" href="?page={{ pics.next_page_number }}">More</a>
+{% endif %}
+
+<div class="loading" style="display: none;">
+    Loading...
+</div>
+
+
+<script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+      onBeforePageLoad: function () {
+        $('.loading').show();
+      },
+      onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+      }
+    });
+</script>
 
 {% endblock %}

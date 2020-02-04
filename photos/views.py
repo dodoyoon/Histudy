@@ -49,12 +49,13 @@ def upload(request):
 
     return render(request, 'upload.html', ctx)
 
-def photoList(request):
+def photoList(request, user):
     username = request.COOKIES.get('username', '')
-    picList = Photo.objects.raw('SELECT * FROM photos_photo WHERE author = %s', [username])
+    picList = Photo.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
 
     ctx = {
         'list' : picList,
+        'user' : user,
     }
 
     if username:
@@ -75,10 +76,31 @@ def allList(request):
 
     return render(request, 'list.html', ctx)
 
+def userList(request):
+    username = request.COOKIES.get('username', '')
+    if username:
+        user = User.objects.get(username=username)
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('main')
+
+    userlist = User.objects.raw('SELECT * FROM auth_user')
+
+    ctx = {
+        'list' : userlist,
+    }
+    
+    return render(request, 'userlist.html', ctx)
+
 def homepage(request):
     username = request.COOKIES.get('username', '')
+    if username:
+        user = User.objects.get(username=username)
 
-    ctx = {}
+    ctx = {
+        'userobj' : user,
+    }
 
     if username:
         ctx['username'] = username
@@ -93,6 +115,8 @@ def main(request):
 
     if username:
         user = User.objects.get(username=username)
+        if user.is_staff is True:
+            return redirect('userList')
 
 
     if request.method == "GET":
@@ -132,6 +156,7 @@ def main(request):
 
     if username:
         ctx['username'] = username
+        ctx['userobj'] = user
     else:
         return redirect('loginpage')
 

@@ -1,0 +1,10 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+{% for user in list %}
+    <p>
+    <a href="{% url 'list' user.username %}"> {{ user.username }} </a>
+    </p>
+{% endfor %}
+
+{% endblock %}

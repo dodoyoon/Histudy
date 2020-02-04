@@ -8,40 +8,15 @@
 
 {% if username %}
 <h2>Welcome <span style="color: #F46404;">{{ username }} </h2>
+  <p>{{ userobj.username }}</p>
+  <p>{{ userobj.is_staff }}</p>
+  {% if userobj.is_staff %} <p> True </p>
+  {% else %} <p>False</p>
+  {% endif %}
+
 {% endif %}
 
-<div class="container-fluid mt-3">
-  <div id="myCarousel" class="carousel slide align-self-center">
-  
-    <!-- Indicators -->
-    <ul class="carousel-indicators">
-      <li class="item1 active"></li>
-      <li class="item2"></li>
-      <li class="item3"></li>
-    </ul>
-    
-    <!-- The slideshow -->
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img class="img-fluid align-self-center" src="http://www.handong.edu/dcp/editor/images/Picture2.png" alt="Los Angeles" style="width:100%">
-      </div>
-      <div class="carousel-item">
-        <img class="img-fluid" src="http://www.koreapost.com/news/photo/201505/947_2912_3845.gif" alt="Chicago" style="width:100%">
-      </div>
-      <div class="carousel-item">
-        <img class="img-fluid" src="https://i.ytimg.com/vi/CLZnwrYyjWU/maxresdefault.jpg" alt="New York" style="width:100%">
-      </div>
-    </div>
-    
-    <!-- Left and right controls -->
-    <a class="carousel-control-prev" href="#myCarousel">
-      <span class="carousel-control-prev-icon"></span>
-    </a>
-    <a class="carousel-control-next" href="#myCarousel">
-      <span class="carousel-control-next-icon"></span>
-    </a>
-  </div>
-  </div>
+
 
 
   
