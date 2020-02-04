@@ -61,32 +61,6 @@
 </div>
 
 <script>
-//chat
-var username  = "{{ username }}"
-var chatSocket = new WebSocket(
-    'ws://' + window.location.host +
-    '/ws/chat/' + username + '/');
-
-chatSocket.onmessage = function(e) {
-    console.log(e);
-    var data = JSON.parse(e.data);
-    var message = data['message'];
-    document.querySelector('#alarm').style="";
-};
-
-chatSocket.onclose = function(e) {
-    console.error('Chat socket closed unexpectedly');
-};
-
-
-document.querySelector('#submit').onclick = function(e) {
-    chatSocket.send(JSON.stringify({
-        'message': "button has been pushed"
-    }));
-
-};
-
-
     var infinite = new Waypoint.Infinite({
       element: $('.infinite-container')[0],
       onBeforePageLoad: function () {

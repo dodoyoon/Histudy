@@ -52,10 +52,13 @@ def upload(request):
 def photoList(request, user):
     username = request.COOKIES.get('username', '')
     picList = Photo.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
+    if username:
+        userobj = User.objects.get(username=username)
 
     ctx = {
         'list' : picList,
         'user' : user,
+        'userobj' : userobj,
     }
 
     if username:
@@ -89,7 +92,10 @@ def userList(request):
 
     ctx = {
         'list' : userlist,
+        'userobj' : user,
     }
+    if username:
+        ctx['username'] = username
     
     return render(request, 'userlist.html', ctx)
 
@@ -103,7 +109,7 @@ def homepage(request):
     }
 
     if username:
-        ctx['username'] = username
+        ctx = {'username' : username}
 
     return render(request, 'home.html', ctx)
 
@@ -122,6 +128,7 @@ def main(request):
 
     if username:
         user = User.objects.get(username=username)
+        ctx['userobj'] = user
         if user.is_staff is True:
             return redirect('userList')
 
@@ -226,8 +233,6 @@ def popup(request):
             else:
                 ctx['code'] = user.verification.code
 
-
-
         return render(request, 'popup.html', ctx)
     else:
         return redirect("main")
@@ -271,13 +276,23 @@ def logout(request):
 
 
 def signup(request):
+    username  = request.COOKIES.get('username', '')
+
+    if username:
+        user = User.objects.get(username=username)
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('loginpage')
+
+    ctx = {'username' : username}
     if request.method == 'POST':
         if request.POST["password1"] == request.POST["password2"]:
             user = User.objects.create_user(
                     username=request.POST["username"],
                     password=request.POST["password1"])
             auth.login(request, user)
-            return redirect("main")
-        return render(request, 'signup.html')
+            return redirect("profile")
+        return render(request, 'signup.html', ctx)
 
-    return render(request, 'signup.html')
+    return render(request, 'signup.html', ctx)
