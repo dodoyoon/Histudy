@@ -1,29 +1,44 @@
 {% extends "base_template.html" %}
 {% block content %}
-<div class="d-flex align-items-center justify-content-center mt-4" id="login">
-  	<form>
-	    {% for field in form %}
-	        {{ field.label }}: {{ field.value }}
-	    {% endfor %}
-  	</form>
 
-    <form method="POST" id="add_form" action="{% url 'loginpage' %}">
-		{% csrf_token %}
-	    <div class="form-group">
-		    <label >User Name</label>
-		    <div class="input"><input type="text" name="username" required="required"></div>
-		    <div class="clear"></div>
-	    </div>
-	    <div class="form-group">
-	        <label >Password</label>
-	        <div class="input"><input type="password" name="password" required="required"></div>
-	        <div class="clear"></div>
-	    </div>
-	    <div class="form-group">
-	        <div class="submit">
-	        <button type="submit" class="btn-primary">Login</button>
-	    </div>
-	    <div class="clear"></div> </div>
+<div class="d-flex align-items-center justify-content-center mt-4" id="login">
+    <!-- Default form login -->
+    <form class="text-center border border-light p-5" action="{% url 'loginpage' %}" method="POST" id="add_form">
+        {% csrf_token %}
+
+        <p class="h4 mb-4">Sign in</p>
+
+        <!-- Email -->
+        <input type="text" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="User Id" name="username" required="required">
+
+
+        <!-- Password -->
+        <input type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password" name="password" required="required">
+
+        <div class="d-flex justify-content-around">
+
+            <div>
+                <!-- Forgot password -->
+                <a href="">Forgot password?</a>
+            </div>
+        </div>
+
+        <!-- Sign in button -->
+        <button class="btn btn-info btn-block my-4 bg-dark" type="submit">Sign in</button>
+
+        <!-- Register -->
+        <p>Not a member?
+            <a href="{% url 'signup' %}">Register</a>
+        </p>
+
+        <!-- Social login -->
+        <p>or sign in with:</p>
+
+        <a href="#" class="mx-2" role="button"><i class="fab fa-facebook-f light-blue-text"></i></a>
+        <a href="#" class="mx-2" role="button"><i class="fab fa-twitter light-blue-text"></i></a>
+        <a href="#" class="mx-2" role="button"><i class="fab fa-linkedin-in light-blue-text"></i></a>
+        <a href="#" class="mx-2" role="button"><i class="fab fa-github light-blue-text"></i></a>
+
     </form>
 </div>
 {% endblock %}
