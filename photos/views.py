@@ -9,7 +9,8 @@ from .models import Photo, Data, Verification
 from .forms import PhotoForm, DataForm
 
 from django.views.generic import ListView
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 import json, random
 
 
@@ -96,7 +97,7 @@ def userList(request):
     }
     if username:
         ctx['username'] = username
-    
+
     return render(request, 'userlist.html', ctx)
 
 def homepage(request):
@@ -200,13 +201,13 @@ def popup(request):
         user = User.objects.get(username=username)
         orig, created = Verification.objects.get_or_create(user=user)
 
-        now_time = datetime.now(timezone.utc)
+        now_time = timezone.localtime()
         all_pins = [format(i, '04') for i in range(1000, 10000)]
         possible = [i for i in all_pins if len(set(i)) > 3]
 
 
         if user.verification.when_saved is None:
-            user.verification.when_saved = datetime.now(timezone.utc)
+            user.verification.when_saved = now_time
             verify_code = random.choice(possible)
             user.verification.code = verify_code
             user.save()

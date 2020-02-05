@@ -14,7 +14,7 @@ class DataForm(forms.ModelForm):
     text = forms.CharField(label='', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Please Share ... ʕ•ﻌ•ʔ ♡ (Code Required)',
+            'placeholder': 'Please Share ... ʕ•ﻌ•ʔ ♡',
             }
         ))
     class Meta:
