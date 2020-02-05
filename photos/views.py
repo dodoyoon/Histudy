@@ -141,6 +141,8 @@ def main(request):
         ctx['userobj'] = user
         if user.is_staff is True:
             return redirect('userList')
+    else:
+        return redirect('loginpage')
 
 
     if request.method == "GET":
