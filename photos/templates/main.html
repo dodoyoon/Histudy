@@ -81,9 +81,9 @@
 
         <div class="mb-3">
             <label for="date" id="post_title"><b>사진</b></label>
-            <p><a href="{{ photo.get_absolute_url }}">
+            <p>
     		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
-    	    </a></p>
+    	    </p>
         </div>
 
         <div class="navbar justify-content-end">
