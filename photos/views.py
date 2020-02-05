@@ -114,6 +114,15 @@ def homepage(request):
 
     return render(request, 'home.html', ctx)
 
+def announce(request):
+    username = request.COOKIES.get('username', '')
+    if username:
+        user = User.objects.get(username=username)
+        ctx = {'userobj' : user}
+        ctx = {'username' : username}
+
+    return render(request, 'announce.html', ctx)
+
 # for Infinite Scroll
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 

@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from photos.views import detail
-from photos.views import upload, photoList, homepage, allList, main, delete_data, confirm_delete, userList
+from photos.views import upload, photoList, homepage, allList, main, delete_data, confirm_delete, userList, announce
 from django.urls import include
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^all/', allList, name='all_list'),
     url(r'^user/', userList, name='userList'),
     url(r'^home/', homepage, name='home'),
+    url(r'^announce/', announce, name='announce'),
     url(r'^admin/', admin.site.urls),
     path('', main, name='main'),
     path('', include('photos.urls')),
