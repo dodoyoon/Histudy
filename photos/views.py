@@ -191,6 +191,7 @@ def main(request):
 def delete_data(request, pk):
     item = Data.objects.filter(id=pk)
     picList = Photo.objects.raw('SELECT * FROM photos_data WHERE id = %s', [pk])
+
     ctx = {
         'list' : picList,
         'item' : item,
@@ -199,6 +200,14 @@ def delete_data(request, pk):
     return render(request, 'confirm_delete.html', ctx)
 
 def confirm_delete(request, pk):
+    item = Data.objects.get(id=pk)
+    username = item.author
+    user = User.objects.get(username=username)
+
+    if user.userinfo.num_posts > 0:
+        user.userinfo.num_posts -= 1
+        user.save()
+
     Data.objects.filter(id=pk).delete()
     return redirect('main')
 
