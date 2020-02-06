@@ -80,6 +80,7 @@ def allList(request):
 
     return render(request, 'list.html', ctx)
 
+from django.db.models import Count 
 def userList(request):
     username = request.COOKIES.get('username', '')
     if username:
@@ -89,7 +90,9 @@ def userList(request):
     else:
         return redirect('main')
 
-    userlist = User.objects.raw('SELECT * FROM photos_userinfo')
+    userlist = User.objects.all().annotate(
+        num_posts = Count('data')
+    )
 
     ctx = {
         'list' : userlist,
@@ -155,6 +158,7 @@ def main(request):
                 ctx['msg'] = msg
             else:
                 obj = form.save()
+                obj.user = user
                 obj.author = username
 
                 if user.verification.code is not None:

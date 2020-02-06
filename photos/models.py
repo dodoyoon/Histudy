@@ -24,6 +24,7 @@ class Photo(models.Model):
         return url
 
 class Data(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
     text = models.TextField(max_length=500, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
