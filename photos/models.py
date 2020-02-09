@@ -30,6 +30,7 @@ class Data(models.Model):
     date = models.DateTimeField(default=timezone.now)
     author = models.TextField(max_length=100, null=True, blank=True)
     code = models.IntegerField(blank=True, null=True)
+    when_saved = models.DateTimeField(null=True, blank=True)
 
     def delete(self, *args, **kwargs):
         self.image.delete()

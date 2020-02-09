@@ -80,7 +80,7 @@ def allList(request):
 
     return render(request, 'list.html', ctx)
 
-from django.db.models import Count 
+from django.db.models import Count
 def userList(request):
     username = request.COOKIES.get('username', '')
     if username:
@@ -163,6 +163,7 @@ def main(request):
 
                 if user.verification.code is not None:
                     obj.code = user.verification.code
+                    obj.when_saved = user.verification.when_saved
                     user.verification.code = None
                     user.verification.when_saved = None
 

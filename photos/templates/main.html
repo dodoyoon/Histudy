@@ -80,6 +80,10 @@
         </div>
 
         <div class="mb-3">
+            <label for="date" id="post_title"><b>코드생성시간</b>: {{photo.when_saved}}</label>
+        </div>
+
+        <div class="mb-3">
             <label for="date" id="post_title"><b>사진</b></label>
             <p>
     		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
