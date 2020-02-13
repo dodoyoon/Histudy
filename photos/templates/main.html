@@ -48,6 +48,7 @@
         <a href="#" onclick="window.open('popup', 'window팝업', 'width=300, height=300, menubar=no, status=no, toolbar=no');" class="btn btn-outline-primary">코드생성</a>
 
         <br><br>
+        {{ form.title }}
         {{ form.text }}
 
         <p>
@@ -72,7 +73,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="text" id="post_title"><b>설명</b>: {{photo.text}}</label>
+            <label for="text" id="post_title"><b>제목</b>: {{photo.title}}</label>
         </div>
 
         <div class="mb-3">
@@ -81,6 +82,10 @@
 
         <div class="mb-3">
             <label for="date" id="post_title"><b>코드생성시간</b>: {{photo.when_saved}}</label>
+        </div>
+
+        <div class="mb-3">
+            <label for="text" id="post_title"><b>설명</b>: {{photo.text}}</label>
         </div>
 
         <div class="mb-3">

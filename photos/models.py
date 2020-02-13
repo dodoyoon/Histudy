@@ -26,6 +26,7 @@ class Photo(models.Model):
 class Data(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
+    title = models.CharField(max_length=30, blank=True, null=True)
     text = models.TextField(max_length=500, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
     author = models.TextField(max_length=100, null=True, blank=True)
