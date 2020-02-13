@@ -1,16 +1,9 @@
-{% extends "base_template.html" %}
+{% extends 'base_template.html' %}
+
 {% block content %}
-<form
-    method="POST"
-    action=""
-    enctype="multipart/form-data"
->
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-
-    <p>
-        <button type="submit">저장</button>
-    </p>
-</form>
-
+    <input type="file" name="myfile">
+    <button type="submit">Upload</button>
+  </form>
 {% endblock %}

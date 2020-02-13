@@ -74,3 +74,18 @@ def create_user(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_data(sender, instance, **kwargs):
     instance.userinfo.save()
+
+class UserGroup(models.Model):
+    groupNo = models.IntegerField()
+    stuID = models.CharField(max_length=8)
+    email = models.EmailField(blank=True)
+    name = models.CharField(max_length = 30)
+    phoneNo = models.CharField(max_length = 15, blank=True)
+    GENDER_CHOICE = [
+        ('F', 'Female'),
+        ('M', 'Male'),
+    ]
+    gender = models.CharField(
+        max_length = 2,
+        choices = GENDER_CHOICE,
+    )

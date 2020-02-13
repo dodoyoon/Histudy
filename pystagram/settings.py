@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
     'photos',
 ]
 
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 ROOT_URLCONF = 'pystagram.urls'
 
 TEMPLATES = [

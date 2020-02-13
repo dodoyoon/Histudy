@@ -8,10 +8,14 @@
 
 {% if username %}
 <h2>Welcome <span style="color: #F46404;">{{ username }} </h2>
-  <p>{{ userobj.username }}</p>
-  <p>{{ userobj.is_staff }}</p>
-  {% if userobj.is_staff %} <p> True </p>
-  {% else %} <p>False</p>
+
+
+  {% if userobj.is_staff %}
+  <p>true</p>
+  {% for member in list %}
+  <p>{{member.groupNo}} {{member.stuID}} {{member.name}}</p>
+  {% endfor %}
+  {% else %} <p>false</p>
   {% endif %}
 
 {% endif %}

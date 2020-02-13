@@ -28,25 +28,33 @@ def detail(request, pk):
 
     return render(request, 'detail.html', ctx)
 
+from tablib import Dataset
+from .resources import UserGroupResource
+
 def upload(request):
     username = request.COOKIES.get('username', '')
-    if request.method == "GET":
-        form = PhotoForm()
-    elif request.method == "POST":
-        form = PhotoForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            obj = form.save()
-            obj.author = username
-            obj.save()
-            return HttpResponseRedirect(reverse('list'))
-
-    ctx = {
-        'form': form,
-    }
 
     if username:
-        ctx['username'] = username
+        user = User.objects.get(username=username)
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('main')
+
+
+    if request.method == 'POST':
+        usergroup_resource = UserGroupResource()
+        dataset = Dataset()
+        new_usergroup = request.FILES['myfile']
+
+        imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
+        result = usergroup_resource.import_data(dataset, dry_run=True)  # Test the data import
+
+        if not result.has_errors():
+            usergroup_resource.import_data(dataset, dry_run=False)  # Actually import now
+
+    if username:
+        ctx = {'username' : username }
 
     return render(request, 'upload.html', ctx)
 
@@ -108,8 +116,11 @@ def homepage(request):
     if username:
         user = User.objects.get(username=username)
 
+    memberList = Photo.objects.raw('SELECT * FROM photos_usergroup')
+
     ctx = {
         'userobj' : user,
+        'list' : memberList,
     }
 
     if username:
@@ -284,8 +295,16 @@ def loginpage(request):
 
 def profile(request):
     username = request.COOKIES.get('username', '')
+    if username:
+        user = User.objects.get(username=username)
 
-    ctx = {}
+    memberList = Photo.objects.raw('SELECT * FROM photos_usergroup')
+
+    ctx = {
+        'userobj' : user,
+        'list' : memberList,
+    }
+
     if username:
         ctx['username'] = username
 
