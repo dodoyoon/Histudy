@@ -37,9 +37,11 @@ from tablib import Dataset
 @csrf_exempt
 def upload(request):
     username = request.COOKIES.get('username', '')
+    ctx = {}
 
     if username:
         user = User.objects.get(username=username)
+        ctx['userobj'] = user
         if user.is_staff is False:
             return redirect('main')
     else:
@@ -61,7 +63,7 @@ def upload(request):
                                  password=user_pw)
 
     if username:
-        ctx = {'username' : username }
+        ctx['username'] = username
 
     return render(request, 'upload.html', ctx)
 
@@ -137,6 +139,8 @@ def homepage(request):
 
 def announce(request):
     username = request.COOKIES.get('username', '')
+
+    ctx={}
     if username:
         user = User.objects.get(username=username)
         ctx = {'userobj' : user}
@@ -299,12 +303,12 @@ def loginpage(request):
 
 def profile(request):
     username = request.COOKIES.get('username', '')
+
+    ctx={}
+
     if username:
         user = User.objects.get(username=username)
-
-    ctx = {
-        'userobj' : user,
-    }
+        ctx['userobj'] = user
 
     if username:
         ctx['username'] = username
@@ -323,15 +327,17 @@ def logout(request):
 
 def signup(request):
     username  = request.COOKIES.get('username', '')
+    ctx = {}
 
     if username:
         user = User.objects.get(username=username)
+        ctx['userobj'] = user
         if user.is_staff is False:
             return redirect('main')
     else:
         return redirect('loginpage')
 
-    ctx = {'username' : username}
+    ctx['username'] = username
     if request.method == 'POST':
         if request.POST["password1"] == request.POST["password2"]:
             user = User.objects.create_user(
