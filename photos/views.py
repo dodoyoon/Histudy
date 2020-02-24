@@ -13,6 +13,10 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 import json, random
 
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from django.contrib import auth
+
 
 def detail(request, pk):
     # photo = Photo.objects.get(pk=pk)
@@ -29,8 +33,8 @@ def detail(request, pk):
     return render(request, 'detail.html', ctx)
 
 from tablib import Dataset
-from .resources import UserGroupResource
 
+@csrf_exempt
 def upload(request):
     username = request.COOKIES.get('username', '')
 
@@ -43,15 +47,18 @@ def upload(request):
 
 
     if request.method == 'POST':
-        usergroup_resource = UserGroupResource()
         dataset = Dataset()
         new_usergroup = request.FILES['myfile']
 
         imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
-        result = usergroup_resource.import_data(dataset, dry_run=True)  # Test the data import
 
-        if not result.has_errors():
-            usergroup_resource.import_data(dataset, dry_run=False)  # Actually import now
+        for data in imported_data:
+            user_id = "group"+data[0]
+            user_pw = user_id
+            user_email = data[2]
+            User.objects.create_user(username=user_id,
+                                 email=user_email,
+                                 password=user_pw)
 
     if username:
         ctx = {'username' : username }
@@ -275,9 +282,6 @@ def popup(request):
         return redirect("main")
 
 # User Login Customization
-
-from django.contrib.auth.models import User
-from django.contrib import auth
 
 def loginpage(request):
     if request.method == 'POST':
