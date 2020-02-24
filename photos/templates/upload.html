@@ -1,6 +1,7 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
+<p>Upload csv file containing user information.</p>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="file" name="myfile">
