@@ -6,19 +6,14 @@
           <h2>Welcome <span style="color: #F46404;">{{ username }} </h2>
   {% endif %}
   <table style="width:100%">
+
+  {% if userobj.is_staff %}
   <tr>
     <th>groupNo</th>
     <th>stuID</th>
     <th>name</th>
   </tr>
-  {% if userobj.is_staff %}
-  <tr>
-  {% for member in list %}
-  <th>{{member.groupNo}}</th> 
-  <th>{{member.stuID}}</th> 
-  <th>{{member.name}}</th>
-  </tr>
-  {% endfor %}
+
   </table>
   {% endif %}
 </div>

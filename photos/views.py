@@ -302,11 +302,8 @@ def profile(request):
     if username:
         user = User.objects.get(username=username)
 
-    memberList = Photo.objects.raw('SELECT * FROM photos_usergroup')
-
     ctx = {
         'userobj' : user,
-        'list' : memberList,
     }
 
     if username:
