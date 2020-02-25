@@ -2,14 +2,26 @@
 {% block content %}
 <table style="width:100%">
     <tr>
-        <th>ID</th>
+        <th>RANK</th>
         <th>username</th>
         <th>posts</th>
     </tr>
 {% for user in list %}
     <tr>
-        <th>{{ user.id }}</th>
-        <th><a href="{% url 'list' user.username %}"> {{ user.username }} </a></th>
+        <th>
+            {{ forloop.counter }}
+        </th>
+        <th>
+            <a href="{% url 'list' user.username %}">
+            {% if user.num_posts > 5 %}
+            <font color="green">
+            {{ user.username }}
+            </font>
+            {% else %}
+            {{ user.username }}
+            {% endif %}
+            </a>
+        </th>
         <th>{{ user.num_posts }}</th>
     </tr>
 {% endfor %}

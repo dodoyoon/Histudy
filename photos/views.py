@@ -111,7 +111,7 @@ def userList(request):
 
     userlist = User.objects.all().annotate(
         num_posts = Count('data')
-    )
+    ).order_by('-num_posts')
 
     ctx = {
         'list' : userlist,
