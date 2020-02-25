@@ -17,6 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib import auth
 
+from django.contrib.auth import authenticate
+
 
 def detail(request, pk):
     # photo = Photo.objects.get(pk=pk)
@@ -291,14 +293,19 @@ def loginpage(request):
     if request.method == 'POST':
         username = request.POST['username']
         password =  request.POST['password']
-        post = User.objects.filter(username=username)
-        if post:
-            username = request.POST['username']
-            response = HttpResponseRedirect(reverse('main'))
-            response.set_cookie('username', username, 3600)
-            return response
-        else:
-            return render(request, 'login.html', {})
+        is_pw_correct = authenticate(username=username, password=password)
+
+        if is_pw_correct is not None:
+            post = User.objects.filter(username=username)
+
+            if post:
+                username = request.POST['username']
+                response = HttpResponseRedirect(reverse('main'))
+                response.set_cookie('username', username, 3600)
+                return response
+            else:
+                return render(request, 'login.html', {})
+
     return render(request, 'login.html', {})
 
 def profile(request):
@@ -348,3 +355,33 @@ def signup(request):
         return render(request, 'signup.html', ctx)
 
     return render(request, 'signup.html', ctx)
+
+
+def change_password(request):
+    username  = request.COOKIES.get('username', '')
+    ctx = {}
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+    else:
+        return redirect('loginpage')
+
+    ctx['username'] = username
+    if request.method == 'POST':
+        old_password = request.POST["old_password"]
+        is_pw_correct = authenticate(username=username, password=old_password)
+        if is_pw_correct is not None:
+            password1 = request.POST["password1"]
+            password2 = request.POST["password2"]
+
+            if password1 == password2:
+                user.set_password(password1)
+                user.save()
+                return redirect("profile")
+
+            return redirect("change_password")
+        else:
+            return render(request, 'change_password.html', ctx)
+
+    return render(request, 'change_password.html', ctx)
