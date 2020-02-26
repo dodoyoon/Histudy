@@ -49,7 +49,9 @@
             <span style="float: right">{{photo.code}}</span>
         </p>
         <p>
-    	{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+            <a href="{{photo.get_absolute_url}}">
+            {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+            </a>
         </p>
     </div>
 {% endfor %}

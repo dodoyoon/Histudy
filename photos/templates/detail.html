@@ -1,8 +1,16 @@
 {% extends "base_template.html" %}
 {% block content %}
 
-{% if post %}
-<p><img src="{{ post.image.url }}" alt=""> </p>
-{% endif %}
+<div class="container-fluid">
+    {% if post %}
+    <p><img class="img-fluid" src="{{ post.image.url }}" alt=""> </p>
+    {% endif %}
+    <p><b>제목</b>: {{post.title}}</p>
+    <p><b>날짜</b>: {{post.date}}</p>
+    <p><b>코드생성시간</b>: {{post.when_saved}}</p>
+    <p><b>확인코드</b>: {{post.code}}</p>
+    <p><b>설명</b>: {{post.text}}</p>
+</div>
+
 
 {% endblock %}

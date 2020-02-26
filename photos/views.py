@@ -23,11 +23,11 @@ from django.contrib import messages
 
 def detail(request, pk):
     # photo = Photo.objects.get(pk=pk)
-    photo = get_object_or_404(Photo, pk=pk)
+    data = get_object_or_404(Data, pk=pk)
     username = request.COOKIES.get('username', '')
 
     ctx = {
-        'post': photo,
+        'post': data,
     }
 
     if username:
