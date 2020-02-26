@@ -147,4 +147,5 @@ MEDIA_URL = '/upload_files/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/photos/'
