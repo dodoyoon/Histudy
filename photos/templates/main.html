@@ -16,22 +16,7 @@
 
 {% block content %}
 <style>
-    #form_container {
-       border: 1px solid red;
-       border-radius: 10px;
-    }
-
-    #post_container {
-        border: 1px solid;
-        border-radius: 10px;
-    }
-
-    #post_title{
-        font-size: 130%;
-    }
 </style>
-
-<h2>Upload</h2>
 
 <div class="container-fluid mb-4" id="form_container">
     <br>
@@ -44,7 +29,6 @@
     >
         {% csrf_token %}
         {{ form.image }}
-        <br><br>
         <a href="#" onclick="window.open('popup', 'window팝업', 'width=300, height=300, menubar=no, status=no, toolbar=no');" class="btn btn-outline-primary">코드생성</a>
 
         <br><br>
@@ -53,56 +37,20 @@
 
         <p>
             <br>
-            <button id='submit' type="submit" class="btn-primary btn-block">+</button>
+            <button id='submit' type="submit" class="btn-dark btn-block">+</button>
         </p>
     </form>
 </div>
 
-
-<h2>Posts</h2>
-
-<div class="infinite-container border border-dark m-1" id="post_container">
+<div class="infinite-container m-1" id="post_container">
 {% for photo in pics %}
-    <div class="infinite-item border border-primary m-3 p-3">
-        <div class="mb-3 page-header">
-            <label for="title" id="post_title"><b>작성자</b>: {{photo.author}}</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="date" id="post_title"><b>날짜</b>: {{photo.date}}</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="text" id="post_title"><b>제목</b>: {{photo.title}}</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="date" id="post_title"><b>확인코드</b>: {{photo.code}}</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="date" id="post_title"><b>코드생성시간</b>: {{photo.when_saved}}</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="text" id="post_title"><b>설명</b>: {{photo.text}}</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="date" id="post_title"><b>사진</b></label>
-            <p>
-    		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
-    	    </p>
-        </div>
-
-        <div class="navbar justify-content-end">
-            <p>
-                <a href="{% url 'delete_data' photo.pk %}" class = "btn btn-danger btn-sm" role = "button">삭제</a>
-            </p>
-        </div>
-
-
-
+    <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
+        <p style="text-align:left">{{photo.date}}
+            <span style="float: right">{{photo.code}}</span>
+        </p>
+        <p>
+    	{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+        </p>
     </div>
 {% endfor %}
 </div>
