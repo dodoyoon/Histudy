@@ -58,7 +58,7 @@ def upload(request):
 
         for data in imported_data:
             user_id = "group"+data[0]
-            user_pw = user_id
+            user_pw = data[1]
             user_email = data[2]
             User.objects.create_user(username=user_id,
                                  email=user_email,
