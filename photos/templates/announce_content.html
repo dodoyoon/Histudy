@@ -1,0 +1,16 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    {% if post %}
+    <p style="text-align:left;"><b>{{post.title}}</b>
+        <span style="float:right">{{post.date}}</span>
+    </p>
+    <hr>
+    <p style="text-align:right;">writer: {{post.author}}</p>
+    <hr>
+    <p>{{post.content}}</p>
+    {% endif %}
+</div>
+
+{% endblock %}

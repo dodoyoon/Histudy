@@ -36,10 +36,27 @@ class Data(models.Model):
     def delete(self, *args, **kwargs):
         self.image.delete()
         self.filtered_image.delete()
-        super(Photo, self).delete(*args, **kwargs)
+        super(Data, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
+        return url
+
+class Announcement(models.Model):
+    author = models.TextField(max_length=100)
+    date = models.DateTimeField(default=timezone.now)
+    title = models.TextField(max_length=100)
+    content = models.TextField()
+
+    def delete(self, *args, **kwargs):
+        self.author.delete()
+        self.date.delete()
+        self.title.delete()
+        self.content.delete()
+        super(Announcement, self).delete(*args, **kwargs)
+
+    def get_absolute_url(self):
+        url = reverse_lazy('announce_detail', kwargs={'pk': self.pk})
         return url
 
 

@@ -1,5 +1,29 @@
 {% extends "base_template.html" %}
 {% block content %}
 <h2>Announcement Board</h2>
+{% if user.is_staff %}
+<a href="{% url 'announce_write' %}" class="btn btn-outline-primary">+</a>
+{% endif %}
+
+<table style="width:100%">
+    <tr>
+        <th>id</th>
+        <th>공지</th>
+        <th>작성자</th>
+        <th>날짜</th>
+    </tr>
+{% for post in list %}
+    <tr>
+        <th> {{ post.id }} </th>
+        <th>
+            <a href="{{ post.get_absolute_url }}">
+            {{ post.title }}
+            </a>
+        </th>
+        <th> {{ post.author }}</th>
+        <th>{{ post.date }}</th>
+    </tr>
+{% endfor %}
+</table>
 
 {% endblock %}

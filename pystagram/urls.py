@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
-from photos.views import detail
+from photos.views import detail, announce_write, announce_detail
 from photos.views import upload, photoList, homepage, allList, main, delete_data, confirm_delete, userList, announce
 from django.urls import include
 from django.urls import path
@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^all/', allList, name='all_list'),
     url(r'^user/', userList, name='userList'),
     url(r'^home/', homepage, name='home'),
+    url(r'^announce/write/$', announce_write, name='announce_write'),
+    url(r'^announce/(?P<pk>[0-9]+)/$', announce_detail, name='announce_detail'),
     url(r'^announce/', announce, name='announce'),
     url(r'^admin/', admin.site.urls),
     path('', main, name='main'),

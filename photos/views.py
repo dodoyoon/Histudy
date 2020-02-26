@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Photo, Data, Verification
-from .forms import PhotoForm, DataForm
+from .models import Photo, Data, Verification, Announcement
+from .forms import PhotoForm, DataForm, AnnouncementForm
 
 from django.views.generic import ListView
 from datetime import datetime, timedelta
@@ -157,6 +157,9 @@ def announce(request):
         user = User.objects.get(username=username)
         ctx = {'userobj' : user}
         ctx = {'username' : username}
+
+    announceList = Announcement.objects.all()
+    ctx['list'] = announceList 
 
     return render(request, 'announce.html', ctx)
 
@@ -377,6 +380,44 @@ def signup(request):
 
     return render(request, 'signup.html', ctx)
 
+def announce_write(request):
+    username  = request.COOKIES.get('username', '')
+    ctx = {}
+    if username:
+        ctx['username'] = username
+        user = User.objects.get(username = username)
+        ctx['userobj'] = user
+        if user.is_staff is False:
+            return redirect('announce')
+    else:
+        return redirect('loginpage')
+
+    if request.method == "GET":
+        form = AnnouncementForm()
+    elif request.method == "POST":
+        form = AnnouncementForm(request.POST, request.FILES)
+        if form.is_valid():
+            obj = form.save()
+            obj.author = username
+            obj.save()
+    
+    ctx['form'] = form
+
+    return render(request, 'announce_write.html', ctx)
+
+def announce_detail(request, pk):
+    post = get_object_or_404(Announcement, pk=pk)
+    username = request.COOKIES.get('username', '')
+
+    ctx = {
+        'post': post,
+    }
+
+    if username:
+        ctx['username'] = username
+
+    return render(request, 'announce_content.html', ctx)
+
 
 def change_password(request):
     username  = request.COOKIES.get('username', '')
@@ -411,3 +452,4 @@ def change_password(request):
             return render(request, 'change_password.html', ctx)
 
     return render(request, 'change_password.html', ctx)
+
