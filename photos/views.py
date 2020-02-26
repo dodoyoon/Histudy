@@ -99,7 +99,8 @@ def allList(request):
 
     return render(request, 'list.html', ctx)
 
-from django.db.models import Count
+from django.db.models import Count, Max
+from django.db.models.expressions import RawSQL
 def userList(request):
     username = request.COOKIES.get('username', '')
     if username:
@@ -110,7 +111,8 @@ def userList(request):
         return redirect('main')
 
     userlist = User.objects.all().annotate(
-        num_posts = Count('data')
+        num_posts = Count('data'),
+        recent = Max('data__date'),
     ).order_by('-num_posts')
 
     ctx = {

@@ -5,6 +5,7 @@
         <th>RANK</th>
         <th>username</th>
         <th>posts</th>
+        <th>most recent</th>
     </tr>
 {% for user in list %}
     <tr>
@@ -23,6 +24,7 @@
             </a>
         </th>
         <th>{{ user.num_posts }}</th>
+        <th>{{ user.recent }}</th>
     </tr>
 {% endfor %}
 </table>
