@@ -17,7 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib import auth
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 def detail(request, pk):
@@ -298,12 +299,13 @@ def loginpage(request):
     if request.method == 'POST':
         username = request.POST['username']
         password =  request.POST['password']
-        is_pw_correct = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password)
 
-        if is_pw_correct is not None:
+        if user is not None:
             post = User.objects.filter(username=username)
 
             if post:
+                login(request, user)
                 username = request.POST['username']
                 response = HttpResponseRedirect(reverse('main'))
                 response.set_cookie('username', username, 3600)
@@ -327,8 +329,9 @@ def profile(request):
 
     return render(request, 'profile.html', ctx)
 
-def logout(request):
+def logout_view(request):
     try:
+        logout(request)
         response = HttpResponseRedirect(reverse('loginpage'))
         response.delete_cookie('username')
         return response
