@@ -37,7 +37,7 @@ class AnnouncementForm(forms.ModelForm):
         }
     ))
 
-    content = forms.CharField(label='', widget=forms.TextInput(
+    content = forms.CharField(label='', widget=forms.Textarea(
         attrs={
             'class': 'form-control',
             'placeholder': '내용',

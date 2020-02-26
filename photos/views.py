@@ -159,7 +159,7 @@ def announce(request):
         ctx = {'username' : username}
 
     announceList = Announcement.objects.all()
-    ctx['list'] = announceList 
+    ctx['list'] = announceList
 
     return render(request, 'announce.html', ctx)
 
@@ -400,7 +400,8 @@ def announce_write(request):
             obj = form.save()
             obj.author = username
             obj.save()
-    
+            return redirect("announce")
+
     ctx['form'] = form
 
     return render(request, 'announce_write.html', ctx)
@@ -452,4 +453,3 @@ def change_password(request):
             return render(request, 'change_password.html', ctx)
 
     return render(request, 'change_password.html', ctx)
-
