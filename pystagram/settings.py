@@ -149,3 +149,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/photos/'
+
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}

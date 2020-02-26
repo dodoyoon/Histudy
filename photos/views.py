@@ -65,6 +65,9 @@ def upload(request):
                                  email=user_email,
                                  password=user_pw)
 
+        messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
+
+
     if username:
         ctx['username'] = username
 
@@ -184,8 +187,7 @@ def main(request):
         form = DataForm(request.POST, request.FILES)
         if form.is_valid():
             if user.verification.code is None:
-                msg = "코드를 생성해주세요"
-                ctx['msg'] = msg
+                messages.warning(request, '게시물을 등록에 실패하였습니다. 코드를 생성해주세요.', extra_tags='alert')
             else:
                 obj = form.save()
                 obj.user = user
@@ -204,6 +206,8 @@ def main(request):
                 user.save()
 
                 obj.save()
+                messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
+
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
 
@@ -309,9 +313,13 @@ def loginpage(request):
                 username = request.POST['username']
                 response = HttpResponseRedirect(reverse('main'))
                 response.set_cookie('username', username, 3600)
+                messages.success(request, '환영합니다.', extra_tags='alert')
                 return response
             else:
+                messages.warning(request, '다시 로그인 해주세요.', extra_tags='alert')
                 return render(request, 'login.html', {})
+        else:
+            messages.warning(request, '다시 로그인 해주세요.', extra_tags='alert')
 
     return render(request, 'login.html', {})
 
@@ -335,6 +343,7 @@ def logout_view(request):
         response = HttpResponseRedirect(reverse('loginpage'))
         response.delete_cookie('username')
         return response
+        messages.success(request, '로그아웃 되었습니다.', extra_tags='alert')
     except:
         pass
     return render(request, 'home.html', {})
@@ -359,7 +368,11 @@ def signup(request):
                     username=request.POST["username"],
                     password=request.POST["password1"])
             auth.login(request, user)
+            messages.success(request, '유저가 성공적으로 추가되었습니다.', extra_tags='alert')
             return redirect("profile")
+
+        else:
+            messages.warning(request, '유저를 만드는데 실패하였습니다.', extra_tags='alert')
         return render(request, 'signup.html', ctx)
 
     return render(request, 'signup.html', ctx)
@@ -386,10 +399,15 @@ def change_password(request):
             if password1 == password2:
                 user.set_password(password1)
                 user.save()
+                messages.success(request, '비밀번호가 변경 되었습니다.', extra_tags='alert')
                 return redirect("profile")
+
+            else:
+                messages.warning(request, '바꾸는 비밀번호가 일치해야합니다.', extra_tags='alert')
 
             return redirect("change_password")
         else:
+            messages.warning(request, '현재 비밀번호를 확인해주세요.', extra_tags='alert')
             return render(request, 'change_password.html', ctx)
 
     return render(request, 'change_password.html', ctx)
