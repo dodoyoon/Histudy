@@ -71,9 +71,13 @@ def upload(request):
 
 def photoList(request, user):
     username = request.COOKIES.get('username', '')
-    picList = Photo.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
+    picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
     if username:
         userobj = User.objects.get(username=username)
+        if userobj.is_staff is False:
+            return redirect('loginpage')
+    else:
+        return redirect('loginpage')
 
     ctx = {
         'list' : picList,
@@ -172,7 +176,6 @@ def main(request):
             return redirect('userList')
     else:
         return redirect('loginpage')
-
 
     if request.method == "GET":
         form = DataForm()
