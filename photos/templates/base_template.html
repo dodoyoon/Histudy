@@ -56,9 +56,9 @@
 
         {% if username or user.is_staff %}
             <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
-              <a class="nav-item nav-link" href="{% url 'profile' %}"><i class="fas fa-id-badge fa-2x"></i></a>
-              <a class="nav-item nav-link" href="{% url 'main' %}"><i class="fas fa-clipboard fa-2x"></i></a>
-              <a class="nav-item nav-link" href="{% url 'announce' %}"><i class="fas fa-bars fa-2x"></i></a>
+              <a class="nav-item nav-link" href="{% url 'profile' %}" style="color: White;"><i class="fas fa-id-badge fa-2x"></i></a>
+              <a class="nav-item nav-link" href="{% url 'main' %}" style="color: White;"><i class="fas fa-clipboard fa-2x"></i></a>
+              <a class="nav-item nav-link" href="{% url 'announce' %}" style="color: White;"><i class="fas fa-bars fa-2x"></i></a>
             </nav>
         {% endif %}
 	</body>
