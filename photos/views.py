@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Photo, Data, Verification, Announcement
+from .models import Photo, Data, Verification, Announcement, Member
 from .forms import PhotoForm, DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
@@ -335,6 +335,9 @@ def profile(request):
 
     if username:
         ctx['username'] = username
+
+    memberList = Member.objects.all()
+    ctx['list'] = memberList
 
     return render(request, 'profile.html', ctx)
 
