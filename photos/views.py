@@ -232,13 +232,13 @@ def main(request):
     return render(request, 'main.html', ctx)
 
 def delete_data(request, pk):
-    item = Data.objects.filter(id=pk)
-    picList = Data.objects.raw('SELECT * FROM photos_data WHERE id = %s', [pk])
+    username = request.COOKIES.get('username', '')
+    item = Data.objects.get(id=pk)
 
     ctx = {
-        'list' : picList,
         'item' : item,
         'pk' : pk,
+        'username':username,
     }
     return render(request, 'confirm_delete.html', ctx)
 
