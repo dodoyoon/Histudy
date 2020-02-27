@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from .models import Photo, Data, Verification, Announcement
-from .forms import PhotoForm, DataForm, AnnouncementForm
+from .forms import PhotoForm, DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
 from datetime import datetime, timedelta
@@ -455,3 +455,33 @@ def change_password(request):
             return render(request, 'change_password.html', ctx)
 
     return render(request, 'change_password.html', ctx)
+
+
+def add_member(request):
+    username  = request.COOKIES.get('username', '')
+
+    ctx={}
+
+    if username:
+        ctx['username'] = username
+    else:
+        return redirect('loginpage')
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+
+    if request.method == "GET":
+        form = MemberForm()
+    elif request.method == "POST":
+        form = MemberForm(request.POST, request.FILES)
+        if form.is_valid():
+            obj = form.save()
+            obj.author = username
+            obj.save()
+            messages.success(request, '멤버가 추가되었습니다.', extra_tags='alert')
+            return redirect("announce")
+
+    ctx['form'] = form
+
+    return render(request, 'profile.html', ctx)

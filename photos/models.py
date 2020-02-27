@@ -42,6 +42,22 @@ class Data(models.Model):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
         return url
 
+class Member(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    student_id = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+
+    def delete(self, *args, **kwargs):
+        self.student_id.delete()
+        self.name.delete()
+        self.email.delete()
+        super(Data, self).delete(*args, **kwargs)
+
+    def get_absolute_url(self):
+        url = reverse_lazy('detail', kwargs={'pk': self.pk})
+        return url
+
 class Announcement(models.Model):
     author = models.TextField(max_length=100)
     date = models.DateTimeField(default=timezone.now)

@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django import forms
 
-from .models import Photo, Data, Announcement
+from .models import Photo, Data, Announcement, Member
 
 
 class PhotoForm(forms.ModelForm):
@@ -27,6 +27,31 @@ class DataForm(forms.ModelForm):
     class Meta:
         model = Data
         fields = ('text', 'image', 'title')
+
+class MemberForm(forms.ModelForm):
+    student_id = forms.NumberInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': '학번을 입력해주세요.'
+        }
+    )
+
+    name = forms.CharField(label='', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': '이름을 입력해주세요.',
+            }
+        ))
+
+    email = forms.EmailField(label='', widget=forms.EmailInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Email 주소를 입력해주세요',
+            }
+        ))
+    class Meta:
+        model = Member
+        fields = ('student_id', 'name', 'email')
 
 
 class AnnouncementForm(forms.ModelForm):
