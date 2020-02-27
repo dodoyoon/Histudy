@@ -150,8 +150,8 @@ def announce(request):
     ctx={}
     if username:
         user = User.objects.get(username=username)
-        ctx = {'userobj' : user}
-        ctx = {'username' : username}
+        ctx['userobj'] = user
+        ctx['username'] = username
 
     announceList = Announcement.objects.all()
     ctx['list'] = announceList
@@ -409,6 +409,8 @@ def announce_detail(request, pk):
     }
 
     if username:
+        user = User.objects.get(username = username)
+        ctx['userobj'] = user
         ctx['username'] = username
 
     return render(request, 'announce_content.html', ctx)
