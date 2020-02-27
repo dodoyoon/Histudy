@@ -3,18 +3,13 @@
 
 <div class="container">
   {% if userobj.is_staff %}
-  <table style="width:100%">
-  <tr>
-    <th>groupNo</th>
-    <th>stuID</th>
-    <th>name</th>
-  </tr>
-
-  </table>
+  {% if username %}
+           <h2>Welcome <span style="color: #F46404;">{{ username }} </h2>
+   {% endif %}
   {% else %}
   <h2>멤버정보
       <a style="float:right;" href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
-  </h2> 
+  </h2>
   <hr>
   <table style="width:100%">
       <tr>
