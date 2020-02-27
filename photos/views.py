@@ -481,3 +481,9 @@ def confirm_delete_member(request, pk):
     item = Member.objects.get(id=pk)
     Member.objects.filter(id=pk).delete()
     return redirect('profile')
+
+
+def confirm_delete_user(request, pk):
+    user = User.objects.get(id=pk)
+    User.objects.filter(id=pk).delete()
+    return redirect('userList')

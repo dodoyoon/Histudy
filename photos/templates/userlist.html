@@ -25,8 +25,15 @@
         </th>
         <th>{{ user.num_posts }}</th>
         <th>{{ user.recent }}</th>
+        <th><a class="confirm-delete" href="{% url 'confirm_delete_user' user.pk %}">유저삭제</a></th>
     </tr>
 {% endfor %}
 </table>
+
+<script>
+    $(document).on('click', '.confirm-delete', function(){
+    return confirm('유저를 삭제하시겠습니까?');
+    })
+</script>
 
 {% endblock %}
