@@ -401,6 +401,7 @@ def announce_write(request):
             obj = form.save()
             obj.author = username
             obj.save()
+            messages.success(request, '공지가 추가되었습니다.', extra_tags='alert')
             return redirect("announce")
 
     ctx['form'] = form
