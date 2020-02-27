@@ -1,71 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		{% block title %}
-		<title>CSEE Study Group</title>
-		{% endblock %}
-		<meta charset="utf-8">
-  		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+{% extends "base_template.html" %}
+{% block content %}
+<h4>Do you really want to delete this?</h4>
+<hr>
+<div class="infinite-container m-1" id="post_container">
+    {% if item %}
+    <p><img class="img-fluid" src="{{ item.image.url }}" alt=""> </p>
+    <hr>
+    <p><b>제목</b>: {{item.title}}</p>
+    <p><b>날짜</b>: {{item.date}}</p>
+    <p><b>코드생성시간</b>: {{item.when_saved}}</p>
+    <p><b>확인코드</b>: {{item.code}}</p>
+    <p><b>내용</b>: {{item.text}}</p>
+    {% endif %}
+</div>
 
-		  <!-- Add additional CSS in static file -->
-		<script src="https://kit.fontawesome.com/bb5d018091.js" crossorigin="anonymous"></script>
+<p>
+    <a href="{% url 'confirm_delete' pk %}" class="btn btn-danger btn-sm" role="button"> DELETE </a>
+    <a href="{% url 'main' %}" class="btn btn-primary btn-sm" role="button"> CANCEL </a>
+</p>
 
-        <style>
-            #form_container {
-               border: 1px solid red;
-               border-radius: 10px;
-            }
-
-            #post_container {
-                border: 1px solid;
-                border-radius: 10px;
-            }
-
-            #post_title{
-                font-size: 130%;
-            }
-        </style>
-
-	</head>
-
-	<body>
-        <h3>Do you really want to delete this?</h3>
-        <div class="infinite-container border border-dark m-1" id="post_container">
-        {% for photo in list %}
-            <div class="infinite-item border border-primary m-3 p-3">
-                <div class="page-header">
-                    <label for="title" id="post_title"><b>작성자</b>: {{photo.author}}</label>
-                </div>
-
-                <div class="mb-1">
-                    <label for="date" id="post_title"><b>날짜</b>: {{photo.date}}</label>
-                </div>
-
-                <div class="mb-1">
-                    <label for="text" id="post_title"><b>설명</b>: {{photo.text}}</label>
-                </div>
-
-                <div class="mb-1">
-                    <label for="date" id="post_title"><b>확인코드</b>: {{photo.code}}</label>
-                </div>
-
-                <div class="mb-1">
-                    <label for="date" id="post_title"><b>사진</b></label>
-                    <p>
-            		{% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
-            	    </p>
-                </div>
-            </div>
-        {% endfor %}
-        </div>
-
-        <p>
-            <a href="{% url 'confirm_delete' pk %}" class = "btn btn-danger btn-sm" role = "button"> DELETE </a>
-            <a href="{% url 'main' %}" class = "btn btn-primary btn-sm" role = "button"> CANCEL </a>
-        </p>
-    </body>
-</html>
+{% endblock %}
