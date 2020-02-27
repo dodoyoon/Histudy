@@ -7,10 +7,20 @@
         <span style="float:right">{{post.date}}</span>
     </p>
     <hr>
-    <p style="text-align:right;">writer: {{post.author}}</p>
+    <p style="text-align:left;">writer: {{post.author}}
+        {% if user.is_staff %}
+        <a class="confirm-delete" style="float:right;" href="{% url 'confirm_delete_announce' post.pk%}">공지 삭제</a>
+        {% endif %}
+    </p>
     <hr>
     <p>{{post.content}}</p>
     {% endif %}
 </div>
+
+<script>
+    $(document).on('click', '.confirm-delete', function(){
+    return confirm('Are you sure you want to delete this?');
+    })
+</script>
 
 {% endblock %}

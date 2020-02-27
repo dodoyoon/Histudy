@@ -19,8 +19,8 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
-from photos.views import detail, announce_write, announce_detail
-from photos.views import upload, photoList, homepage, allList, main, delete_data, confirm_delete, userList, announce
+from photos.views import detail, announce_write, announce_detail, confirm_delete_announce
+from photos.views import upload, photoList, homepage, allList, main, confirm_delete, userList, announce
 from django.urls import include
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -38,8 +38,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('', main, name='main'),
     path('', include('photos.urls')),
-    url(r'^delete_data/(?P<pk>\d+)$', delete_data, name='delete_data'),
     url(r'^delete_confirm/(?P<pk>\d+)$', confirm_delete, name='confirm_delete'),
+    url(r'^announce_delete_confirm/(?P<pk>\d+)$', confirm_delete_announce, name='confirm_delete_announce'),
     url(r'^list/(?P<user>\w+)$', photoList, name='list'),
 ]
 

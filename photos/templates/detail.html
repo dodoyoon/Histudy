@@ -12,8 +12,14 @@
     <p><b>확인코드</b>: {{post.code}}</p>
     <p><b>내용</b>: {{post.text}}</p>
     <p>
-        <a href="{% url 'delete_data' post.pk %}" class = "btn btn-danger btn-sm" role = "button">게시물삭제</a>
+        <a href="{% url 'confirm_delete' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>
     </p>
 </div>
+
+<script>
+    $(document).on('click', '.confirm-delete', function(){
+    return confirm('Are you sure you want to delete this?');
+    })
+</script>
 
 {% endblock %}

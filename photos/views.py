@@ -231,17 +231,6 @@ def main(request):
 
     return render(request, 'main.html', ctx)
 
-def delete_data(request, pk):
-    username = request.COOKIES.get('username', '')
-    item = Data.objects.get(id=pk)
-
-    ctx = {
-        'item' : item,
-        'pk' : pk,
-        'username':username,
-    }
-    return render(request, 'confirm_delete.html', ctx)
-
 def confirm_delete(request, pk):
     item = Data.objects.get(id=pk)
     username = item.author
@@ -253,6 +242,14 @@ def confirm_delete(request, pk):
 
     Data.objects.filter(id=pk).delete()
     return redirect('main')
+
+def confirm_delete_announce(request, pk):
+    item = Announcement.objects.get(id=pk)
+    username = item.author
+    user = User.objects.get(username=username)
+
+    Announcement.objects.filter(id=pk).delete()
+    return redirect('announce')
 
 
 # For verification popup
