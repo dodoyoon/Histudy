@@ -6,16 +6,14 @@
     <p><img class="img-fluid" src="{{ post.image.url }}" alt=""> </p>
     {% endif %}
     <hr>
-    <p><b>제목</b>: {{post.title}}
-        <p>
-        <a style="float: right" href="{% url 'delete_data' post.pk %}" class = "btn btn-danger btn-sm" role = "button">게시물삭제</a>
-        </p>
-    </p>
+    <p><b>제목</b>: {{post.title}}</p>
     <p><b>날짜</b>: {{post.date}}</p>
     <p><b>코드생성시간</b>: {{post.when_saved}}</p>
     <p><b>확인코드</b>: {{post.code}}</p>
     <p><b>내용</b>: {{post.text}}</p>
+    <p>
+        <a href="{% url 'delete_data' post.pk %}" class = "btn btn-danger btn-sm" role = "button">게시물삭제</a>
+    </p>
 </div>
-
 
 {% endblock %}
