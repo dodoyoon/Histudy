@@ -2,9 +2,8 @@
 {% block content %}
 
 <div class="container">
-  <table style="width:100%">
-
   {% if userobj.is_staff %}
+  <table style="width:100%">
   <tr>
     <th>groupNo</th>
     <th>stuID</th>
@@ -13,7 +12,9 @@
 
   </table>
   {% else %}
-  <h2>멤버정보</h2> <a href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
+  <h2>멤버정보
+      <a style="float:right;" href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
+  </h2> 
   <hr>
   <table style="width:100%">
       <tr>
