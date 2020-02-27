@@ -16,6 +16,7 @@
           <th>학번</th>
           <th>이름</th>
           <th>Email</th>
+          <th></th>
       </tr>
   {% for member in list %}
       <tr>
@@ -24,11 +25,18 @@
               {{ member.name }}
           </th>
           <th> {{ member.email }}</th>
+          <th><a class="confirm-delete" href="{% url 'confirm_delete_member' member.pk %}">삭제</a></th>
       </tr>
   {% endfor %}
   </table>
 
   {% endif %}
 </div>
+
+<script>
+    $(document).on('click', '.confirm-delete', function(){
+    return confirm('Are you sure you want to delete this member?');
+    })
+</script>
 
 {% endblock %}

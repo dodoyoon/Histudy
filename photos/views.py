@@ -20,7 +20,6 @@ from django.contrib import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-
 def detail(request, pk):
     # photo = Photo.objects.get(pk=pk)
     data = get_object_or_404(Data, pk=pk)
@@ -36,7 +35,6 @@ def detail(request, pk):
     return render(request, 'detail.html', ctx)
 
 from tablib import Dataset
-
 @csrf_exempt
 def upload(request):
     username = request.COOKIES.get('username', '')
@@ -50,11 +48,9 @@ def upload(request):
     else:
         return redirect('main')
 
-
     if request.method == 'POST':
         dataset = Dataset()
         new_usergroup = request.FILES['myfile']
-
         imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
 
         for data in imported_data:
@@ -64,7 +60,6 @@ def upload(request):
             User.objects.create_user(username=user_id,
                                  email=user_email,
                                  password=user_pw)
-
         messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
 
 
@@ -168,7 +163,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def main(request):
     username  = request.COOKIES.get('username', '')
-
     ctx={}
 
     if username:
@@ -231,7 +225,7 @@ def main(request):
 
     return render(request, 'main.html', ctx)
 
-def confirm_delete(request, pk):
+def confirm_delete_data(request, pk):
     item = Data.objects.get(id=pk)
     username = item.author
     user = User.objects.get(username=username)
@@ -321,12 +315,10 @@ def loginpage(request):
                 return render(request, 'login.html', {})
         else:
             messages.warning(request, '다시 로그인 해주세요.', extra_tags='alert')
-
     return render(request, 'login.html', {})
 
 def profile(request):
     username = request.COOKIES.get('username', '')
-
     ctx={}
 
     if username:
@@ -459,7 +451,6 @@ def change_password(request):
 
 def add_member(request):
     username  = request.COOKIES.get('username', '')
-
     ctx={}
 
     if username:
@@ -485,3 +476,8 @@ def add_member(request):
     ctx['form'] = form
 
     return render(request, 'member.html', ctx)
+
+def confirm_delete_member(request, pk):
+    item = Member.objects.get(id=pk)
+    Member.objects.filter(id=pk).delete()
+    return redirect('profile')
