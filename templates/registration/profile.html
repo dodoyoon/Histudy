@@ -26,7 +26,7 @@
               {{ member.name }}
           </th>
           <th> {{ member.email }}</th>
-          <th><a class="confirm-delete" href="{% url 'confirm_delete_member' member.pk %}">삭제</a></th>
+          <th><a class="confirm-delete" href="{% url 'confirm_delete_member' member.pk %}">멤버삭제</a></th>
       </tr>
   {% endfor %}
   </table>
