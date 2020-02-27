@@ -5,6 +5,7 @@
     {% if post %}
     <p><img class="img-fluid" src="{{ post.image.url }}" alt=""> </p>
     {% endif %}
+    <hr>
     <p><b>제목</b>: {{post.title}}
         <p>
         <a style="float: right" href="{% url 'delete_data' post.pk %}" class = "btn btn-danger btn-sm" role = "button">삭제</a>
