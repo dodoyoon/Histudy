@@ -18,7 +18,8 @@
 <style>
 </style>
 
-<div class="container-fluid mb-4" id="form_container">
+<h2>Upload</h2>
+<div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
     <br>
 
     <form
@@ -43,6 +44,7 @@
 </div>
 
 <div class="infinite-container m-1" id="post_container">
+    <h2>Post</h2>
 {% for photo in pics %}
     <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
         <p style="text-align:left">{{photo.date}}
