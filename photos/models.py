@@ -76,20 +76,6 @@ class Announcement(models.Model):
         return url
 
 
-class Verification(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    code = models.IntegerField(null=True, blank=True)
-    when_saved = models.DateTimeField(null=True, blank=True)
-
-@receiver(post_save, sender=User)
-def create_user_verification(sender, instance, created, **kwargs):
-    if created:
-        Verification.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_verification(sender, instance, **kwargs):
-    instance.verification.save()
-
 class UserInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.TextField()

@@ -30,7 +30,6 @@
     >
         {% csrf_token %}
         {{ form.image }}
-        <a href="#" onclick="window.open('popup', 'window팝업', 'width=300, height=300, menubar=no, status=no, toolbar=no');" class="btn btn-outline-primary">코드생성</a>
 
         <br><br>
         {{ form.title }}
@@ -48,7 +47,6 @@
 {% for photo in pics %}
     <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
         <p style="text-align:left">{{photo.date}}
-            <span style="float: right">{{photo.code}}</span>
         </p>
         <p>
             <a href="{{photo.get_absolute_url}}">

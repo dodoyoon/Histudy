@@ -8,8 +8,6 @@
     <hr>
     <p><b>제목</b>: {{post.title}}</p>
     <p><b>날짜</b>: {{post.date}}</p>
-    <p><b>코드생성시간</b>: {{post.when_saved}}</p>
-    <p><b>확인코드</b>: {{post.code}}</p>
     <p><b>내용</b>: {{post.text|linebreaks}}</p>
     <p>
         <a href="{% url 'confirm_delete_data' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>
@@ -18,7 +16,7 @@
 
 <script>
     $(document).on('click', '.confirm-delete', function(){
-    return confirm('Are you sure you want to delete this?');
+    return confirm('게시물을 삭제하시겠습니까?');
     })
 </script>
 

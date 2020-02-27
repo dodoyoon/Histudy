@@ -5,13 +5,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Photo, Data, Verification, Announcement, Member
+from .models import Photo, Data, Announcement, Member
 from .forms import PhotoForm, DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
-from datetime import datetime, timedelta
-from django.utils import timezone
-import json, random
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
@@ -89,18 +86,6 @@ def photoList(request, user):
 
     return render(request, 'list.html', ctx)
 
-def allList(request):
-    username = request.COOKIES.get('username', '')
-    picList = Photo.objects.raw('SELECT * FROM photos_photo')
-
-    ctx = {
-        'list' : picList,
-    }
-
-    if username:
-        ctx['username'] = username
-
-    return render(request, 'list.html', ctx)
 
 from django.db.models import Count, Max
 from django.db.models.expressions import RawSQL
@@ -127,22 +112,6 @@ def userList(request):
 
     return render(request, 'userlist.html', ctx)
 
-def homepage(request):
-    username = request.COOKIES.get('username', '')
-    if username:
-        user = User.objects.get(username=username)
-
-    memberList = Photo.objects.raw('SELECT * FROM photos_usergroup')
-
-    ctx = {
-        'userobj' : user,
-        'list' : memberList,
-    }
-
-    if username:
-        ctx = {'username' : username}
-
-    return render(request, 'home.html', ctx)
 
 def announce(request):
     username = request.COOKIES.get('username', '')
@@ -183,28 +152,19 @@ def main(request):
     elif request.method == "POST":
         form = DataForm(request.POST, request.FILES)
         if form.is_valid():
-            if user.verification.code is None:
-                messages.warning(request, '게시물을 등록에 실패하였습니다. 코드를 생성해주세요.', extra_tags='alert')
-            else:
-                obj = form.save()
-                obj.user = user
-                obj.author = username
+            obj = form.save()
+            obj.user = user
+            obj.author = username
 
-                if user.verification.code is not None:
-                    obj.code = user.verification.code
-                    obj.when_saved = user.verification.when_saved
-                    user.verification.code = None
-                    user.verification.when_saved = None
+            num = user.userinfo.num_posts
+            user.userinfo.num_posts = num + 1
+            user.userinfo.most_recent = obj.date
+            user.userinfo.name = username
+            user.save()
 
-                num = user.userinfo.num_posts
-                user.userinfo.num_posts = num + 1
-                user.userinfo.most_recent = obj.date
-                user.userinfo.name = username
-                user.save()
-
-                obj.save()
-                messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
-                return HttpResponseRedirect(reverse('main'))
+            obj.save()
+            messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
+            return HttpResponseRedirect(reverse('main'))
 
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
@@ -245,52 +205,6 @@ def confirm_delete_announce(request, pk):
     Announcement.objects.filter(id=pk).delete()
     return redirect('announce')
 
-
-# For verification popup
-def popup(request):
-    ctx = {}
-    username = request.COOKIES.get('username', '')
-
-    if username:
-        user = User.objects.get(username=username)
-        orig, created = Verification.objects.get_or_create(user=user)
-
-        now_time = timezone.localtime()
-        all_pins = [format(i, '04') for i in range(1000, 10000)]
-        possible = [i for i in all_pins if len(set(i)) > 3]
-
-
-        if user.verification.when_saved is None:
-            user.verification.when_saved = now_time
-            verify_code = random.choice(possible)
-            user.verification.code = verify_code
-            user.save()
-            ctx['code'] = verify_code
-
-
-        save_time = user.verification.when_saved
-
-        time_diff = now_time - save_time
-
-        if (time_diff.seconds)/3600 >= 1:
-            verify_code = random.choice(possible)
-            user.verification.code = verify_code
-            user.verification.when_saved = now_time
-            user.save()
-            ctx['code'] = verify_code
-        else:
-            if user.verification.code is None:
-                verify_code = random.choice(possible)
-                user.verification.code = verify_code
-                user.verification.when_saved = now_time
-                user.save()
-                ctx['code'] = verify_code
-            else:
-                ctx['code'] = user.verification.code
-
-        return render(request, 'popup.html', ctx)
-    else:
-        return redirect("main")
 
 # User Login Customization
 
