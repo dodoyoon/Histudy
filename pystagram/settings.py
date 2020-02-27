@@ -160,3 +160,9 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+USE_L10N = False
+
+DATE_FORMAT = 'Y-m-d'
+
+DATETIME_FORMAT = 'Y-m-d H:i:s'
