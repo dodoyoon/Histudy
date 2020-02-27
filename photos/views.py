@@ -480,8 +480,8 @@ def add_member(request):
             obj.author = username
             obj.save()
             messages.success(request, '멤버가 추가되었습니다.', extra_tags='alert')
-            return redirect("announce")
+            return redirect("profile")
 
     ctx['form'] = form
 
-    return render(request, 'profile.html', ctx)
+    return render(request, 'member.html', ctx)

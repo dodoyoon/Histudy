@@ -29,7 +29,7 @@ class DataForm(forms.ModelForm):
         fields = ('text', 'image', 'title')
 
 class MemberForm(forms.ModelForm):
-    student_id = forms.NumberInput(
+    student_id = forms.TextInput(
         attrs={
             'class': 'form-control',
             'placeholder': '학번을 입력해주세요.'

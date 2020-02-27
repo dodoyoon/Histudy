@@ -1,32 +1,13 @@
 {% extends "base_template.html" %}
 {% block content %}
 
-<div class="container-fluid mb-4" id="form_container">
-    <br>
-
-    <form
-        method="POST"
-        action=""
-        enctype="multipart/form-data"
-        id="memberform"
-    >
-        {% csrf_token %}
-        {{ form.student_id }}
-        {{ form.name }}
-        {{ form.email }}
-
-        <p>
-            <br>
-            <button id='submit' type="submit" class="btn-dark btn-block">+</button>
-        </p>
-    </form>
-</div>
-
 <div class="container">
   {% if username %}
           <h2>Welcome <span style="color: #F46404;">{{ username }} </h2>
   {% endif %}
   <table style="width:100%">
+
+  <a href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
 
   {% if userobj.is_staff %}
   <tr>
