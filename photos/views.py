@@ -210,6 +210,7 @@ def main(request):
 
                 obj.save()
                 messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
+                return HttpResponseRedirect(reverse('main'))
 
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
