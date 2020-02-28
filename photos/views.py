@@ -203,6 +203,7 @@ def confirm_delete_announce(request, pk):
     user = User.objects.get(username=username)
 
     Announcement.objects.filter(id=pk).delete()
+    messages.success(request, '공지가 삭제되었습니다.', extra_tags='alert')
     return redirect('announce')
 
 
