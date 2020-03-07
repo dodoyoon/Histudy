@@ -29,12 +29,12 @@ class DataForm(forms.ModelForm):
         fields = ('text', 'image', 'title')
 
 class MemberForm(forms.ModelForm):
-    student_id = forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '학번을 입력해주세요.'
-        }
-    )
+    student_id = forms.IntegerField(label='', widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '학번을 입력해주세요.'
+            }
+        ))
 
     name = forms.CharField(label='', widget=forms.TextInput(
         attrs={
