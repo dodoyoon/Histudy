@@ -50,23 +50,71 @@ def upload(request):
         new_usergroup = request.FILES['myfile']
         imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
 
+        group_no = "1"
+        group_list = []
         for data in imported_data:
-            user_id = "group"+data[0]
-            user_pw = data[1]
-            user_email = data[2]
+            if group_no == data[0]:
+                group_list.append(data)
+
+            else:
+                group_list.sort(key=lambda tup: tup[1])
+
+
+
+                is_first = 1
+
+                for elem in group_list:
+                    if is_first:
+                        user_id = "group"+elem[0]
+                        user_pw = elem[1]
+                        user_email = elem[2]
+                        is_first = 0
+
+                    if User.objects.filter(username=user_id).exists():
+                        member_student_id = elem[1]
+                        member_name = elem[3]
+                        member_email = elem[2]
+                        Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
+                    else:
+                        User.objects.create_user(username=user_id,
+                                            email=user_email,
+                                            password=user_pw)
+                        member_student_id = elem[1]
+                        member_name = elem[3]
+                        member_email = elem[2]
+                        Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
+
+
+                group_list.clear()
+                group_no = data[0]
+                group_list.append(data)
+
+
+        is_first = 1
+
+        for elem in group_list:
+            if is_first:
+                user_id = "group"+elem[0]
+                user_pw = elem[1]
+                user_email = elem[2]
+                is_first = 0
+
             if User.objects.filter(username=user_id).exists():
-                member_student_id = data[1]
-                member_name = data[3]
-                member_email = data[2]
+                member_student_id = elem[1]
+                member_name = elem[3]
+                member_email = elem[2]
                 Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
             else:
                 User.objects.create_user(username=user_id,
                                     email=user_email,
                                     password=user_pw)
-                member_student_id = data[1]
-                member_name = data[3]
-                member_email = data[2]
+                member_student_id = elem[1]
+                member_name = elem[3]
+                member_email = elem[2]
                 Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
+
+        group_list.clear()
+
         messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
 
 
