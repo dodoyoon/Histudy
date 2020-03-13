@@ -47,6 +47,7 @@ class Member(models.Model):
     student_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    attendance = models.IntegerField(default=0)
 
     def delete(self, *args, **kwargs):
         self.student_id.delete()
