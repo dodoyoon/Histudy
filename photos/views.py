@@ -298,7 +298,9 @@ def profile(request):
     if username:
         ctx['username'] = username
 
-    memberList = Member.objects.filter(user=user)
+    memberList = Member.objects.filter(user=user).annotate(
+        num_posts = Count('data'),
+    )
     ctx['list'] = memberList
 
     return render(request, 'profile.html', ctx)

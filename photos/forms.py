@@ -24,15 +24,16 @@ class DataForm(forms.ModelForm):
 
     participator = forms.ModelMultipleChoiceField(
         widget = forms.CheckboxSelectMultiple,
-        queryset = Member.objects.all()
+        queryset = Member.objects.none()
     )
 
     class Meta:
         model = Data
         fields = ('text', 'participator', 'image', 'title')
 
-    def __init__(self, user=None, **kwargs):
-        super(DataForm, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(DataForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['participator'].queryset = Member.objects.filter(user=user)
 

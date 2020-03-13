@@ -16,6 +16,7 @@
       <tr>
           <th>학번</th>
           <th>이름</th>
+          <th>출석횟수</th>
           <th></th>
       </tr>
   {% for member in list %}
@@ -24,6 +25,7 @@
           <th>
               {{ member.name }}
           </th>
+          <th> {{ member.num_posts }} </th>
           <th><a class="confirm-delete" href="{% url 'confirm_delete_member' member.pk %}">멤버삭제</a></th>
       </tr>
   {% endfor %}
