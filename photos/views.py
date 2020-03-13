@@ -54,9 +54,19 @@ def upload(request):
             user_id = "group"+data[0]
             user_pw = data[1]
             user_email = data[2]
-            User.objects.create_user(username=user_id,
-                                 email=user_email,
-                                 password=user_pw)
+            if User.objects.filter(username=user_id).exists():
+                member_student_id = data[1]
+                member_name = data[3]
+                member_email = data[2]
+                Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
+            else:
+                User.objects.create_user(username=user_id,
+                                    email=user_email,
+                                    password=user_pw)
+                member_student_id = data[1]
+                member_name = data[3]
+                member_email = data[2]
+                Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
         messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
 
 
@@ -243,7 +253,7 @@ def profile(request):
     if username:
         ctx['username'] = username
 
-    memberList = Member.objects.all()
+    memberList = Member.objects.filter(user=user)
     ctx['list'] = memberList
 
     return render(request, 'profile.html', ctx)
