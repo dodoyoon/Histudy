@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from .models import Data, Announcement, Member
-from .forms import DataForm, AnnouncementForm, MemberForm
+from .forms import DataForm, AnnouncementForm, MemberForm, MemberAttendingForm
 
 from django.views.generic import ListView
 
@@ -32,7 +32,7 @@ def detail(request, pk):
 
 from tablib import Dataset
 @csrf_exempt
-def upload(request):
+def csv_upload(request):
     username = request.COOKIES.get('username', '')
     ctx = {}
 
@@ -57,8 +57,6 @@ def upload(request):
 
             else:
                 group_list.sort(key=lambda tup: tup[1])
-
-
 
                 is_first = 1
 
@@ -120,7 +118,7 @@ def upload(request):
     if username:
         ctx['username'] = username
 
-    return render(request, 'upload.html', ctx)
+    return render(request, 'csv_upload.html', ctx)
 
 def photoList(request, user):
     username = request.COOKIES.get('username', '')

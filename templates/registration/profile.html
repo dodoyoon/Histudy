@@ -6,7 +6,7 @@
     <h4>관리자 페이지입니다.</h4>
     <hr>
     <p><a class="" href="{% url 'signup' %}">Create New User</a></p>
-	<p><a class="" href="{% url 'upload' %}">Import User</a></p>
+	<p><a class="" href="{% url 'csv_upload' %}">Import User</a></p>
   {% else %}
   <h2>멤버정보
       <a style="float:right;" href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>

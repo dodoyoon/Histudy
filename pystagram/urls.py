@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from photos.views import detail, announce_write, announce_detail, confirm_delete_announce, confirm_delete_member, confirm_delete_user
-from photos.views import upload, photoList, main, confirm_delete_data, userList, announce
+from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce
 from django.urls import include
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -28,7 +28,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     url(r'^photos/(?P<pk>[0-9]+)/$', detail, name='detail'),
-    url(r'^photos/upload/$', upload, name='upload'),
+    url(r'^photos/csv_upload/$', csv_upload, name='csv_upload'),
     url(r'^user/', userList, name='userList'),
     url(r'^announce/write/$', announce_write, name='announce_write'),
     url(r'^announce/(?P<pk>[0-9]+)/$', announce_detail, name='announce_detail'),
