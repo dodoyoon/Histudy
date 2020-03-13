@@ -16,6 +16,7 @@
             <th>most recent</th>
         </tr>
     {% for user in list %}
+        {% if not user.is_staff %}
         <tr>
             <th>
                 {{ forloop.counter }}
@@ -35,6 +36,7 @@
             <th>{{ user.recent }}</th>
             <th><a class="confirm-delete" href="{% url 'confirm_delete_user' user.pk %}">유저삭제</a></th>
         </tr>
+        {% endif %}
     {% endfor %}
     </table>
 </div>
