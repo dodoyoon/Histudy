@@ -23,7 +23,13 @@
       <tr>
           <th> {{ member.student_id }} </th>
           <th>
-              {{ member.name }}
+            {% if member.num_posts > 9 %}
+            <font color="green">
+            {{ member.name }}
+            </font>
+            {% else %}
+            {{ member.name }}
+            {% endif %}
           </th>
           <th> {{ member.num_posts }} </th>
           <th><a class="confirm-delete" href="{% url 'confirm_delete_member' member.pk %}">멤버삭제</a></th>

@@ -20,14 +20,16 @@ from django.contrib import messages
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
     username = request.COOKIES.get('username', '')
+    ctx={}
+
+    if username:
+        ctx['username'] = username
+    else:
+        return redirect('loginpage')
 
     ctx = {
         'post': data,
     }
-
-    if username:
-        ctx['username'] = username
-
     return render(request, 'detail.html', ctx)
 
 from tablib import Dataset
@@ -42,7 +44,7 @@ def csv_upload(request):
         if user.is_staff is False:
             return redirect('main')
     else:
-        return redirect('main')
+        return redirect('loginpage')
 
     if request.method == 'POST':
         dataset = Dataset()
@@ -151,7 +153,7 @@ def userList(request):
         if user.is_staff is False:
             return redirect('main')
     else:
-        return redirect('main')
+        return redirect('loginpage')
 
     userlist = User.objects.all().annotate(
         num_posts = Count('data'),
@@ -176,6 +178,8 @@ def announce(request):
         user = User.objects.get(username=username)
         ctx['userobj'] = user
         ctx['username'] = username
+    else:
+        return redirect('loginpage')
 
     announceList = Announcement.objects.all()
     ctx['list'] = announceList
@@ -241,6 +245,14 @@ def main(request):
     return render(request, 'main.html', ctx)
 
 def confirm_delete_data(request, pk):
+    loginname = request.COOKIES.get('username', '')
+    ctx={}
+
+    if loginname:
+        pass
+    else:
+        return redirect('loginpage')
+
     item = Data.objects.get(id=pk)
     username = item.author
     user = User.objects.get(username=username)
@@ -253,6 +265,14 @@ def confirm_delete_data(request, pk):
     return redirect('main')
 
 def confirm_delete_announce(request, pk):
+    loginname  = request.COOKIES.get('username', '')
+    ctx={}
+
+    if loginname:
+        pass
+    else:
+        return redirect('loginpage')
+
     item = Announcement.objects.get(id=pk)
     username = item.author
     user = User.objects.get(username=username)
@@ -294,6 +314,8 @@ def profile(request):
     if username:
         user = User.objects.get(username=username)
         ctx['userobj'] = user
+    else:
+        return redirect('loginpage')
 
     if username:
         ctx['username'] = username
@@ -383,6 +405,8 @@ def announce_detail(request, pk):
         user = User.objects.get(username = username)
         ctx['userobj'] = user
         ctx['username'] = username
+    else:
+        return redirect('loginpage')
 
     return render(request, 'announce_content.html', ctx)
 
