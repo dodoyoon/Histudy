@@ -8,21 +8,6 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-class Photo(models.Model):
-    image = models.ImageField(upload_to='%Y/%m/%d/orig')
-    content = models.TextField(max_length=500, null=True, blank=True)
-    studyDate = models.DateField(default=datetime.date.today)
-    author = models.TextField(max_length=100, null=True, blank=True)
-
-    def delete(self, *args, **kwargs):
-        self.image.delete()
-        self.filtered_image.delete()
-        super(Photo, self).delete(*args, **kwargs)
-
-    def get_absolute_url(self):
-        url = reverse_lazy('detail', kwargs={'pk': self.pk})
-        return url
-
 class Data(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     image = models.ImageField(upload_to='%Y/%m/%d/orig')

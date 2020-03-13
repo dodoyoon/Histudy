@@ -2,13 +2,7 @@ from __future__ import unicode_literals
 
 from django import forms
 
-from .models import Photo, Data, Announcement, Member
-
-
-class PhotoForm(forms.ModelForm):
-    class Meta:
-        model = Photo
-        fields = ('studyDate', 'image', 'content',)
+from .models import Data, Announcement, Member
 
 class DataForm(forms.ModelForm):
     title = forms.CharField(label='', widget=forms.TextInput(

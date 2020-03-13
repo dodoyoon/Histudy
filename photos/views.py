@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Photo, Data, Announcement, Member
-from .forms import PhotoForm, DataForm, AnnouncementForm, MemberForm
+from .models import Data, Announcement, Member
+from .forms import DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
 
@@ -18,7 +18,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 def detail(request, pk):
-    # photo = Photo.objects.get(pk=pk)
     data = get_object_or_404(Data, pk=pk)
     username = request.COOKIES.get('username', '')
 
