@@ -48,7 +48,7 @@ def upload(request):
     if request.method == 'POST':
         dataset = Dataset()
         new_usergroup = request.FILES['myfile']
-        imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
+        imported_data = dataset.load(new_usergroup.read().decode('utf-16'), format='csv')
 
         group_no = "1"
         group_list = []
