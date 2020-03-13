@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from .models import Data, Announcement, Member
-from .forms import DataForm, AnnouncementForm, MemberForm, MemberAttendingForm
+from .forms import DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
 
