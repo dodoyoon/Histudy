@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django import forms
 
+from django.contrib.auth.models import User
 from .models import Data, Announcement, Member
 
 class DataForm(forms.ModelForm):
@@ -18,9 +19,15 @@ class DataForm(forms.ModelForm):
             'placeholder': '공부한 내용을 써주세요 ʕ•ﻌ•ʔ ♡',
             }
         ))
+
+    participator = forms.ModelMultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple,
+        queryset = Member.objects.filter(user = User.objects.get(username="group49"))
+    )
+
     class Meta:
         model = Data
-        fields = ('text', 'image', 'title')
+        fields = ('text', 'participator', 'image', 'title')
 
 class MemberForm(forms.ModelForm):
     student_id = forms.IntegerField(label='', widget=forms.NumberInput(

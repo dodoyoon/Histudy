@@ -8,25 +8,6 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-class Data(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
-    image = models.ImageField(upload_to='%Y/%m/%d/orig')
-    title = models.CharField(max_length=30, blank=True, null=True)
-    text = models.TextField(max_length=500, null=True, blank=True)
-    date = models.DateTimeField(default=timezone.now)
-    author = models.TextField(max_length=100, null=True, blank=True)
-    code = models.IntegerField(blank=True, null=True)
-    when_saved = models.DateTimeField(null=True, blank=True)
-
-    def delete(self, *args, **kwargs):
-        self.image.delete()
-        self.filtered_image.delete()
-        super(Data, self).delete(*args, **kwargs)
-
-    def get_absolute_url(self):
-        url = reverse_lazy('detail', kwargs={'pk': self.pk})
-        return url
-
 class Member(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     student_id = models.IntegerField(blank=True, null=True)
@@ -40,9 +21,34 @@ class Member(models.Model):
         self.email.delete()
         super(Data, self).delete(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
+
     def get_absolute_url(self):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
         return url
+
+class Data(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    image = models.ImageField(upload_to='%Y/%m/%d/orig')
+    title = models.CharField(max_length=30, blank=True, null=True)
+    text = models.TextField(max_length=500, null=True, blank=True)
+    date = models.DateTimeField(default=timezone.now)
+    author = models.TextField(max_length=100, null=True, blank=True)
+    participator = models.ManyToManyField(Member)
+    code = models.IntegerField(blank=True, null=True)
+    when_saved = models.DateTimeField(null=True, blank=True)
+
+    def delete(self, *args, **kwargs):
+        self.image.delete()
+        self.filtered_image.delete()
+        super(Data, self).delete(*args, **kwargs)
+
+    def get_absolute_url(self):
+        url = reverse_lazy('detail', kwargs={'pk': self.pk})
+        return url
+
+
 
 class Announcement(models.Model):
     author = models.TextField(max_length=100)
