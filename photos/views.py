@@ -203,9 +203,9 @@ def main(request):
         return redirect('loginpage')
 
     if request.method == "GET":
-        form = DataForm()
+        form = DataForm(user=request.user)
     elif request.method == "POST":
-        form = DataForm(request.POST, request.FILES)
+        form = DataForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             obj = form.save()
             obj.user = user
@@ -440,6 +440,7 @@ def add_member(request):
         if form.is_valid():
             obj = form.save()
             obj.author = username
+            obj.user = user
             obj.save()
             messages.success(request, '멤버가 추가되었습니다.', extra_tags='alert')
             return redirect("profile")
