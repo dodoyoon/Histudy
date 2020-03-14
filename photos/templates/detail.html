@@ -9,6 +9,13 @@
     <p><b>제목</b>: {{post.title}}</p>
     <p><b>날짜</b>: {{post.date}}</p>
     <p><b>내용</b>: {{post.text|linebreaks}}</p>
+
+    <p><b>참여 멤버</b></p>
+    <ul>
+        {% for member in memberList %}
+            <li>{{member}}</li>
+        {% endfor %}
+    </ul>
     <p>
         <a href="{% url 'confirm_delete_data' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>
     </p>

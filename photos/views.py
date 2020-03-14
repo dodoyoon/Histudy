@@ -39,9 +39,12 @@ def detail(request, pk):
         ctx['userobj'] = user
 
 
+    memberList = Member.objects.filter(data__pk=pk)
+
     ctx = {
         'post': data,
         'username': username,
+        'memberList': memberList,
     }
 
     return render(request, 'detail.html', ctx)
