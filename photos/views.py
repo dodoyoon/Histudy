@@ -484,6 +484,8 @@ def add_member(request):
             obj.save()
             messages.success(request, '멤버가 추가되었습니다.', extra_tags='alert')
             return redirect("profile")
+        else:
+            messages.warning(request, '학번을 확인해주세요', extra_tags='alert')
 
     ctx['form'] = form
 
