@@ -9,30 +9,44 @@ from .models import Data, Announcement, Member
 from .forms import DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
-
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib import auth
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+
+from django.db.models import Count, Max
+from django.db.models.expressions import RawSQL
+
+#CSV import
+from tablib import Dataset
+
+# for Infinite Scroll
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
     username = request.COOKIES.get('username', '')
     ctx={}
 
-    if username:
-        ctx['username'] = username
-    else:
+    if not username:
         return redirect('loginpage')
+
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+
 
     ctx = {
         'post': data,
+        'username': username,
     }
+
     return render(request, 'detail.html', ctx)
 
-from tablib import Dataset
+
 @csrf_exempt
 def csv_upload(request):
     username = request.COOKIES.get('username', '')
@@ -144,8 +158,7 @@ def photoList(request, user):
     return render(request, 'list.html', ctx)
 
 
-from django.db.models import Count, Max
-from django.db.models.expressions import RawSQL
+
 def userList(request):
     username = request.COOKIES.get('username', '')
     if username:
@@ -186,8 +199,6 @@ def announce(request):
 
     return render(request, 'announce.html', ctx)
 
-# for Infinite Scroll
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def main(request):
     username  = request.COOKIES.get('username', '')

@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from .models import Data, Announcement, Member
 
 class DataForm(forms.ModelForm):
-    
-
     title = forms.CharField(label='', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
@@ -23,17 +21,19 @@ class DataForm(forms.ModelForm):
         ))
 
     participator = forms.ModelMultipleChoiceField(
-        widget = forms.CheckboxSelectMultiple,
-        queryset = Member.objects.none()
+        widget = forms.CheckboxSelectMultiple(attrs={
+            # 'class': 'form-control',
+            # 'disabled': 'disabled', # disabled works
+        }),
+        queryset = Member.objects.all()
     )
 
     class Meta:
         model = Data
         fields = ('text', 'participator', 'image', 'title')
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(DataForm, self).__init__(*args, **kwargs)
+    def __init__(self, user=None, **kwargs):
+        super(DataForm, self).__init__(**kwargs)
         if user:
             self.fields['participator'].queryset = Member.objects.filter(user=user)
 
