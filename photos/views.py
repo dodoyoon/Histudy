@@ -238,6 +238,8 @@ def main(request):
             obj.save()
             messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
             return HttpResponseRedirect(reverse('main'))
+        else:
+            messages.warning(request, '참여멤버를 지정해주세요.', extra_tags='alert')
 
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
@@ -485,7 +487,7 @@ def add_member(request):
             messages.success(request, '멤버가 추가되었습니다.', extra_tags='alert')
             return redirect("profile")
         else:
-            messages.warning(request, '학번을 확인해주세요', extra_tags='alert')
+            messages.warning(request, '학번을 확인해주세요.', extra_tags='alert')
 
     ctx['form'] = form
 

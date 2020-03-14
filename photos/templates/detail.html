@@ -1,22 +1,26 @@
 {% extends "base_template.html" %}
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
     {% if post %}
-    <p><img class="img-fluid" src="{{ post.image.url }}" alt=""> </p>
+    <p><img class="img-fluid mt-3" src="{{ post.image.url }}" alt=""> </p>
     {% endif %}
     <hr>
     <p><b>제목</b>: {{post.title}}</p>
+    <hr>
     <p><b>날짜</b>: {{post.date}}</p>
+    <hr>
     <p><b>내용</b>: {{post.text|linebreaks}}</p>
 
+    <hr>
     <p><b>참여 멤버</b></p>
     <ul>
         {% for member in memberList %}
             <li>{{member}}</li>
         {% endfor %}
     </ul>
-    <p>
+    <hr>
+    <p class="d-flex flex-row-reverse">
         <a href="{% url 'confirm_delete_data' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>
     </p>
 </div>
