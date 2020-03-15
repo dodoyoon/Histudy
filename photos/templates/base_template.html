@@ -33,7 +33,11 @@
 			<div class="navbar justify-content-start">
 				<a class="navbar-brand" href="{% url 'main' %}">
 					<font color=white>
+						{% if username %}
 						<p class="h4">{{ username }}</p>
+						{% else %}
+						<p class="h4">CSEE Study Group</p>
+						{% endif %}
 					</font>
 				</a>
 			</div>
