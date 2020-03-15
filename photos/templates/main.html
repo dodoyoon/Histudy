@@ -29,11 +29,13 @@
         id="dataform"
     >
         {% csrf_token %}
+        <h5>이미지 업로드</h5>
         {{ form.image }}
         <hr>
+        <h5>참여 멤버</h5>
         {{ form.participator }}
         <hr>
-        <br>
+        <h5>보고서 작성</h5>
         {{ form.title }}
         {{ form.text }}
 

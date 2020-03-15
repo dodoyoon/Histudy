@@ -3,14 +3,12 @@
 
 <div class="container-fluid" >
     {% if post %}
-    <p style="text-align:left;" class="mt-2"><b>제목</b>: {{post.title}}
-    </p>
+    <div class="d-flex justify-content-between">
+    <p><b>제목</b>: {{post.title}}</p>
+    <p><b>날짜</b>:{{post.date}}</p>
+    </div>
     <hr>
-    <p style="text-align:right;"><b>날짜</b>:{{post.date}}
-    <p style="text-align:right;"><b>작성자</b>: {{post.author}}
 
-    </p>
-    <hr>
     <p><b>내용</b>
     <p>{{post.content|linebreaks}}</p>
     {% endif %}
