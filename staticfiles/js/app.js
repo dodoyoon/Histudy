@@ -1,21 +1,3 @@
-function send(){
-  $.ajax({
-    type: "get",
-    url: "all",
-    success:function(data)
-    {
-      $("html").html(data);
-      console.log(data);
-      setTimeout(function(){
-        send();
-      }, 10000);
-    }
-  });
-}
-
-//Call our function
-send();
-
 $(document).ready(function(){
     $(".close").click(function(){
   $("#myAlert").alert("close");
