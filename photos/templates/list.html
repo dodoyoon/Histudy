@@ -21,7 +21,10 @@
 <div class="infinite-container m-1" id="post_container">
 {% for photo in list %}
     <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
-        <p style="text-align:left">{{photo.date}}</p>
+        <div class="d-flex justify-content-between">
+            <h4>{{photo.title}}</h4>
+            <b>{{photo.date}}</b>
+        </div>
         <p>
           <a href="{{photo.get_absolute_url}}">
             {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
