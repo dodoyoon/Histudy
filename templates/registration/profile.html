@@ -1,7 +1,6 @@
 {% extends "base_template.html" %}
 {% block content %}
 
-<div class="container">
     {% if userobj.is_staff %}
     <h4>관리자 페이지입니다.</h4>
     <hr>
@@ -17,7 +16,6 @@
           <th>학번</th>
           <th>이름</th>
           <th>출석횟수</th>
-          <th></th>
       </tr>
   {% for member in list %}
       <tr>
@@ -32,13 +30,11 @@
             {% endif %}
           </th>
           <th> {{ member.num_posts }} </th>
-          <th><a class="confirm-delete" href="{% url 'confirm_delete_member' member.pk %}">멤버삭제</a></th>
       </tr>
   {% endfor %}
   </table>
 
   {% endif %}
-</div>
 
 <script>
     $(document).on('click', '.confirm-delete', function(){

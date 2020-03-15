@@ -1,10 +1,10 @@
 {% extends "base_template.html" %}
 {% block content %}
-<h3>공지사항
+<h2>공지사항
     {% if user.is_staff %}
     <a style="float:right;" href="{% url 'announce_write' %}" class="btn btn-outline-primary">공지 추가</a>
     {% endif %}
-</h3>
+</h2>
 <hr>
 <table style="width:100%">
     <tr>
