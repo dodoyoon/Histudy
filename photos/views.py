@@ -449,6 +449,7 @@ def change_password(request):
                 user.set_password(password1)
                 user.save()
                 messages.success(request, '비밀번호가 변경 되었습니다.', extra_tags='alert')
+                login(request, user)
                 return redirect("profile")
 
             else:
