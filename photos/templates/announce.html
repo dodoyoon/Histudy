@@ -10,7 +10,6 @@
     <tr>
         <th>ID</th>
         <th>공지</th>
-        <th>작성자</th>
         <th>날짜</th>
     </tr>
 {% for post in list %}
@@ -21,7 +20,6 @@
             {{ post.title }}
             </a>
         </th>
-        <th> {{ post.author }}</th>
         <th>{{ post.date }}</th>
         {% if user.is_staff %}
             <th><a class="confirm-delete" href="{% url 'confirm_delete_announce' post.pk %}">공지삭제</a></th>
