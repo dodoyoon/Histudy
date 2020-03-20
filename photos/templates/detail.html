@@ -19,6 +19,11 @@
             <li>{{member}}</li>
         {% endfor %}
     </ul>
+    {% if post.code %}
+    <hr>
+    <p><b>확인코드</b>: {{post.code}}</p>
+    <p><b>코드생성시간</b>: {{post.when_saved}}</p>
+    {% endif %}
     <hr>
     <p class="d-flex flex-row-reverse">
         <a href="{% url 'confirm_delete_data' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>

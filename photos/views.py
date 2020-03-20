@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Data, Announcement, Member
+from .models import Data, Announcement, Member, Verification
 from .forms import DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
@@ -17,6 +17,12 @@ from django.contrib import messages
 
 from django.db.models import Count, Max
 from django.db.models.expressions import RawSQL
+
+#For Code Verification
+from datetime import datetime, timedelta
+from django.utils import timezone
+import json, random
+
 
 #CSV import
 from tablib import Dataset
@@ -228,6 +234,13 @@ def main(request):
             obj = form.save()
             obj.user = user
             obj.author = username
+
+            if user.verification.code is not None:
+                obj.code = user.verification.code
+                obj.when_saved = user.verification.when_saved
+                user.verification.code = None
+                user.verification.when_saved = None
+
 
             num = user.userinfo.num_posts
             user.userinfo.num_posts = num + 1
@@ -504,3 +517,50 @@ def confirm_delete_user(request, pk):
     user = User.objects.get(id=pk)
     User.objects.filter(id=pk).delete()
     return redirect('userList')
+
+
+# For verification popup
+def popup(request):
+    ctx = {}
+    username = request.COOKIES.get('username', '')
+
+    if username:
+        user = User.objects.get(username=username)
+        orig, created = Verification.objects.get_or_create(user=user)
+
+        now_time = timezone.localtime()
+        all_pins = [format(i, '04') for i in range(1000, 10000)]
+        possible = [i for i in all_pins if len(set(i)) > 3]
+
+
+        if user.verification.when_saved is None:
+            user.verification.when_saved = now_time
+            verify_code = random.choice(possible)
+            user.verification.code = verify_code
+            user.save()
+            ctx['code'] = verify_code
+
+
+        save_time = user.verification.when_saved
+
+        time_diff = now_time - save_time
+
+        if (time_diff.seconds)/3600 >= 1:
+            verify_code = random.choice(possible)
+            user.verification.code = verify_code
+            user.verification.when_saved = now_time
+            user.save()
+            ctx['code'] = verify_code
+        else:
+            if user.verification.code is None:
+                verify_code = random.choice(possible)
+                user.verification.code = verify_code
+                user.verification.when_saved = now_time
+                user.save()
+                ctx['code'] = verify_code
+            else:
+                ctx['code'] = user.verification.code
+
+        return render(request, 'popup.html', ctx)
+    else:
+        return redirect("main")
