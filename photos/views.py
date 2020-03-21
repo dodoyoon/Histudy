@@ -248,11 +248,6 @@ def main(request):
     is_mobile = request.user_agent.is_mobile
     is_tablet = request.user_agent.is_tablet
 
-    # if request.user_agent.is_pc:
-    #     messages.success(request, 'PC', extra_tags='alert')
-    # elif is_mobile:
-    #     messages.success(request, '모바일', extra_tags='alert')
-
     if request.method == "GET":
         if is_mobile or is_tablet:
             form = DataForm(user=request.user, is_mobile=True)
