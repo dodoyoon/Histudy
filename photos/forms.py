@@ -14,12 +14,7 @@ class DataForm(forms.ModelForm):
             }
         ))
 
-    text = forms.CharField(label='', widget=forms.Textarea(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '공부한 내용을 써주세요 ʕ•ﻌ•ʔ ♡',
-            }
-        ))
+    text = forms.CharField(widget=SummernoteWidget())
 
     participator = forms.ModelMultipleChoiceField(
         widget = forms.CheckboxSelectMultiple,
