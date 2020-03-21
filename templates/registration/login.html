@@ -6,7 +6,7 @@
     <form class="text-center border border-light p-5" action="{% url 'loginpage' %}" method="POST" id="add_form">
         {% csrf_token %}
 
-        <p class="h4 mb-4">Sign in</p>
+        <p class="h4 mb-4">Login</p>
 
         <!-- Email -->
         <input type="text" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="User Id" name="username" required="required">
@@ -24,22 +24,32 @@
             </div>
         </div> -->
 
-        <!-- Sign in button -->
-        <button class="btn btn-info btn-block my-4 bg-dark" type="submit">Sign in</button>
-
-        <!-- Register -->
-        <!-- <p>Not a member?
-            <a href="{% url 'signup' %}">Register</a>
-        </p> -->
-
-        <!-- Social login -->
-        <!-- <p>or sign in with:</p>
-
-        <a href="#" class="mx-2" role="button"><i class="fab fa-facebook-f light-blue-text"></i></a>
-        <a href="#" class="mx-2" role="button"><i class="fab fa-twitter light-blue-text"></i></a>
-        <a href="#" class="mx-2" role="button"><i class="fab fa-linkedin-in light-blue-text"></i></a>
-        <a href="#" class="mx-2" role="button"><i class="fab fa-github light-blue-text"></i></a> -->
+        <!-- Login button -->
+        <button class="btn btn-info btn-block my-4 bg-dark" type="submit">Login</button>
 
     </form>
+</div>
+
+
+<!-- Buttons-->
+<div class="row text-center d-flex align-items-center justify-content-center mt-6 p-5">
+    <p class="h4 mb-3">Team Chickadee Contact</p>
+    <div class="col-md-4">
+        <a class="btn-floating blue accent-1">
+            <i class="fas fa-envelope"></i>
+        </a>
+
+        <p>21300109@handong.edu</p>
+        <p class="mb-0">21700083@handong.edu</p>
+
+    </div>
+
+    <p class="h4 mb-3 mt-5">Prof Contact</p>
+    <div class="col-md-4">
+        <a class="btn-floating blue accent-1">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <p>jcnam@handong.edu</p>
+    </div>
 </div>
 {% endblock %}
