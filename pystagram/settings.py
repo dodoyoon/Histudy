@@ -159,6 +159,10 @@ DATE_FORMAT = 'Y-m-d'
 DATETIME_FORMAT = 'Y-m-d H:i:s'
 
 
-SUMMERNOTE_CONFIG = {}
+SUMMERNOTE_CONFIG = {
+    'summernote':{
+        'width': '100%'
+    }
+}
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'

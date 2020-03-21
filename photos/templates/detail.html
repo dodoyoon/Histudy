@@ -10,7 +10,10 @@
     <hr>
     <p><b>날짜</b>: {{post.date}}</p>
     <hr>
+    
+    {% autoescape off %}
     <p><b>내용</b>: {{post.text|linebreaks}}</p>
+    {% endautoescape %}
 
     <hr>
     <p><b>참여 멤버</b></p>
