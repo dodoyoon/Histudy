@@ -83,6 +83,7 @@
 <div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
     <br>
 
+
     <form
         method="POST"
         action=""
@@ -140,7 +141,7 @@
     {% for photo in pics %}
         <tr class="unread">
             <td class="inbox-small-cells">
-                {{ forloop.counter }}
+                {{ photo.idgroup }}
             </td>
 
             <td class="view-message  dont-show">

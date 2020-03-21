@@ -262,6 +262,11 @@ def main(request):
             obj = form.save()
             obj.user = user
             obj.author = username
+            latestid = Data.objects.filter(author=username).order_by('-id')
+            if latestid:
+                obj.idgroup = latestid[0].idgroup + 1
+            else:
+                obj.idgroup = 1
 
             if user.verification.code is not None:
                 now_time = timezone.localtime()
