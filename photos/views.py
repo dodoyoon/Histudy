@@ -258,7 +258,7 @@ def main(request):
             form = DataForm(user=request.user, is_mobile=True)
             form.set_is_mobile()
         else:
-            form = DataForm(user=request.user, is_mobile=True)
+            form = DataForm(user=request.user, is_mobile=False)
             form.set_is_mobile()
 
     elif request.method == "POST":

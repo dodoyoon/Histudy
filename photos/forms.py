@@ -50,12 +50,12 @@ class DataForm(forms.ModelForm):
 
     def set_is_mobile(self):
         if self.is_mobile:
-            text = forms.CharField(label='', widget=forms.Textarea(
+            self.fields['text'].widget = forms.Textarea(
                 attrs={
                     'class': 'form-control',
                     'placeholder': '공부한 내용을 써주세요 ʕ•ﻌ•ʔ ♡',
                     }
-            ))
+            )
 
 
 
