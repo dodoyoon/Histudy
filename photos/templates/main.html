@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
-<link rel="stylesheet" href="{% static 'css/board.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'css/board.css' %}"> -->
 {% endblock %}
 
 {% block content %}
@@ -72,6 +72,12 @@
 
 </script>
 
+<script>
+    function open_page(url) {
+        newPage=window.open(url);
+    }
+</script>
+
 
 <h2>스터디모임 보고서 작성</h2>
 <div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
@@ -94,7 +100,7 @@
 
 
         <hr>
-        <a href="{% url 'popup' %}" class="btn btn-outline-dark">코드생성</a>
+        <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}')">코드생성</button>
         <hr>
         <h5>참여 멤버</h5>
         {% for participator in form.participator %}
