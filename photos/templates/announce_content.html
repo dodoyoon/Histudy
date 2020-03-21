@@ -1,15 +1,21 @@
 {% extends "base_template.html" %}
 {% block content %}
+<style>
+.image{
+    border-style: dotted !important;
+    max-width : 100%;
+    height : auto;
+}
+</style>
 
 <div class="container-fluid" >
     {% if post %}
     <div class="d-flex justify-content-between">
-    <p><b>제목</b>: {{post.title}}</p>
-    <p><b>날짜</b>:{{post.date}}</p>
+    <p><b>{{post.title}}</b></p>
+    <p><b>날짜</b>: {{post.date}}</p>
     </div>
     <hr>
 
-    <p><b>내용</b>
     {% autoescape off %}
     <p>{{post.content}}</p>
     {% endautoescape %}
