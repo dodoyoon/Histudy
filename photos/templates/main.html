@@ -63,6 +63,8 @@
         }  // 추출한 파일명 삽입
         $(this).siblings('.fileName').val(filename);
     });
+
+    
 </script>
 
 
@@ -94,6 +96,7 @@
             <span>{{ participator }}</span>
             <br>
         {% endfor %}
+        <div id="my-text-box"></div>
         <hr>
         <h5>스터디 시간입력</h5>
         {{ form.study_time }}
@@ -104,7 +107,7 @@
 
         <p>
             <br>
-            <button id='submit' type="submit" class="btn btn-dark btn-block">등록</button>
+            <button id='submit' type="submit" class="btn btn-dark btn-block" disabled=true>등록</button>
         </p>
     </form>
 </div>
@@ -140,6 +143,12 @@
 </div>
 
 <script>
+var checkBoxes = $(":input[id^=id_participator]")
+checkBoxes.change(function(){
+    $('#submit').prop('disabled', checkBoxes.filter(':checked').length < 1);
+});
+$(":input[id^=id_participator]").change();
+
     var infinite = new Waypoint.Infinite({
       element: $('.infinite-container')[0],
       onBeforePageLoad: function () {
