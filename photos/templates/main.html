@@ -128,11 +128,14 @@
 
     <table class="table table-inbox table-hover infinite-item">
     <tbody>
+        {% if not pics.has_previous %}
+        
         <tr>
             <th>ID</th>
             <th>제목</th>
             <th>날짜</th>
         </tr>
+        {% endif %}
 
     {% for photo in pics %}
         <tr class="unread">
