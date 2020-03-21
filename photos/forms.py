@@ -4,6 +4,7 @@ from django import forms
 
 from django.contrib.auth.models import User
 from .models import Data, Announcement, Member
+from django_summernote.widgets import SummernoteWidget
 
 class DataForm(forms.ModelForm):
     title = forms.CharField(label='', widget=forms.TextInput(
@@ -71,12 +72,7 @@ class AnnouncementForm(forms.ModelForm):
         }
     ))
 
-    content = forms.CharField(label='', widget=forms.Textarea(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '내용',
-        }
-    ))
+    content = forms.CharField(widget=SummernoteWidget())
 
     class Meta:
         model = Announcement

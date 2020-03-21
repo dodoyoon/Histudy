@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^member_delete_confirm/(?P<pk>\d+)$', confirm_delete_member, name='confirm_delete_member'),
     url(r'^list/(?P<user>\w+)$', photoList, name='list'),
     url(r'^user_delete_confirm/(?P<pk>\d+)$', confirm_delete_user, name='confirm_delete_user'),
+    url(r'^summernote/', include('django_summernote.urls')),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]

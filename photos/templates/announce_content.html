@@ -10,7 +10,9 @@
     <hr>
 
     <p><b>내용</b>
-    <p>{{post.content|linebreaks}}</p>
+    {% autoescape off %}
+    <p>{{post.content}}</p>
+    {% endautoescape %}
     {% endif %}
 
     <hr>
