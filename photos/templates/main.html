@@ -19,7 +19,7 @@
 
 </style>
 
-<h2>Upload</h2>
+<h2>스터디모임 보고서 작성</h2>
 <div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
     <br>
 
@@ -30,13 +30,15 @@
         id="dataform"
     >
         {% csrf_token %}
-        <a href="{% url 'popup' %}" class="btn btn-outline-dark">코드생성</a>
-        <hr>
         <h5>인증샷 올리기</h5>
         {{ form.image }}
         <hr>
+        <a href="{% url 'popup' %}" class="btn btn-outline-dark">코드생성</a>
+        <hr>
         <h5>참여 멤버</h5>
-        {{ form.participator }}
+        {% for participator in form.participator %}
+            <p>{{ participator }}</p>
+        {% endfor %}
         <hr>
         <h5>보고서 작성</h5>
         {{ form.title }}
@@ -51,7 +53,7 @@
 </div>
 
 <div class="infinite-container m-1" id="post_container">
-    <h2>Post</h2>
+    <h2>등록된 스터디모임 보고서</h2>
 {% for photo in pics %}
     <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
         <div class="d-flex justify-content-between">
