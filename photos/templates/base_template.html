@@ -39,7 +39,6 @@
 			<div class="navbar justify-content-end">
 				<div class="d-flex">
 					{% if username %}
-						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'change_password' %}?next={{request.path}}">Change Password</a>
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 					{% else %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>

@@ -9,6 +9,7 @@
   {% else %}
   <h2>멤버정보
       <a style="float:right;" href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
+      <a style="float:right;" class="btn btn-outline-primary mr-2" href="{% url 'change_password' %}?next={{request.path}}">그룹 비밀번호 변경</a>
   </h2>
   <hr>
   <table style="width:100%">
