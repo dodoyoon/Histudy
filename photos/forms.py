@@ -7,6 +7,14 @@ from .models import Data, Announcement, Member
 from django_summernote.widgets import SummernoteWidget
 
 class DataForm(forms.ModelForm):
+    image = forms.ImageField(label='', widget=forms.ClearableFileInput(
+        attrs={
+            'id': 'ex_file',
+            'name': 'ex_file',
+            'onchange': "javascript:document.getElementById('fileName').value = this.value",
+        }
+    ))
+
     title = forms.CharField(label='', widget=forms.TextInput(
         attrs={
             'class': 'form-control',

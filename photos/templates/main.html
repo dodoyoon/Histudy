@@ -16,8 +16,55 @@
 
 {% block content %}
 <style>
+    .filebox label {
+        display: inline-block;
+        padding: .5em .75em;
+        color: #101010;
+        font-size: inherit;
+        line-height: normal;
+        vertical-align: middle;
+        background-color: #FFFFFF;
+        cursor: pointer;
+        border: 1px solid #000000;
+        border-radius: .25em;
+        -webkit-transition: background-color 0.2s;
+        transition: background-color 0.2s;
+    }
 
+    .filebox label:hover {
+        background-color: #303030;
+        color: #FFFFFF;
+    }
+
+    .filebox label:active {
+        background-color: #367c36;
+    }
+
+    .filebox input[type="file"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
 </style>
+
+<script>
+    var fileTarget = $('.filebox .ex_file');
+
+    fileTarget.on('change', function(){ // 값이 변경되면
+        if(window.FileReader){ // modern browser
+            var filename = $(this)[0].files[0].name;
+        }else{ // old IE
+            var filename = $(this).val().split('/').pop().split('\\').pop(); // 파일명만 추출
+        }  // 추출한 파일명 삽입
+        $(this).siblings('.fileName').val(filename);
+    });
+</script>
+
 
 <h2>스터디모임 보고서 작성</h2>
 <div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
@@ -31,7 +78,14 @@
     >
         {% csrf_token %}
         <h5>인증샷 올리기</h5>
-        {{ form.image }}
+        <div class="filebox">
+          <label for="ex_file">사진촬영/이미지업로드</label>
+          {{ form.image }}
+          <input type="text" id="fileName"  name="fileName">
+        </div>
+
+
+
         <hr>
         <a href="{% url 'popup' %}" class="btn btn-outline-dark">코드생성</a>
         <hr>
