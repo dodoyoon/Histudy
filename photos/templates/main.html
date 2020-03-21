@@ -12,9 +12,13 @@
 <script src="{% static 'js/infinite.min.js' %}"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/board.css' %}">
 {% endblock %}
 
 {% block content %}
+
 <style>
     .filebox label {
         display: inline-block;
@@ -51,6 +55,7 @@
         border: 0;
     }
 </style>
+
 
 <script>
     var fileTarget = $('.filebox .ex_file');
@@ -115,25 +120,30 @@
 <div class="infinite-container m-1" id="post_container">
     <h2>등록된 스터디모임 보고서</h2>
 
-<table style="width:100%">
-    <tr>
-        <th>ID</th>
-        <th>제목</th>
-        <th>날짜</th>
-    </tr>
+    <table class="table table-inbox table-hover">
+    <tbody>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>날짜</th>
+        </tr>
 
-{% for photo in pics %}
-    <tr>
-        <th> {{ forloop.counter }}</th>
-        <th>
-            <a href="{{ photo.get_absolute_url }}">
-            {{ photo.title }}
-            </a>
-        </th>
-        <th>{{ photo.date }}</th>
-    </tr>
-{% endfor %}
-</table>
+    {% for photo in pics %}
+        <tr class="unread">
+            <td class="inbox-small-cells">
+                {{ forloop.counter }}
+            </td>
+
+            <td class="view-message  dont-show">
+                <a href="{{ photo.get_absolute_url }}">
+                    {{ photo.title }}
+                </a>
+            </td>
+            <td class="view-message ">{{ photo.date }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
 
 
 {% if pics.has_next %}
