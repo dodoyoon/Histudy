@@ -606,3 +606,14 @@ def popup(request):
         return render(request, 'popup.html', ctx)
     else:
         return redirect("main")
+
+def inquiry(request):
+    username  = request.COOKIES.get('username', '')
+    ctx = {}
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+        ctx['username'] = username
+
+    return render(request, 'inquiry.html', ctx)
