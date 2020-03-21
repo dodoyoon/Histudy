@@ -30,7 +30,7 @@
         id="dataform"
     >
         {% csrf_token %}
-        <a href="#" onclick="window.open('popup', 'window팝업', 'width=300, height=300, menubar=no, status=no, toolbar=no');" class="btn btn-outline-dark">코드생성</a>
+        <a href="{% url 'popup' %}" class="btn btn-outline-dark">코드생성</a>
         <hr>
         <h5>인증샷 올리기</h5>
         {{ form.image }}
