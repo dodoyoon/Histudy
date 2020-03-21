@@ -26,6 +26,7 @@ import json, random
 
 #CSV import
 from tablib import Dataset
+import magic, copy
 
 # for Infinite Scroll
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -72,7 +73,18 @@ def csv_upload(request):
     if request.method == 'POST':
         dataset = Dataset()
         new_usergroup = request.FILES['myfile']
-        imported_data = dataset.load(new_usergroup.read().decode('euc-kr'), format='csv')
+
+        csv_file = copy.deepcopy(new_usergroup)
+
+        blob = csv_file.read()
+        m = magic.Magic(mime_encoding=True)
+        encoding = m.from_buffer(blob)
+
+        imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
+
+        if imported_data is None:
+            messages.warning(request, 'CSV파일의 Encoding이 UTF-8이거나 EUC-KR형식으로 변형해주세요.', extra_tags='alert')
+            redirect('csv_upload')
 
         group_no = "1"
         group_list = []
