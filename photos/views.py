@@ -31,6 +31,8 @@ import magic, copy
 # for Infinite Scroll
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+# for device detection
+from django_user_agents.utils import get_user_agent
 
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
@@ -242,8 +244,23 @@ def main(request):
     else:
         return redirect('loginpage')
 
+
+    is_mobile = request.user_agent.is_mobile
+    is_tablet = request.user_agent.is_tablet
+
+    # if request.user_agent.is_pc:
+    #     messages.success(request, 'PC', extra_tags='alert')
+    # elif is_mobile:
+    #     messages.success(request, '모바일', extra_tags='alert')
+
     if request.method == "GET":
-        form = DataForm(user=request.user)
+        if is_mobile or is_tablet:
+            form = DataForm(user=request.user, is_mobile=True)
+            form.set_is_mobile()
+        else:
+            form = DataForm(user=request.user, is_mobile=True)
+            form.set_is_mobile()
+
     elif request.method == "POST":
         form = DataForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
@@ -337,6 +354,7 @@ def confirm_delete_announce(request, pk):
 
 # User Login Customization
 
+@csrf_exempt
 def loginpage(request):
     if request.method == 'POST':
         username = request.POST['username']

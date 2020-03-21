@@ -7,6 +7,14 @@ from .models import Data, Announcement, Member
 from django_summernote.widgets import SummernoteWidget
 
 class DataForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        self.is_mobile = kwargs.pop('is_mobile', None)
+
+        super(DataForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['participator'].queryset = Member.objects.filter(user=user)
+
     image = forms.ImageField(label='', widget=forms.ClearableFileInput(
         attrs={
             'id': 'ex_file',
@@ -40,11 +48,16 @@ class DataForm(forms.ModelForm):
         model = Data
         fields = ('text', 'participator', 'image', 'title', 'study_time')
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(DataForm, self).__init__(*args, **kwargs)
-        if user:
-            self.fields['participator'].queryset = Member.objects.filter(user=user)
+    def set_is_mobile(self):
+        if self.is_mobile:
+            text = forms.CharField(label='', widget=forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': '공부한 내용을 써주세요 ʕ•ﻌ•ʔ ♡',
+                    }
+            ))
+
+
 
 
 
