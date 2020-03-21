@@ -277,7 +277,6 @@ def main(request):
                     user.verification.when_saved = None
                     messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
 
-
             num = user.userinfo.num_posts
             user.userinfo.num_posts = num + 1
             user.userinfo.most_recent = obj.date
@@ -293,7 +292,7 @@ def main(request):
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
 
-    paginator = Paginator(dataList, 4)
+    paginator = Paginator(dataList, 5)
     page = request.GET.get('page', 1)
 
     try:
