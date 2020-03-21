@@ -80,7 +80,11 @@ def csv_upload(request):
         m = magic.Magic(mime_encoding=True)
         encoding = m.from_buffer(blob)
 
-        imported_data = dataset.load(new_usergroup.read().decode('utf-8'), format='csv')
+        if encoding == "iso-8859-1":
+            encoding = "euc-kr"
+
+        imported_data = dataset.load(new_usergroup.read().decode(encoding), format='csv')
+
 
         if imported_data is None:
             messages.warning(request, 'CSV파일의 Encoding이 UTF-8이거나 EUC-KR형식으로 변형해주세요.', extra_tags='alert')
