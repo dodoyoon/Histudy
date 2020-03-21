@@ -39,6 +39,7 @@ class Data(models.Model):
     participator = models.ManyToManyField(Member)
     code = models.IntegerField(blank=True, null=True)
     when_saved = models.DateTimeField(null=True, blank=True)
+    study_time = models.CharField(max_length=50, blank=True, null=True)
 
     def delete(self, *args, **kwargs):
         self.image.delete()

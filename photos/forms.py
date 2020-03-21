@@ -22,6 +22,13 @@ class DataForm(forms.ModelForm):
             }
         ))
 
+    study_time = forms.CharField(label='', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': '공부한 시간을 입력해주세요.',
+            }
+        ))
+
     text = forms.CharField(widget=SummernoteWidget())
 
     participator = forms.ModelMultipleChoiceField(
@@ -31,7 +38,7 @@ class DataForm(forms.ModelForm):
 
     class Meta:
         model = Data
-        fields = ('text', 'participator', 'image', 'title')
+        fields = ('text', 'participator', 'image', 'title', 'study_time')
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
