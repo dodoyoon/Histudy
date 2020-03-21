@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from photos.views import detail, announce_write, announce_detail, confirm_delete_announce, confirm_delete_member, confirm_delete_user
-from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce
+from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce, inquiry
 from django.urls import include
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^member_delete_confirm/(?P<pk>\d+)$', confirm_delete_member, name='confirm_delete_member'),
     url(r'^list/(?P<user>\w+)$', photoList, name='list'),
     url(r'^user_delete_confirm/(?P<pk>\d+)$', confirm_delete_user, name='confirm_delete_user'),
+    url(r'^inquiry/$', inquiry, name='inquiry'),
     url(r'^summernote/', include('django_summernote.urls')),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
