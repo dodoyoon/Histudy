@@ -92,6 +92,7 @@
         <h5>참여 멤버</h5>
         {% for participator in form.participator %}
             <span>{{ participator }}</span>
+            <br>
         {% endfor %}
         <hr>
         <h5>스터디 시간입력</h5>
@@ -122,6 +123,11 @@
             {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
             </a>
         </p>
+        <div class="d-flex justify-content-end">
+            {% if photo.code %}
+                <b>코드: {{ photo.code }}</b>
+            {% endif %}
+        </div>
     </div>
 {% endfor %}
 </div>

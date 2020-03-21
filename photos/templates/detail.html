@@ -9,8 +9,11 @@
     <p><b>제목</b>: {{post.title}}</p>
     <hr>
     <p><b>날짜</b>: {{post.date}}</p>
+    {% if post.study_time %}
+        <hr>
+        <p><b>스터디 시간</b>: {{post.study_time}}</p>
+    {% endif %}
     <hr>
-    
     {% autoescape off %}
     <p><b>내용</b>: {{post.text|linebreaks}}</p>
     {% endautoescape %}

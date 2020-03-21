@@ -252,10 +252,18 @@ def main(request):
             obj.author = username
 
             if user.verification.code is not None:
-                obj.code = user.verification.code
-                obj.when_saved = user.verification.when_saved
-                user.verification.code = None
-                user.verification.when_saved = None
+                now_time = timezone.localtime()
+                time_diff = now_time - user.verification.when_saved
+
+                if (time_diff.seconds)/60 < 10:
+                    obj.code = user.verification.code
+                    obj.when_saved = user.verification.when_saved
+                    user.verification.code = None
+                    user.verification.when_saved = None
+                else:
+                    user.verification.code = None
+                    user.verification.when_saved = None
+                    messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
 
 
             num = user.userinfo.num_posts
@@ -561,7 +569,7 @@ def popup(request):
 
         time_diff = now_time - save_time
 
-        if (time_diff.seconds)/3600 >= 1:
+        if (time_diff.seconds)/60 >= 10:
             verify_code = random.choice(possible)
             user.verification.code = verify_code
             user.verification.when_saved = now_time
