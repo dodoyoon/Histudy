@@ -8,26 +8,28 @@
     {% endif %}
 </h2>
 <hr>
-<table style="width:100%">
+<table class="table table-inboxx table-hover style="width:100%">
+    <tbody>
     <tr>
         <th></th>
         <th>공지</th>
         <th>날짜</th>
     </tr>
 {% for post in list %}
-    <tr>
-        <th> {{ forloop.counter }}</th>
-        <th>
+    <tr class="unread">
+        <td class="inbox-small-cells"> {{ forloop.counter }}</td>
+        <td class="view-message dont-show">
             <a href="{{ post.get_absolute_url }}">
             {{ post.title }}
             </a>
-        </th>
-        <th>{{ post.date }}</th>
+        </td>
+        <td class="view-message">{{ post.date }}</td>
         {% if user.is_staff %}
-            <th><a class="confirm-delete" href="{% url 'confirm_delete_announce' post.pk %}">공지삭제</a></th>
+            <td><a class="confirm-delete" href="{% url 'confirm_delete_announce' post.pk %}">공지삭제</a></td>
         {% endif %}
     </tr>
 {% endfor %}
+</tbody>
 </table>
 
 <script>
