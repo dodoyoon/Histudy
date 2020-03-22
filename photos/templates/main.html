@@ -54,6 +54,18 @@
         clip: rect(0, 0, 0, 0);
         border: 0;
     }
+
+    table{
+        table-layout: fixed;
+    }
+
+    table tr th:nth-child(1){
+        width: 10%;
+    }
+    table tr td:nth-child(1){
+        width: 10%;
+    }
+
 </style>
 
 
@@ -132,7 +144,7 @@
         {% if not pics.has_previous %}
         
         <tr>
-            <th>ID</th>
+            <th></th>
             <th>제목</th>
             <th>날짜</th>
         </tr>
