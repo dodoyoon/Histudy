@@ -467,6 +467,21 @@ def profile(request):
 
     return render(request, 'profile.html', ctx)
 
+def staff_profile(request):
+    username = request.COOKIES.get('username', '')
+    ctx={}
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+    else:
+        return redirect('loginpage')
+
+    if username:
+        ctx['username'] = username
+
+    return render(request, 'staff_profile.html', ctx)
+
 def logout_view(request):
     try:
         logout(request)

@@ -1,41 +1,38 @@
 {% extends "base_template.html" %}
 {% block content %}
-
-    {% if userobj.is_staff %}
-    <h4>관리자 페이지입니다.</h4>
-    <hr>
-    <p><a class="" href="{% url 'signup' %}">Create New User</a></p>
-	<p><a class="" href="{% url 'csv_upload' %}">Import User</a></p>
-  {% else %}
   <h2>멤버정보
       <a style="float:right;" href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
       <a style="float:right;" class="btn btn-outline-primary mr-2" href="{% url 'change_password' %}?next={{request.path}}">비밀번호 변경</a>
   </h2>
   <hr>
-  <table style="width:100%">
+
+  <table class="table table-inbox table-hover infinite-item">
+  <tbody>
       <tr>
           <th>학번</th>
           <th>이름</th>
           <th>출석횟수</th>
       </tr>
-  {% for member in list %}
-      <tr>
-          <th> {{ member.student_id }} </th>
-          <th>
-            {% if member.num_posts > 9 %}
-            <font color="green">
-            {{ member.name }}
-            </font>
-            {% else %}
-            {{ member.name }}
-            {% endif %}
-          </th>
-          <th> {{ member.num_posts }} </th>
+   {% for member in list %}
+      <tr class="unread">
+          <td class="inbox-small-cells">
+              {{ member.student_id }}
+          </td>
+
+          <td class="view-message  dont-show">
+              {% if member.num_posts > 9 %}
+              <font color="green">
+              {{ member.name }}
+              </font>
+              {% else %}
+              {{ member.name }}
+              {% endif %}
+          </td>
+          <td class="view-message ">{{ member.num_posts }}</td>
       </tr>
   {% endfor %}
+  </tbody>
   </table>
-
-  {% endif %}
 
 <script>
     $(document).on('click', '.confirm-delete', function(){
