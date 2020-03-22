@@ -367,7 +367,7 @@ def main(request):
 
     dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
 
-    paginator = Paginator(dataList, 5)
+    paginator = Paginator(dataList, 10)
     page = request.GET.get('page', 1)
 
     try:
