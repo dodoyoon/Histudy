@@ -265,10 +265,10 @@ def userList(request):
     else:
         return redirect('loginpage')
 
-    userlist = User.objects.all().annotate(
+    userlist = User.objects.filter(is_staff=False).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
-    ).order_by('-num_posts')
+    ).order_by('-num_posts').exclude(username='test')
 
     ctx = {
         'list' : userlist,
