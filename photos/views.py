@@ -36,17 +36,13 @@ from django_user_agents.utils import get_user_agent
 
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
-    username = request.COOKIES.get('username', '')
     ctx={}
-
-    if not username:
-        return redirect('loginpage')
-
-
-    if username:
-        user = User.objects.get(username=username)
+    if request.user:
+        username = request.user.username
+        user = request.user
         ctx['userobj'] = user
-
+    else:
+        return redirect('loginpage')
 
     memberList = Member.objects.filter(data__pk=pk)
 
@@ -59,11 +55,11 @@ def detail(request, pk):
     return render(request, 'detail.html', ctx)
 
 def data_upload(request):
-    username  = request.COOKIES.get('username', '')
     ctx={}
 
-    if username:
-        ctx['username'] = username
+    if request.user:
+        username = request.user.username
+        ctx['username'] = request.user.username
     else:
         return redirect('loginpage')
 
@@ -131,10 +127,10 @@ def data_upload(request):
 
 @csrf_exempt
 def csv_upload(request):
-    username = request.COOKIES.get('username', '')
     ctx = {}
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
         if user.is_staff is False:
@@ -234,9 +230,9 @@ def csv_upload(request):
     return render(request, 'csv_upload.html', ctx)
 
 def photoList(request, user):
-    username = request.COOKIES.get('username', '')
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
-    if username:
+    if request.user:
+        username = request.user.username
         userobj = User.objects.get(username=username)
         if userobj.is_staff is False:
             return redirect('loginpage')
@@ -257,8 +253,8 @@ def photoList(request, user):
 
 
 def userList(request):
-    username = request.COOKIES.get('username', '')
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         if user.is_staff is False:
             return redirect('main')
@@ -281,10 +277,9 @@ def userList(request):
 
 
 def announce(request):
-    username = request.COOKIES.get('username', '')
-
     ctx={}
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
         ctx['username'] = username
@@ -298,10 +293,10 @@ def announce(request):
 
 
 def main(request):
-    username  = request.COOKIES.get('username', '')
     ctx={}
 
-    if username:
+    if request.user:
+        username = request.user.username
         ctx['username'] = username
     else:
         return redirect('loginpage')
@@ -384,10 +379,10 @@ def main(request):
     return render(request, 'main.html', ctx)
 
 def confirm_delete_data(request, pk):
-    loginname = request.COOKIES.get('username', '')
     ctx={}
 
-    if loginname:
+    if request.user:
+        loginname = request.user.username
         pass
     else:
         return redirect('loginpage')
@@ -404,10 +399,10 @@ def confirm_delete_data(request, pk):
     return redirect('main')
 
 def confirm_delete_announce(request, pk):
-    loginname  = request.COOKIES.get('username', '')
     ctx={}
 
-    if loginname:
+    if request.user:
+        loginname = request.user.username
         pass
     else:
         return redirect('loginpage')
@@ -448,10 +443,10 @@ def loginpage(request):
     return render(request, 'login.html', {})
 
 def profile(request):
-    username = request.COOKIES.get('username', '')
     ctx={}
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
     else:
@@ -468,10 +463,10 @@ def profile(request):
     return render(request, 'profile.html', ctx)
 
 def staff_profile(request):
-    username = request.COOKIES.get('username', '')
     ctx={}
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
     else:
@@ -495,10 +490,10 @@ def logout_view(request):
 
 
 def signup(request):
-    username  = request.COOKIES.get('username', '')
     ctx = {}
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
         if user.is_staff is False:
@@ -522,9 +517,9 @@ def signup(request):
     return render(request, 'signup.html', ctx)
 
 def announce_write(request):
-    username  = request.COOKIES.get('username', '')
     ctx = {}
-    if username:
+    if request.user:
+        username = request.user.username
         ctx['username'] = username
         user = User.objects.get(username = username)
         ctx['userobj'] = user
@@ -550,13 +545,13 @@ def announce_write(request):
 
 def announce_detail(request, pk):
     post = get_object_or_404(Announcement, pk=pk)
-    username = request.COOKIES.get('username', '')
 
     ctx = {
         'post': post,
     }
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username = username)
         ctx['userobj'] = user
         ctx['username'] = username
@@ -567,10 +562,10 @@ def announce_detail(request, pk):
 
 
 def change_password(request):
-    username  = request.COOKIES.get('username', '')
     ctx = {}
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
     else:
@@ -603,10 +598,10 @@ def change_password(request):
 
 
 def add_member(request):
-    username  = request.COOKIES.get('username', '')
     ctx={}
 
-    if username:
+    if request.user:
+        username = request.user.username
         ctx['username'] = username
     else:
         return redirect('loginpage')
@@ -648,9 +643,9 @@ def confirm_delete_user(request, pk):
 # For verification popup
 def popup(request):
     ctx = {}
-    username = request.COOKIES.get('username', '')
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         orig, created = Verification.objects.get_or_create(user=user)
 
@@ -692,10 +687,10 @@ def popup(request):
         return redirect("main")
 
 def inquiry(request):
-    username  = request.COOKIES.get('username', '')
     ctx = {}
 
-    if username:
+    if request.user:
+        username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
         ctx['username'] = username
