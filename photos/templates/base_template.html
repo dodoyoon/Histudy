@@ -27,8 +27,8 @@
 			<div class="navbar justify-content-start">
 				<a class="navbar-brand" href="{% url 'main' %}">
 					<font color=white>
-						{% if user.username %}
-						<p class="h4">{{ user.username }}</p>
+						{% if username %}
+						<p class="h4">{{ username }}</p>
 						{% else %}
 						<p class="h4">Histudy</p>
 						{% endif %}
@@ -38,7 +38,7 @@
 
 			<div class="navbar justify-content-end">
 				<div class="d-flex">
-					{% if user.is_authenticated %}
+					{% if username %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 					{% else %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
@@ -51,7 +51,7 @@
 			{% block content %}{% endblock %}
 		</div>
 
-        {% if user.is_authenticated %}
+        {% if username %}
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom justify-content-between">
 			  {% if user.is_staff %}
 			  	<a class="nav-item nav-link" href="{% url 'staff_profile' %}" style="color: White;"><i class="fas fa-id-badge fa-2x"></i></a>
