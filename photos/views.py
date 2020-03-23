@@ -508,7 +508,7 @@ def signup(request):
                     username=request.POST["username"],
                     password=request.POST["password1"])
             messages.success(request, '유저가 성공적으로 추가되었습니다.', extra_tags='alert')
-            return redirect("profile")
+            return redirect("staff_profile")
 
         else:
             messages.warning(request, '유저를 만드는데 실패하였습니다.', extra_tags='alert')
