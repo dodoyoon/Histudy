@@ -264,7 +264,7 @@ def userList(request):
     userlist = User.objects.filter(is_staff=False).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
-    ).order_by('-num_posts').exclude(username='test')
+    ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
 
     ctx = {
         'list' : userlist,
