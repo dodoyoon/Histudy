@@ -275,6 +275,26 @@ def userList(request):
 
     return render(request, 'userlist.html', ctx)
 
+def top3(request):
+    if request.user:
+        username = request.user.username
+        user = User.objects.get(username=username)
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('loginpage')
+
+    toplist = User.objects.raw('SELECT id, username, num_posts, date FROM (SELECT id, username, (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date FROM auth_user) AS D WHERE num_posts>9 ORDER BY date LIMIT 3')
+
+    ctx = {
+        'list' : toplist,
+        'userobj' : user,
+    }
+    if username:
+        ctx['username'] = username
+
+    return render(request, 'top3.html', ctx)
+
 
 def announce(request):
     ctx={}
