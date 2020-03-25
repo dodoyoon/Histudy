@@ -420,10 +420,13 @@ def confirm_delete_announce(request, pk):
 
 @csrf_exempt
 def loginpage(request):
+    ctx={}
     if request.method == 'POST':
         username = request.POST['username']
         password =  request.POST['password']
         user = authenticate(username=username, password=password)
+
+        ctx['username'] = username
 
         if user is not None:
             post = User.objects.filter(username=username)
@@ -432,15 +435,15 @@ def loginpage(request):
                 login(request, user)
                 username = request.POST['username']
                 response = HttpResponseRedirect(reverse('main'))
-                response.set_cookie('username', username, 3600)
                 messages.success(request, '환영합니다.', extra_tags='alert')
                 return response
             else:
                 messages.warning(request, '다시 로그인 해주세요.', extra_tags='alert')
-                return render(request, 'login.html', {})
+                return render(request, 'login.html', ctx)
         else:
             messages.warning(request, '다시 로그인 해주세요.', extra_tags='alert')
-    return render(request, 'login.html', {})
+
+    return render(request, 'login.html', ctx)
 
 def profile(request):
     ctx={}
@@ -481,9 +484,7 @@ def logout_view(request):
     try:
         logout(request)
         response = HttpResponseRedirect(reverse('loginpage'))
-        response.delete_cookie('username')
         return response
-        messages.success(request, '로그아웃 되었습니다.', extra_tags='alert')
     except:
         pass
     return render(request, 'home.html', {})
