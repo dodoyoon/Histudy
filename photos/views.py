@@ -446,7 +446,7 @@ def loginpage(request):
         password =  request.POST['password']
         user = authenticate(username=username, password=password)
 
-        ctx['username'] = username
+        ctx['user_id'] = username
 
         if user is not None:
             post = User.objects.filter(username=username)
