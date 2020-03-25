@@ -1,8 +1,7 @@
 {% extends "base_template.html" %}
 {% block content %}
   <h2>TOP 3
-      <a style="float:right;" href="{% url 'add_member' %}" class="btn btn-outline-primary">멤버생성</a>
-      <a style="float:right;" class="btn btn-outline-primary mr-2" href="{% url 'change_password' %}?next={{request.path}}">비밀번호 변경</a>
+      <a style="float:right;" href="{% url 'userList' %}" class="btn btn-outline-primary">Total Ranking</a>
   </h2>
   <hr>
 
