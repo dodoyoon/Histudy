@@ -10,12 +10,14 @@
 <hr>
 
 <div class="container">
-    <table style="width:100%">
+    <table class="table table-inbox table-hover" style="width:100%">
+        <tbody>
         <tr>
             <th>Rank</th>
             <th>username</th>
             <th>posts</th>
             <th>most recent</th>
+            <th></th>
         </tr>
     {% for user in list %}
         {% if not user.is_staff %}
@@ -40,6 +42,7 @@
         </tr>
         {% endif %}
     {% endfor %}
+    <tbody>
     </table>
 </div>
 
