@@ -284,7 +284,7 @@ def top3(request):
     else:
         return redirect('loginpage')
 
-    toplist = User.objects.raw('SELECT id, username, num_posts, date FROM (SELECT id, username, (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date FROM auth_user) AS D WHERE num_posts>9 ORDER BY date LIMIT 3')
+    toplist = User.objects.raw('SELECT id, username, num_posts, date FROM (SELECT id, username, (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date FROM auth_user) AS D WHERE num_posts>9 AND username <> "test" ORDER BY date LIMIT 3')
 
     ctx = {
         'list' : toplist,
