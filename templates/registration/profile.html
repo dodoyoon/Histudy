@@ -12,6 +12,7 @@
           <th>학번</th>
           <th>이름</th>
           <th>출석횟수</th>
+          <th>누적시간</th>
       </tr>
    {% for member in list %}
       <tr class="unread">
@@ -29,6 +30,7 @@
               {% endif %}
           </td>
           <td class="view-message ">{{ member.num_posts }}</td>
+          <td class="view-message ">{{ member.total_time }}</td>
       </tr>
   {% endfor %}
   </tbody>

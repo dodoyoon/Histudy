@@ -492,6 +492,7 @@ def group_profile(request, user):
 
     memberList = Member.objects.filter(user=memuser).annotate(
         num_posts = Count('data'),
+        total_time = Sum('data__study_total_duration')
     )
     ctx['list'] = memberList
 
