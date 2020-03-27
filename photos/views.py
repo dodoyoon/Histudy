@@ -439,12 +439,19 @@ def confirm_delete_announce(request, pk):
 
 # User Login Customization
 
+def trim_string(string1):
+    return string1.replace(' ','')
+
 @csrf_exempt
 def loginpage(request):
     ctx={}
     if request.method == 'POST':
         username = request.POST['username']
         password =  request.POST['password']
+
+        username = trim_string(username)
+        password = trim_string(password)
+
         user = authenticate(username=username, password=password)
 
         ctx['user_id'] = username
