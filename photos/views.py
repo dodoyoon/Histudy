@@ -466,6 +466,30 @@ def loginpage(request):
 
     return render(request, 'login.html', ctx)
 
+def group_profile(request, user):
+    ctx={}
+
+    if request.user:
+        username = request.user.username
+        userobj = User.objects.get(username=username)
+        memuser = User.objects.get(username=user)
+        ctx['userobj'] = userobj
+        if userobj.is_staff is False:
+            return redirect('loginpage')
+    else:
+        return redirect('loginpage')
+
+    if username:
+        ctx['username'] = username
+
+    memberList = Member.objects.filter(user=memuser).annotate(
+        num_posts = Count('data'),
+    )
+    ctx['list'] = memberList
+
+    return render(request, 'group_profile.html', ctx)
+    
+
 def profile(request):
     ctx={}
 
