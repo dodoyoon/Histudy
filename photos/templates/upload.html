@@ -105,8 +105,11 @@
         {% endfor %}
         <div id="my-text-box"></div>
         <hr>
-        <h5>스터디 시간입력</h5>
-        {{ form.study_time }}
+        <h5>스터디 시작 시간 입력</h5>
+        {{ form.study_start_time }}
+        <hr>
+        <h5>스터디 시간 입력(분 단위)</h5>
+        {{ form.study_total_duration }}
         <hr>
         <h5>스터디 내용</h5>
         {{ form.title }}

@@ -23,6 +23,26 @@ class DataForm(forms.ModelForm):
         }
     ))
 
+    participator = forms.ModelMultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple,
+        queryset = Member.objects.none()
+    )
+
+
+    study_start_time = forms.CharField(label='', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': '공부를 시작한 시간을 입력해 주세요. Ex) 18:30',
+            }
+        ))
+
+    study_total_duration = forms.IntegerField(label='', widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '스터디 시간을 분 단위으로 써주세요. Ex) 75'
+            }
+        ))
+
     title = forms.CharField(label='', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
@@ -30,23 +50,14 @@ class DataForm(forms.ModelForm):
             }
         ))
 
-    study_time = forms.CharField(label='', widget=forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '공부한 시간을 입력해주세요.',
-            }
-        ))
 
     text = forms.CharField(widget=SummernoteWidget())
 
-    participator = forms.ModelMultipleChoiceField(
-        widget = forms.CheckboxSelectMultiple,
-        queryset = Member.objects.none()
-    )
+
 
     class Meta:
         model = Data
-        fields = ('text', 'participator', 'image', 'title', 'study_time')
+        fields = ('text', 'participator', 'image', 'title', 'study_start_time', 'study_total_duration')
 
     def set_is_mobile(self):
         if self.is_mobile:
