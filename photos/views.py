@@ -15,7 +15,7 @@ from django.contrib import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Sum
 from django.db.models.expressions import RawSQL
 
 #For Code Verification
@@ -264,6 +264,7 @@ def userList(request):
     userlist = User.objects.filter(is_staff=False).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
+        total_dur = Sum('data__study_total_duration'),
     ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
 
     ctx = {

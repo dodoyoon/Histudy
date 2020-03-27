@@ -13,10 +13,11 @@
     <table class="table table-inbox table-hover" style="width:100%">
         <tbody>
         <tr>
-            <th>Rank</th>
-            <th>username</th>
+            <th></th>
+            <th>group</th>
             <th>posts</th>
             <th>most recent</th>
+            <th>누적 공부 시간</th>
             <th></th>
         </tr>
     {% for user in list %}
@@ -38,6 +39,7 @@
             </th>
             <th>{{ user.num_posts }}</th>
             <th>{{ user.recent }}</th>
+            <th>{{ user.total_dur }}</th>
             <th><a class="confirm-delete" href="{% url 'confirm_delete_user' user.pk %}">유저삭제</a></th>
         </tr>
         {% endif %}
