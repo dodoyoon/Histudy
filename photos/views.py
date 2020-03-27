@@ -231,10 +231,11 @@ def csv_upload(request):
 
 def photoList(request, user):
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
+    listuser = user
     if request.user:
         username = request.user.username
-        userobj = User.objects.get(username=username)
-        if userobj.is_staff is False:
+        user = User.objects.get(username=username)
+        if user.is_staff is False:
             return redirect('loginpage')
     else:
         return redirect('loginpage')
@@ -242,7 +243,7 @@ def photoList(request, user):
     ctx = {
         'list' : picList,
         'user' : user,
-        'userobj' : userobj,
+        'listuser' : listuser,
     }
 
     if username:
@@ -474,14 +475,14 @@ def loginpage(request):
     return render(request, 'login.html', ctx)
 
 def group_profile(request, user):
+    memuser = User.objects.get(username=user)
     ctx={}
 
     if request.user:
         username = request.user.username
-        userobj = User.objects.get(username=username)
-        memuser = User.objects.get(username=user)
-        ctx['userobj'] = userobj
-        if userobj.is_staff is False:
+        user = User.objects.get(username=username)
+        ctx['user'] = user
+        if user.is_staff is False:
             return redirect('loginpage')
     else:
         return redirect('loginpage')
@@ -512,6 +513,7 @@ def profile(request):
 
     memberList = Member.objects.filter(user=user).annotate(
         num_posts = Count('data'),
+        total_time = Sum('data__study_total_duration')
     )
     ctx['list'] = memberList
 
