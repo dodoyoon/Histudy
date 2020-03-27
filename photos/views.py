@@ -95,16 +95,16 @@ def data_upload(request):
 
             if user.verification.code is not None:
                 now_time = timezone.localtime()
-                time_diff = now_time - user.verification.when_saved
+                time_diff = now_time - user.verification.code_when_saved
 
                 if (time_diff.seconds)/60 < 10:
                     obj.code = user.verification.code
-                    obj.when_saved = user.verification.when_saved
+                    obj.code_when_saved = user.verification.code_when_saved
                     user.verification.code = None
-                    user.verification.when_saved = None
+                    user.verification.code_when_saved = None
                 else:
                     user.verification.code = None
-                    user.verification.when_saved = None
+                    user.verification.code_when_saved = None
                     messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
 
             num = user.userinfo.num_posts
@@ -355,16 +355,16 @@ def main(request):
 
             if user.verification.code is not None:
                 now_time = timezone.localtime()
-                time_diff = now_time - user.verification.when_saved
+                time_diff = now_time - user.verification.code_when_saved
 
                 if (time_diff.seconds)/60 < 10:
                     obj.code = user.verification.code
-                    obj.when_saved = user.verification.when_saved
+                    obj.code_when_saved = user.verification.code_when_saved
                     user.verification.code = None
-                    user.verification.when_saved = None
+                    user.verification.code_when_saved = None
                 else:
                     user.verification.code = None
-                    user.verification.when_saved = None
+                    user.verification.code_when_saved = None
                     messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
 
             num = user.userinfo.num_posts
@@ -675,29 +675,29 @@ def popup(request):
         possible = [i for i in all_pins if len(set(i)) > 3]
 
 
-        if user.verification.when_saved is None:
-            user.verification.when_saved = now_time
+        if user.verification.code_when_saved is None:
+            user.verification.code_when_saved = now_time
             verify_code = random.choice(possible)
             user.verification.code = verify_code
             user.save()
             ctx['code'] = verify_code
 
 
-        save_time = user.verification.when_saved
+        save_time = user.verification.code_when_saved
 
         time_diff = now_time - save_time
 
         if (time_diff.seconds)/60 >= 10:
             verify_code = random.choice(possible)
             user.verification.code = verify_code
-            user.verification.when_saved = now_time
+            user.verification.code_when_saved = now_time
             user.save()
             ctx['code'] = verify_code
         else:
             if user.verification.code is None:
                 verify_code = random.choice(possible)
                 user.verification.code = verify_code
-                user.verification.when_saved = now_time
+                user.verification.code_when_saved = now_time
                 user.save()
                 ctx['code'] = verify_code
             else:
