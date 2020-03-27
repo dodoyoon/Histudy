@@ -9,10 +9,14 @@
     <p><b>제목</b>: {{post.title}}</p>
     <hr>
     <p><b>날짜</b>: {{post.date}}</p>
-    {% if post.study_time %}
-        <hr>
-        <p><b>스터디 시간</b>: {{post.study_time}}</p>
+    {% if post.study_start_time %}
+        <p><b>스터디 시작 시간</b>: {{post.study_start_time}}</p>
     {% endif %}
+
+    {% if post.study_total_duration %}
+        <p><b>스터디한 시간</b>: {{post.study_total_duration}} 분</p>
+    {% endif %}
+
     <hr>
     {% autoescape off %}
     <p><b>내용</b>: {{post.text|linebreaksbr}}</p>
@@ -28,7 +32,7 @@
     {% if post.code %}
     <hr>
     <p><b>확인코드</b>: {{post.code}}</p>
-    <p><b>코드생성시간</b>: {{post.when_saved}}</p>
+    <p><b>코드생성시간</b>: {{post.code_when_saved}}</p>
     {% endif %}
     <hr>
     <p class="d-flex flex-row-reverse">
