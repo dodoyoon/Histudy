@@ -38,8 +38,9 @@ class Data(models.Model):
     author = models.TextField(max_length=100, null=True, blank=True)
     participator = models.ManyToManyField(Member)
     code = models.IntegerField(blank=True, null=True)
-    when_saved = models.DateTimeField(null=True, blank=True)
-    study_time = models.CharField(max_length=50, blank=True, null=True)
+    code_when_saved = models.DateTimeField(null=True, blank=True)
+    study_start_time = models.CharField(max_length=50, blank=True, null=True)
+    study_total_duration = models.IntegerField(default=0)
     idgroup = models.IntegerField(blank=True, null=True)
 
     def delete(self, *args, **kwargs):
@@ -93,7 +94,7 @@ def save_data(sender, instance, **kwargs):
 class Verification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     code = models.IntegerField(null=True, blank=True)
-    when_saved = models.DateTimeField(null=True, blank=True)
+    code_when_saved = models.DateTimeField(null=True, blank=True)
 
 @receiver(post_save, sender=User)
 def create_user_verification(sender, instance, created, **kwargs):
