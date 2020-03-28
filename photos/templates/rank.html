@@ -21,10 +21,10 @@
     {% for user in list %}
         {% if not user.is_staff %}
         <tr>
-            <th>
+            <td>
                 {{ forloop.counter }}
-            </th>
-            <th>
+            </td>
+            <td>
                 <a>
                 {% if user.num_posts > 9 %}
                 <font color="green">
@@ -34,10 +34,10 @@
                 {{ user.username }}
                 {% endif %}
                 </a>
-            </th>
-            <th>{{ user.num_posts }}</th>
-            <th>{{ user.recent }}</th>
-            <th>{{ user.total_dur }}</th>
+            </td>
+            <td>{{ user.num_posts }}</td>
+            <td>{{ user.recent }}</td>
+            <td>{{ user.total_dur }}</td>
         </tr>
         {% endif %}
     {% endfor %}
