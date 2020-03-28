@@ -74,11 +74,13 @@ def data_upload(request):
     is_mobile = request.user_agent.is_mobile
     is_tablet = request.user_agent.is_tablet
 
-    now_time = timezone.localtime()
-    time_diff = now_time - user.verification.code_when_saved
+
+    if user.verification.code_when_saved is not None:
+        now_time = timezone.localtime()
+        time_diff = now_time - user.verification.code_when_saved
 
 
-    if (60*10 - time_diff.seconds) > 0:
+    if ((60*10 - time_diff.seconds) > 0) and (time_diff is not None):
         ctx['code_time'] = time_diff.seconds
     else:
         ctx['code_time'] = 0
