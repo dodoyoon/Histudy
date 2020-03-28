@@ -11,6 +11,7 @@
 </script>
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/countdown.js' %}"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -96,7 +97,9 @@
         </div>
 
         <hr>
-        <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}')">코드생성</button>
+        <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}'); countdown(); show_countdown()">코드생성</button>
+
+        <div id="countdown_div" style="visibility:hidden">코드가 소멸하기까지 <span id="time">10:00</span> 남았어요!</div>
         <hr>
         <h5>참여 멤버</h5>
         {% for participator in form.participator %}
