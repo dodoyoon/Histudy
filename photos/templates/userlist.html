@@ -5,12 +5,10 @@
 <h4>스터디그룹 현황
     <a style="float:right;" href="{% url 'top3' %}" class="btn btn-outline-primary">TOP 3</a>
 </h4>
-</div>
 
 <hr>
 
-<div class="container">
-    <table class="table table-inbox table-hover" style="width:100%">
+    <table class="table table-inbox table-hover" style="font-size:12px; width:100%;">
         <tbody>
         <tr>
             <th></th>
@@ -23,10 +21,10 @@
     {% for user in list %}
         {% if not user.is_staff %}
         <tr>
-            <th>
+            <td>
                 {{ forloop.counter }}
-            </th>
-            <th>
+            </td>
+            <td>
                 <a href="{% url 'list' user.username %}">
                 {% if user.num_posts > 9 %}
                 <font color="green">
@@ -36,11 +34,11 @@
                 {{ user.username }}
                 {% endif %}
                 </a>
-            </th>
-            <th>{{ user.num_posts }}</th>
-            <th>{{ user.recent }}</th>
-            <th>{{ user.total_dur }}</th>
-            <th><a class="confirm-delete" href="{% url 'confirm_delete_user' user.pk %}">유저삭제</a></th>
+            </td>
+            <td>{{ user.num_posts }}</td>
+            <td>{{ user.recent }}</td>
+            <td>{{ user.total_dur }}</td>
+            <td><a class="confirm-delete" href="{% url 'confirm_delete_user' user.pk %}">유저삭제</a></td>
         </tr>
         {% endif %}
     {% endfor %}
