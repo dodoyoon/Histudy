@@ -75,15 +75,7 @@ def data_upload(request):
     is_tablet = request.user_agent.is_tablet
 
 
-    if user.verification.code_when_saved is not None:
-        now_time = timezone.localtime()
-        time_diff = now_time - user.verification.code_when_saved
 
-
-    if ((60*10 - time_diff.seconds) > 0) and (time_diff is not None):
-        ctx['code_time'] = time_diff.seconds
-    else:
-        ctx['code_time'] = 0
 
     if request.method == "GET":
         if is_mobile or is_tablet:
@@ -104,16 +96,26 @@ def data_upload(request):
             else:
                 obj.idgroup = 1
 
+
+            now_time = timezone.localtime()
+            time_diff = now_time - user.verification.code_when_saved
+
             if user.verification.code is not None:
                 if (time_diff.seconds)/60 < 10:
                     obj.code = user.verification.code
                     obj.code_when_saved = user.verification.code_when_saved
                     user.verification.code = None
                     user.verification.code_when_saved = None
+
+                    if (60*10 - time_diff.seconds) > 0:
+                        ctx['code_time'] = time_diff.seconds
+
                 else:
                     user.verification.code = None
                     user.verification.code_when_saved = None
                     messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
+            else:
+                ctx['code_time'] = 0
 
             num = user.userinfo.num_posts
             user.userinfo.num_posts = num + 1
