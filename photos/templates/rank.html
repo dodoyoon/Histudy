@@ -1,0 +1,48 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+<div class="container">
+<h4>스터디그룹 현황
+</h4>
+</div>
+
+<hr>
+
+<div class="container">
+    <table class="table table-inbox table-hover" style="width:100%">
+        <tbody>
+        <tr>
+            <th></th>
+            <th>group</th>
+            <th>posts</th>
+            <th>most recent</th>
+            <th>누적 공부 시간</th>
+        </tr>
+    {% for user in list %}
+        {% if not user.is_staff %}
+        <tr>
+            <th>
+                {{ forloop.counter }}
+            </th>
+            <th>
+                <a>
+                {% if user.num_posts > 9 %}
+                <font color="green">
+                {{ user.username }}
+                </font>
+                {% else %}
+                {{ user.username }}
+                {% endif %}
+                </a>
+            </th>
+            <th>{{ user.num_posts }}</th>
+            <th>{{ user.recent }}</th>
+            <th>{{ user.total_dur }}</th>
+        </tr>
+        {% endif %}
+    {% endfor %}
+    <tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -37,7 +37,7 @@ from django_user_agents.utils import get_user_agent
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
     ctx={}
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = request.user
         ctx['userobj'] = user
@@ -57,7 +57,7 @@ def detail(request, pk):
 def data_upload(request):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         ctx['username'] = request.user.username
     else:
@@ -129,7 +129,7 @@ def data_upload(request):
 def csv_upload(request):
     ctx = {}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -232,7 +232,7 @@ def csv_upload(request):
 def photoList(request, user):
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
     listuser = user
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         if user.is_staff is False:
@@ -254,9 +254,9 @@ def photoList(request, user):
 
 
 def userList(request):
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
-        user = User.objects.get(username=username)
+        user = request.user
         if user.is_staff is False:
             return redirect('main')
     else:
@@ -277,8 +277,26 @@ def userList(request):
 
     return render(request, 'userlist.html', ctx)
 
+def rank(request):
+    ctx = {}
+    if request.user.is_authenticated:
+        username = request.user.username
+        user = User.objects.get(username=username)
+        ctx['user'] = user
+        ctx['username'] = username
+
+    userlist = User.objects.filter(is_staff=False).annotate(
+        num_posts = Count('data'),
+        recent = Max('data__date'),
+        total_dur = Sum('data__study_total_duration'),
+    ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
+
+    ctx['list'] = userlist
+
+    return render(request, 'rank.html', ctx)
+
 def top3(request):
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         if user.is_staff is False:
@@ -300,7 +318,7 @@ def top3(request):
 
 def announce(request):
     ctx={}
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -317,7 +335,7 @@ def announce(request):
 def main(request):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         ctx['username'] = username
     else:
@@ -403,7 +421,7 @@ def main(request):
 def confirm_delete_data(request, pk):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         loginname = request.user.username
         pass
     else:
@@ -423,7 +441,7 @@ def confirm_delete_data(request, pk):
 def confirm_delete_announce(request, pk):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         loginname = request.user.username
         pass
     else:
@@ -478,7 +496,7 @@ def group_profile(request, user):
     memuser = User.objects.get(username=user)
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['user'] = user
@@ -502,7 +520,7 @@ def group_profile(request, user):
 def profile(request):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -523,7 +541,7 @@ def profile(request):
 def staff_profile(request):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -548,7 +566,7 @@ def logout_view(request):
 def signup(request):
     ctx = {}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -574,7 +592,7 @@ def signup(request):
 
 def announce_write(request):
     ctx = {}
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         ctx['username'] = username
         user = User.objects.get(username = username)
@@ -606,7 +624,7 @@ def announce_detail(request, pk):
         'post': post,
     }
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username = username)
         ctx['userobj'] = user
@@ -620,7 +638,7 @@ def announce_detail(request, pk):
 def change_password(request):
     ctx = {}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -656,7 +674,7 @@ def change_password(request):
 def add_member(request):
     ctx={}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         ctx['username'] = username
     else:
@@ -700,7 +718,7 @@ def confirm_delete_user(request, pk):
 def popup(request):
     ctx = {}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         orig, created = Verification.objects.get_or_create(user=user)
@@ -745,7 +763,7 @@ def popup(request):
 def inquiry(request):
     ctx = {}
 
-    if request.user:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user

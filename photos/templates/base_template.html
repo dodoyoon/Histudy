@@ -38,10 +38,11 @@
 
 			<div class="navbar justify-content-end">
 				<div class="d-flex">
+					<a class="btn btn-secondary btn-sm mr-2" href="{% url 'rank' %}">Rank</a>
 					{% if username %}
-						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
+						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 					{% else %}
-						<a class="btn btn-secondary btn-sm btn-outline-secondary active" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
+						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
 					{% endif %}
 				</div>
 			</div>
