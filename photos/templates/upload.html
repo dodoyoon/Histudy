@@ -97,9 +97,9 @@
         </div>
 
         <hr>
-        <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}'); countdown(); show_countdown()">코드생성</button>
+        <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}'); countdown({{code_time}}); show_countdown()">코드생성</button>
 
-        <div id="countdown_div" style="visibility:hidden">코드가 소멸하기까지 <span id="time">10:00</span> 남았어요!</div>
+        <div id="countdown_div" style="visibility:hidden">코드가 소멸하기까지 <span id="time"></span> 남았어요!</div>
         <hr>
         <h5>참여 멤버</h5>
         {% for participator in form.participator %}

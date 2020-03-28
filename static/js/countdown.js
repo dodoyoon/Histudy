@@ -20,17 +20,33 @@ function startTimer(duration, display) {
             if(minutes == 0 && seconds == 0){
                 is_timer_set = false ;
                 clearTimeout(timerId);
+                // hide_countdown();
             }
         }, 1000);
     }
 }
 
-function countdown() {
+function countdown(code_time) {
+    code_time = 60 * 10 - code_time;
+
     if (is_timer_set == false){
         is_timer_set = true ;
-        var tenMinutes = 60 * 10,
-            display = document.querySelector('#time');
-        startTimer(tenMinutes, display);
+        var display = document.querySelector('#time');
+
+        minutes = parseInt(code_time / 60, 10);
+        seconds = parseInt(code_time % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+
+        if(code_time == 600){
+            display.innerHTML = "10:00";
+        }else{
+            display.innerHTML = minutes + ":" + seconds;
+        }
+
+        startTimer(code_time, display);
     }
 };
 

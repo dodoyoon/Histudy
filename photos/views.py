@@ -74,6 +74,15 @@ def data_upload(request):
     is_mobile = request.user_agent.is_mobile
     is_tablet = request.user_agent.is_tablet
 
+    now_time = timezone.localtime()
+    time_diff = now_time - user.verification.code_when_saved
+
+
+    if (60*10 - time_diff.seconds) > 0:
+        ctx['code_time'] = time_diff.seconds
+    else:
+        ctx['code_time'] = 0
+
     if request.method == "GET":
         if is_mobile or is_tablet:
             form = DataForm(user=request.user, is_mobile=True)
@@ -94,9 +103,6 @@ def data_upload(request):
                 obj.idgroup = 1
 
             if user.verification.code is not None:
-                now_time = timezone.localtime()
-                time_diff = now_time - user.verification.code_when_saved
-
                 if (time_diff.seconds)/60 < 10:
                     obj.code = user.verification.code
                     obj.code_when_saved = user.verification.code_when_saved
@@ -515,7 +521,7 @@ def group_profile(request, user):
     ctx['list'] = memberList
 
     return render(request, 'group_profile.html', ctx)
-    
+
 
 def profile(request):
     ctx={}
