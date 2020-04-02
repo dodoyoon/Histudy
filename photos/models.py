@@ -32,14 +32,14 @@ class Member(models.Model):
 class Data(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
-    title = models.CharField(max_length=30, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
     text = models.TextField(null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
     author = models.TextField(max_length=100, null=True, blank=True)
     participator = models.ManyToManyField(Member)
     code = models.IntegerField(blank=True, null=True)
     code_when_saved = models.DateTimeField(null=True, blank=True)
-    study_start_time = models.CharField(max_length=50, blank=True, null=True)
+    study_start_time = models.CharField(max_length=100, blank=True, null=True)
     study_total_duration = models.IntegerField(default=0)
     idgroup = models.IntegerField(blank=True, null=True)
 
