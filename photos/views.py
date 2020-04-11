@@ -179,18 +179,17 @@ def data_edit(request, pk):
 
     if request.method == "GET":
         if is_mobile or is_tablet:
-            form = DataForm(user=request.user, is_mobile=True)
+            form = DataForm(user=request.user, is_mobile=True, instance=post)
             form.set_is_mobile()
         else:
-            form = DataForm(user=request.user, is_mobile=False)
+            form = DataForm(user=request.user, is_mobile=False, instance=post)
             form.set_is_mobile()
     elif request.method == "POST":
-        form = DataForm(request.POST, request.FILES, user=request.user)
+        form = DataForm(request.POST, request.FILES, user=request.user, instance=post)
         if form.is_valid():
             print(form.cleaned_data)
             post.title = form.cleaned_data['title']
             post.text = form.cleaned_data['text']
-            post.image = form.cleaned_data['image']
             post.participator.set(form.cleaned_data['participator'])
             post.study_start_time = form.cleaned_data['study_start_time']
             post.study_total_duration = form.cleaned_data['study_total_duration']

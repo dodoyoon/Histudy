@@ -88,13 +88,6 @@
         id="dataform"
     >
         {% csrf_token %}
-        <h5>인증샷 올리기</h5>
-        <div class="filebox">
-          <label for="ex_file">사진촬영/이미지업로드</label>
-          {{ form.image }}
-          <input type="text" id="fileName"  name="fileName">
-        </div>
-
         <hr>
         <h5>참여 멤버</h5>
         {% for participator in form.participator %}
