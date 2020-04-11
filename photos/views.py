@@ -144,6 +144,85 @@ def data_upload(request):
     return render(request, 'upload.html', ctx)
 
 
+def data_edit(request, pk):
+    ctx={}
+
+    if request.user.is_authenticated:
+        username = request.user.username
+        ctx['username'] = request.user.username
+    else:
+        return redirect('loginpage')
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+        if user.is_staff is True:
+            return redirect('userList')
+    else:
+        return redirect('loginpage')
+
+    is_mobile = request.user_agent.is_mobile
+    is_tablet = request.user_agent.is_tablet
+
+
+    # now_time = timezone.localtime()
+    # time_diff = now_time - user.verification.code_when_saved
+    #
+    #
+    # if (60*10 - time_diff.seconds) > 0:
+    #     ctx['code_time'] = time_diff.seconds
+    # else:
+    #     ctx['code_time'] = 0
+
+    # find the target post
+    post = Data.objects.get(id=pk)
+
+    if request.method == "GET":
+        if is_mobile or is_tablet:
+            form = DataForm(user=request.user, is_mobile=True)
+            form.set_is_mobile()
+        else:
+            form = DataForm(user=request.user, is_mobile=False)
+            form.set_is_mobile()
+    elif request.method == "POST":
+        form = DataForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            print(form.cleaned_data)
+            post.title = form.cleaned_data['title']
+            post.text = form.cleaned_data['text']
+            post.image = form.cleaned_data['image']
+            post.participator.set(form.cleaned_data['participator'])
+            post.study_start_time = form.cleaned_data['study_start_time']
+            post.study_total_duration = form.cleaned_data['study_total_duration']
+
+            post.save()
+            return redirect('detail', pk)
+
+
+        #     latestid = Data.objects.filter(author=username).order_by('-id')
+        #     if latestid:
+        #         obj.idgroup = latestid[0].idgroup + 1
+        #     else:
+        #         obj.idgroup = 1
+        #
+        #
+        #
+        #     num = user.userinfo.num_posts
+        #     user.userinfo.num_posts = num + 1
+        #     user.userinfo.most_recent = obj.date
+        #     user.userinfo.name = username
+        #     user.save()
+        #     obj.save()
+        #     messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
+        #     return HttpResponseRedirect(reverse('main'))
+        # else:
+        #     messages.warning(request, '참여멤버를 지정해주세요.', extra_tags='alert')
+
+    ctx['form'] = form
+    ctx['userobj'] = user
+
+    return render(request, 'edit.html', ctx)
+
 @csrf_exempt
 def csv_upload(request):
     ctx = {}

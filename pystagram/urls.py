@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from photos.views import detail, announce_write, announce_detail, confirm_delete_announce, confirm_delete_member, confirm_delete_user
-from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce, inquiry
+from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce, inquiry, data_edit
 from photos.views import data_upload, top3, group_profile, rank
 from django.urls import include
 from django.urls import path
@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'^summernote/', include('django_summernote.urls')),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+    url(r'^photos/(?P<pk>[0-9]+)/edit', data_edit, name='edit'),
 ]
 
 urlpatterns += static('/upload_files/', document_root=settings.MEDIA_ROOT)

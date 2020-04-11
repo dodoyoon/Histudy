@@ -1,0 +1,139 @@
+{% extends 'base_template.html' %}
+
+{% block script %}
+{% load static %}
+
+<!-- for infinite scroll -->
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous">
+</script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<style>
+    .filebox label {
+        display: inline-block;
+        padding: .5em .75em;
+        color: #101010;
+        font-size: inherit;
+        line-height: normal;
+        vertical-align: middle;
+        background-color: #FFFFFF;
+        cursor: pointer;
+        border: 1px solid #000000;
+        border-radius: .25em;
+        -webkit-transition: background-color 0.2s;
+        transition: background-color 0.2s;
+    }
+
+    .filebox label:hover {
+        background-color: #303030;
+        color: #FFFFFF;
+    }
+
+    .filebox label:active {
+        background-color: #367c36;
+    }
+
+    .filebox input[type="file"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+</style>
+<script>
+    var fileTarget = $('.filebox .ex_file');
+
+    fileTarget.on('change', function(){ // 값이 변경되면
+        if(window.FileReader){ // modern browser
+            var filename = $(this)[0].files[0].name;
+        }else{ // old IE
+            var filename = $(this).val().split('/').pop().split('\\').pop(); // 파일명만 추출
+        }  // 추출한 파일명 삽입
+        $(this).siblings('.fileName').val(filename);
+    });
+</script>
+
+<script>
+    function open_page(url) {
+        newPage=window.open(url);
+    }
+</script>
+
+
+<h2>스터디모임 보고서 수정</h2>
+
+<div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
+    <br>
+
+
+    <form
+        method="POST"
+        action=""
+        enctype="multipart/form-data"
+        id="dataform"
+    >
+        {% csrf_token %}
+        <h5>인증샷 올리기</h5>
+        <div class="filebox">
+          <label for="ex_file">사진촬영/이미지업로드</label>
+          {{ form.image }}
+          <input type="text" id="fileName"  name="fileName">
+        </div>
+
+        <hr>
+        <h5>참여 멤버</h5>
+        {% for participator in form.participator %}
+            <span>{{ participator }}</span>
+            <br>
+        {% endfor %}
+        <div id="my-text-box"></div>
+        <hr>
+        <h5>스터디 시작 시간 입력</h5>
+        {{ form.study_start_time }}
+        <hr>
+        <h5>스터디 시간 입력(분 단위)</h5>
+        {{ form.study_total_duration }}
+        <hr>
+        <h5>스터디 내용</h5>
+        {{ form.title }}
+        {{ form.text }}
+        <p id="demo"></p>
+        <p>
+            <br>
+            <button id='submit' type="submit" class="btn btn-dark btn-block" disabled=true>등록</button>
+        </p>
+    </form>
+</div>
+
+<script>
+var checkBoxes = $(":input[id^=id_participator]")
+checkBoxes.click(function(){
+    //alert(checkBoxes.length);
+    //alert(checkBoxes.filter(':checked').length);
+    if(checkBoxes.filter(':checked').length<1){
+        //alert("disabled false")
+        $('#submit').prop('disabled', true);
+    }else{
+        $('#submit').prop('disabled', false);
+    }
+});
+$(":input[id^=id_participator]").change();
+</script>
+
+
+{% endblock %}
