@@ -55,16 +55,10 @@ def detail(request, pk):
     now_time = timezone.localtime()
     time_diff = now_time - data.date
 
-    print(">>>" + str(time_diff.seconds))
-
     if time_diff.seconds / 3600 < 1 :
         ctx['can_edit'] = True
     else:
         ctx['can_edit'] = False
-
-    # if (60*10 - time_diff.seconds) > 0:
-
-
 
     return render(request, 'detail.html', ctx)
 
