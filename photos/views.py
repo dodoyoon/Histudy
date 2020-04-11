@@ -52,6 +52,20 @@ def detail(request, pk):
         'memberList': memberList,
     }
 
+    now_time = timezone.localtime()
+    time_diff = now_time - data.date
+
+    print(">>>" + str(time_diff.seconds))
+
+    if time_diff.seconds / 3600 < 1 :
+        ctx['can_edit'] = True
+    else:
+        ctx['can_edit'] = False
+
+    # if (60*10 - time_diff.seconds) > 0:
+
+
+
     return render(request, 'detail.html', ctx)
 
 # For Random Code Generator
@@ -136,7 +150,7 @@ def data_upload(request):
             messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
             return HttpResponseRedirect(reverse('main'))
         else:
-            messages.warning(request, '참여멤버를 지정해주세요.', extra_tags='alert')
+            messages.warning(request, '모든 내용이 정확하게 입력되었는지 확인해주세요.', extra_tags='alert')
 
     ctx['form'] = form
     ctx['userobj'] = user
@@ -165,10 +179,6 @@ def data_edit(request, pk):
     is_tablet = request.user_agent.is_tablet
 
 
-    # now_time = timezone.localtime()
-    # time_diff = now_time - user.verification.code_when_saved
-    #
-    #
     # if (60*10 - time_diff.seconds) > 0:
     #     ctx['code_time'] = time_diff.seconds
     # else:
@@ -187,7 +197,7 @@ def data_edit(request, pk):
     elif request.method == "POST":
         form = DataForm(request.POST, request.FILES, user=request.user, instance=post)
         if form.is_valid():
-            print(form.cleaned_data)
+            # print(form.cleaned_data)
             post.title = form.cleaned_data['title']
             post.text = form.cleaned_data['text']
             post.participator.set(form.cleaned_data['participator'])
@@ -195,27 +205,11 @@ def data_edit(request, pk):
             post.study_total_duration = form.cleaned_data['study_total_duration']
 
             post.save()
+
+            messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
             return redirect('detail', pk)
-
-
-        #     latestid = Data.objects.filter(author=username).order_by('-id')
-        #     if latestid:
-        #         obj.idgroup = latestid[0].idgroup + 1
-        #     else:
-        #         obj.idgroup = 1
-        #
-        #
-        #
-        #     num = user.userinfo.num_posts
-        #     user.userinfo.num_posts = num + 1
-        #     user.userinfo.most_recent = obj.date
-        #     user.userinfo.name = username
-        #     user.save()
-        #     obj.save()
-        #     messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
-        #     return HttpResponseRedirect(reverse('main'))
-        # else:
-        #     messages.warning(request, '참여멤버를 지정해주세요.', extra_tags='alert')
+        else:
+            messages.warning(request, '모든 내용이 정확하게 입력되었는지 확인해주세요.', extra_tags='alert')
 
     ctx['form'] = form
     ctx['userobj'] = user
