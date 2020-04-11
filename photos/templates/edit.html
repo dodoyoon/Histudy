@@ -108,7 +108,7 @@
         <p id="demo"></p>
         <p>
             <br>
-            <button id='submit' type="submit" class="btn btn-dark btn-block" disabled=true>등록</button>
+            <button id='submit' type="submit" class="btn btn-dark btn-block">등록</button>
         </p>
     </form>
 </div>
@@ -125,6 +125,15 @@ checkBoxes.click(function(){
         $('#submit').prop('disabled', false);
     }
 });
+window.onload(function(){
+    alert("load");
+    if(checkBoxes.filter(':checked').length<1){
+        //alert("disabled false")
+        $('#submit').prop('disabled', true);
+    }else{
+        $('#submit').prop('disabled', false);
+    }
+})
 $(":input[id^=id_participator]").change();
 </script>
 
