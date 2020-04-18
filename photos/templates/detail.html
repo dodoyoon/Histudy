@@ -35,12 +35,12 @@
     <p><b>코드생성시간</b>: {{post.code_when_saved}}</p>
     {% endif %}
 
-    <!-- {% if can_edit %} -->
-    <!-- <hr> -->
-    <!-- <p class="d-flex flex-row-reverse"> -->
-        <!-- <a class="btn btn-outline-primary" href="{% url 'edit' post.pk %}">게시물수정</a> -->
-    <!-- </p> -->
-    <!-- {% endif %} -->
+    {% if can_edit %}
+    <hr>
+    <p class="d-flex flex-row-reverse">
+        <a class="btn btn-outline-primary" href="{% url 'edit' post.pk %}">게시물수정</a>
+    </p>
+    {% endif %}
 
     <hr>
     <p class="d-flex flex-row-reverse">
