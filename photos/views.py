@@ -314,15 +314,15 @@ def csv_upload(request):
     return render(request, 'csv_upload.html', ctx)
 
 def csv_export(request):
-    member = Data.objects.raw('SELECT student_id AS id, name, username FROM photos_member JOIN auth_user ON photos_member.user_id = auth_user.id')
+    member = Data.objects.raw('SELECT username, student_id AS id, name, count_id, count_mem, (count_mem/count_id*100) AS percent FROM photos_member JOIN auth_user ON photos_member.user_id = auth_user.id JOIN (SELECT user_id, COUNT(id) AS count_id FROM photos_data GROUP BY user_id) AS count_data ON photos_member.user_id = count_data.user_id JOIN (SELECT member_id, COUNT(data_id) AS count_mem FROM photos_data_participator JOIN photos_member ON photos_member.id = photos_data_participator.member_id GROUP BY member_id) AS participator ON photos_member.id = participator.member_id WHERE username <> "test"')
     response = HttpResponse(content_type = 'text/csv')
     response['Content-Disposition'] = 'attachment; filename="student_final.csv"'
 
     writer = csv.writer(response, delimiter=',')
-    writer.writerow(['student_id', 'name', 'group'])
+    writer.writerow(['group', 'student_id', 'name', '%'])
 
     for stu in member:
-        writer.writerow([stu.id, stu.name, stu.username])
+        writer.writerow([stu.username, stu.id, stu.name, stu.percent])
 
     return response
 
