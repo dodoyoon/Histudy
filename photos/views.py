@@ -26,7 +26,7 @@ import json, random
 
 #CSV import
 from tablib import Dataset
-import magic, copy
+import magic, copy, csv
 
 # for Infinite Scroll
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -313,6 +313,19 @@ def csv_upload(request):
         ctx['username'] = username
 
     return render(request, 'csv_upload.html', ctx)
+
+def csv_export(request):
+    member = Data.objects.raw('SELECT student_id AS id, name, username FROM photos_member JOIN auth_user ON photos_member.user_id = auth_user.id')
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachment; filename="student_final.csv"'
+
+    writer = csv.writer(response, delimiter=',')
+    writer.writerow(['student_id', 'name', 'group'])
+
+    for stu in member:
+        writer.writerow([stu.id, stu.name, stu.username])
+
+    return response
 
 def photoList(request, user):
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
