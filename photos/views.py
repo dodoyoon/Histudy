@@ -308,7 +308,6 @@ def csv_upload(request):
 
         messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
 
-
     if username:
         ctx['username'] = username
 
@@ -326,6 +325,29 @@ def csv_export(request):
         writer.writerow([stu.id, stu.name, stu.username])
 
     return response
+
+@csrf_exempt
+def export_page(request):
+    ctx={}
+    if request.user.is_authenticated:
+        username = request.user.username
+        ctx['username'] = request.user.username
+    else:
+        return redirect('loginpage')
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+    else:
+        return redirect('loginpage')
+
+
+    if request.method == 'POST':
+        criterion = request.POST['criterion']
+        print(">>>>>criterion: " + criterion)
+
+
+    return render(request, 'export_page.html', ctx)
 
 def photoList(request, user):
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
