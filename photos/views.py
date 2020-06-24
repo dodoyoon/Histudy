@@ -912,3 +912,42 @@ def inquiry(request):
         ctx['username'] = username
 
     return render(request, 'inquiry.html', ctx)
+
+
+from django.conf import settings
+import zipfile
+from wsgiref.util import FileWrapper
+
+def img_download(request):
+    # image.image.url
+    ctx={}
+    if request.user.is_authenticated:
+        username = request.user.username
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('loginpage')
+
+
+    user_list = User.objects.all()
+
+    for user in user_list:
+        if not user.is_staff:
+            # print(">>> User: " + user.username)
+            image_list = Data.objects.raw('SELECT * FROM photos_data WHERE user_id = %s', [user.pk])
+
+            file_name = user.username + ".zip"
+            export_zip = zipfile.ZipFile("/Users/sungminkim/Downloads/"+file_name, 'w')
+
+            for image in image_list:
+                product_image_url = image.image.url
+                image_path = settings.MEDIA_ROOT+ product_image_url[13:]
+                image_name = product_image_url; # Get your file name here.
+
+                export_zip.write(image_path, image_name)
+
+            export_zip.close()
+
+    return render(request, 'staff_profile.html', ctx)

@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^password/$', views.change_password, name='change_password'),
     path('add_member/', views.add_member, name='add_member'),
     path('popup/', views.popup, name='popup'),
+    path('img_download/', views.img_download, name='img_download'),
 ]
