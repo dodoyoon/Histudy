@@ -419,6 +419,8 @@ def rank(request):
 
     return render(request, 'rank.html', ctx)
 
+
+
 def top3(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -676,6 +678,24 @@ def staff_profile(request):
         ctx['username'] = username
 
     return render(request, 'staff_profile.html', ctx)
+
+def grid(request):
+    ctx = {}
+    if request.user.is_authenticated:
+        username = request.user.username
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('loginpage')
+
+    if username:
+        ctx['username'] = username
+
+    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id')
+
+    return render(request, 'grid.html', ctx)
 
 def logout_view(request):
     try:

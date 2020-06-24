@@ -21,7 +21,7 @@ from django.conf import settings
 
 from photos.views import detail, announce_write, announce_detail, confirm_delete_announce, confirm_delete_member, confirm_delete_user
 from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce, inquiry, data_edit, export_page
-from photos.views import data_upload, top3, group_profile, rank
+from photos.views import data_upload, top3, group_profile, rank, grid
 from django.urls import include
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^photos/csv_upload/$', csv_upload, name='csv_upload'),
     url(r'^export_page/$', export_page, name='export_page'),
     url(r'^user/', userList, name='userList'),
+    url(r'^grid/', grid, name='grid'),
     url(r'^announce/write/$', announce_write, name='announce_write'),
     url(r'^announce/(?P<pk>[0-9]+)/$', announce_detail, name='announce_detail'),
     url(r'^announce/', announce, name='announce'),
