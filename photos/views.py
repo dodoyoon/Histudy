@@ -984,6 +984,7 @@ def img_download(request):
                 export_zip.write(image_path, file_name)
                 cnt += 1
 
+    export_zip.close()
 
     wrapper = FileWrapper(open('/home/chickadee/projects/HGUstudy/histudy_img.zip', 'rb'))
     content_type = 'application/zip'
@@ -991,5 +992,6 @@ def img_download(request):
 
     response = HttpResponse(wrapper, content_type=content_type)
     response['Content-Disposition'] = content_disposition
+
 
     return response
