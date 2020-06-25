@@ -937,13 +937,12 @@ def img_download(request):
 
     user_list = User.objects.all()
 
+    export_zip = zipfile.ZipFile("histudy_img.zip", 'w')
+
     for user in user_list:
         if not user.is_staff:
             # print(">>> User: " + user.username)
             image_list = Data.objects.raw('SELECT * FROM photos_data WHERE user_id = %s', [user.pk])
-
-            file_name = user.username + ".zip"
-            export_zip = zipfile.ZipFile(location+file_name, 'w')
 
             for image in image_list:
                 product_image_url = image.image.url
@@ -952,6 +951,14 @@ def img_download(request):
 
                 export_zip.write(image_path, image_name)
 
-            export_zip.close()
 
-    return render(request, 'staff_profile.html', ctx)
+    wrapper = FileWrapper(open('histudy_img.zip', 'rb'))
+    content_type = 'application/zip'
+    content_disposition = 'attachment; filename=export.zip'
+
+    response = HttpResponse(wrapper, content_type=content_type)
+    response['Content-Disposition'] = content_disposition
+
+    export_zip.close()
+    
+    return response
