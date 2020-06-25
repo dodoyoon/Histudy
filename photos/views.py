@@ -693,7 +693,7 @@ def grid(request):
     if username:
         ctx['username'] = username
 
-    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id WHERE author <> "test" ORDER BY date DESC')
+    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id WHERE author <> "test" AND author IS NOT NULL ORDER BY date DESC')
 
     return render(request, 'grid.html', ctx)
 
