@@ -693,7 +693,7 @@ def grid(request):
     if username:
         ctx['username'] = username
 
-    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id')
+    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id WHERE author <> "test" ORDER BY date DESC')
 
     return render(request, 'grid.html', ctx)
 
@@ -939,7 +939,7 @@ def img_download(request):
             image_list = Data.objects.raw('SELECT * FROM photos_data WHERE user_id = %s', [user.pk])
 
             file_name = user.username + ".zip"
-            export_zip = zipfile.ZipFile("/Users/sungminkim/Downloads/"+file_name, 'w')
+            export_zip = zipfile.ZipFile("/Users/dodo4.0/Downloads/"+file_name, 'w')
 
             for image in image_list:
                 product_image_url = image.image.url
