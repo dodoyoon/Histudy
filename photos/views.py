@@ -992,5 +992,4 @@ def img_download(request):
     response = HttpResponse(wrapper, content_type=content_type)
     response['Content-Disposition'] = content_disposition
 
-    export_zip.close()
     return response
