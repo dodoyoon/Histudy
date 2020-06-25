@@ -353,6 +353,34 @@ def export_page(request):
 
     return render(request, 'export_page.html', ctx)
 
+@csrf_exempt
+def export_mile(request):
+    ctx={}
+    if request.user.is_authenticated:
+        username = request.user.username
+        ctx['username'] = request.user.username
+    else:
+        return redirect('loginpage')
+
+    if username:
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+    else:
+        return redirect('loginpage')
+
+    query = 'SELECT name, student_id AS id, username, count_id, count_mem FROM photos_member JOIN auth_user ON photos_member.user_id = auth_user.id JOIN (SELECT user_id, COUNT(id) AS count_id FROM photos_data GROUP BY user_id) AS count_data ON photos_member.user_id = count_data.user_id JOIN (SELECT member_id, COUNT(data_id) AS count_mem FROM photos_data_participator JOIN photos_member ON photos_member.id = photos_data_participator.member_id GROUP BY member_id) AS participator ON photos_member.id = participator.member_id WHERE username <> "test" AND count_id >=10'
+    member = Data.objects.raw(query)
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachment; filename="histudy_mileage_list.csv"'
+
+    writer = csv.writer(response, delimiter=',')
+    writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수'])
+
+    for stu in member:
+        writer.writerow([stu.name, stu.id, stu.username, stu.count_id, stu.count_mem])
+
+    return response
+
 def photoList(request, user):
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
     listuser = user
@@ -693,7 +721,7 @@ def grid(request):
     if username:
         ctx['username'] = username
 
-    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id WHERE author <> "test" AND author IS NOT NULL ORDER BY date DESC')
+    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL ORDER BY date DESC')
 
     return render(request, 'grid.html', ctx)
 
@@ -947,6 +975,7 @@ def img_download(request):
 
             for image in image_list:
                 product_image_url = image.image.url
+                
                 image_path = settings.MEDIA_ROOT+ product_image_url[13:]
                 image_name = product_image_url; # Get your file name here.
 
