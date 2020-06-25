@@ -368,16 +368,16 @@ def export_mile(request):
     else:
         return redirect('loginpage')
 
-    query = 'SELECT name, student_id AS id, username, count_id, count_mem FROM photos_member JOIN auth_user ON photos_member.user_id = auth_user.id JOIN (SELECT user_id, COUNT(id) AS count_id FROM photos_data GROUP BY user_id) AS count_data ON photos_member.user_id = count_data.user_id JOIN (SELECT member_id, COUNT(data_id) AS count_mem FROM photos_data_participator JOIN photos_member ON photos_member.id = photos_data_participator.member_id GROUP BY member_id) AS participator ON photos_member.id = participator.member_id WHERE username <> "test" AND count_id >=10'
+    query = 'SELECT name, student_id AS id, username, count_id, count_mem, sum_study FROM photos_member LEFT JOIN auth_user ON photos_member.user_id = auth_user.id LEFT JOIN (SELECT user_id, COUNT(id) AS count_id FROM photos_data GROUP BY user_id) AS count_data ON photos_member.user_id = count_data.user_id LEFT JOIN (select member_id, count(data_id) AS count_mem, sum(study_total_duration) AS sum_study from photos_data_participator join photos_data on photos_data_participator.data_id = photos_data.id group by member_id) AS participator ON photos_member.id = participator.member_id WHERE username <> "test" ORDER BY username, name'
     member = Data.objects.raw(query)
     response = HttpResponse(content_type = 'text/csv')
     response['Content-Disposition'] = 'attachment; filename="histudy_mileage_list.csv"'
 
     writer = csv.writer(response, delimiter=',')
-    writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수'])
+    writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
 
     for stu in member:
-        writer.writerow([stu.name, stu.id, stu.username, stu.count_id, stu.count_mem])
+        writer.writerow([stu.name, stu.id, stu.username, stu.count_id, stu.count_mem, stu.sum_study])
 
     return response
 
