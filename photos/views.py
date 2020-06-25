@@ -917,9 +917,13 @@ def inquiry(request):
 from django.conf import settings
 import zipfile
 from wsgiref.util import FileWrapper
+import os
 
 def img_download(request):
-    # image.image.url
+    home = os.path.expanduser('~')
+    location = os.path.join(home, 'Downloads')
+    location += '/'
+
     ctx={}
     if request.user.is_authenticated:
         username = request.user.username
@@ -939,7 +943,7 @@ def img_download(request):
             image_list = Data.objects.raw('SELECT * FROM photos_data WHERE user_id = %s', [user.pk])
 
             file_name = user.username + ".zip"
-            export_zip = zipfile.ZipFile("/Users/dodo4.0/Downloads/"+file_name, 'w')
+            export_zip = zipfile.ZipFile(location+file_name, 'w')
 
             for image in image_list:
                 product_image_url = image.image.url
