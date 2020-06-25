@@ -373,6 +373,7 @@ def export_mile(request):
     response = HttpResponse(content_type = 'text/csv')
     response['Content-Disposition'] = 'attachment; filename="histudy_mileage_list.csv"'
 
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=',')
     writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
 
