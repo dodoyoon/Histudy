@@ -965,7 +965,7 @@ def img_download(request):
 
     user_list = User.objects.all()
 
-    export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'x')
+    export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'w')
 
     for user in user_list:
         if not user.is_staff:
