@@ -946,6 +946,17 @@ from django.conf import settings
 import zipfile
 from wsgiref.util import FileWrapper
 import os
+from stat import S_IXUSR
+ZIP_UNIX_SYSTEM = 3
+
+def extract_all_with_executable_permission(zf, target_dir):
+  for info in zf.infolist():
+    extracted_path = zf.extract(info, target_dir)
+
+    if info.create_system == ZIP_UNIX_SYSTEM and os.path.isfile(extracted_path):
+      unix_attributes = info.external_attr >> 16
+      if unix_attributes & S_IXUSR:
+        os.chmod(extracted_path, os.stat(extracted_path).st_mode | S_IXUSR)
 
 def img_download(request):
     home = os.path.expanduser('~')
@@ -965,13 +976,13 @@ def img_download(request):
 
     user_list = User.objects.all()
 
+    with zipfile.ZipFile("histudy_img.zip", 'w') as export_zip:
+        extract_all_with_executable_permission(export_zip, '/home/chickadee/projects/HGUstudy')
+
     for user in user_list:
         if not user.is_staff:
             # print(">>> User: " + user.username)
             image_list = Data.objects.raw('SELECT * FROM photos_data WHERE user_id = %s', [user.pk])
-
-            file_name = user.username + ".zip"
-            export_zip = zipfile.ZipFile(location+file_name, 'w')
 
             for image in image_list:
                 product_image_url = image.image.url
@@ -981,6 +992,14 @@ def img_download(request):
 
                 export_zip.write(image_path, image_name)
 
-            export_zip.close()
 
-    return render(request, 'staff_profile.html', ctx)
+    wrapper = FileWrapper(open('histudy_img.zip', 'rb'))
+    content_type = 'application/zip'
+    content_disposition = 'attachment; filename=export.zip'
+
+    response = HttpResponse(wrapper, content_type=content_type)
+    response['Content-Disposition'] = content_disposition
+
+    export_zip.close()
+
+    return response
