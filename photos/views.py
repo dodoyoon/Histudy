@@ -965,7 +965,7 @@ def img_download(request):
 
     user_list = User.objects.all()
 
-    export_zip = zipfile.ZipFile("histudy_img.zip", 'x')
+    export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'x')
 
     for user in user_list:
         if not user.is_staff:
@@ -981,7 +981,7 @@ def img_download(request):
                 export_zip.write(image_path, image_name)
 
 
-    wrapper = FileWrapper(open('histudy_img.zip', 'rb'))
+    wrapper = FileWrapper(open('/home/chickadee/projects/HGUstudy/histudy_img.zip', 'rb'))
     content_type = 'application/zip'
     content_disposition = 'attachment; filename=histudy_img.zip'
 
