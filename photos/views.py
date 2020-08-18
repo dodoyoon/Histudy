@@ -496,7 +496,15 @@ def top3(request):
     else:
         return redirect('loginpage')
 
-    toplist = User.objects.raw('SELECT id, username, num_posts, date FROM (SELECT id, username, (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date FROM auth_user) AS D WHERE num_posts>9 AND username <> "test" ORDER BY date LIMIT 3')
+    year = current_year()
+    sem = current_sem()
+
+    toplist = User.objects.raw('SELECT id, username, num_posts, date FROM \
+                                (SELECT auth_user.id, username, year, sem, \
+	                            (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, \
+	                            (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date \
+                                FROM auth_user INNER JOIN photos_userinfo ON auth_user.id = photos_userinfo.user_id) AS D \
+                                WHERE num_posts>9 AND username <> "test" AND year=%s AND sem=%s ORDER BY date LIMIT 3', [year, sem])
 
     ctx = {
         'list' : toplist,
@@ -759,7 +767,10 @@ def grid(request):
     if username:
         ctx['username'] = username
 
-    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL ORDER BY date DESC')
+    year = current_year()
+    sem = current_sem()
+
+    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id INNER JOIN photos_userinfo ON photos_data.user_id = photos_userinfo.user_id WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL AND year=%s AND sem =%s ORDER BY date DESC', [year, sem])
 
     return render(request, 'grid.html', ctx)
 
