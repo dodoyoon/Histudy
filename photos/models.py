@@ -71,11 +71,22 @@ class Announcement(models.Model):
         url = reverse_lazy('announce_detail', kwargs={'pk': self.pk})
         return url
 
+import datetime
+
+def current_year():
+    return datetime.date.today().year
+
+def current_sem():
+    if datetime.date.today().month < 8 and datetime.date.today().month > 1:
+        return 1
+    else:
+        return 2
 
 class UserInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    year = models.IntegerField(default=current_year)
+    sem = models.IntegerField(default=current_sem)
     name = models.TextField()
-    img = models.ImageField(upload_to='profile/', null=True)
     num_posts = models.IntegerField(default=0)
     most_recent = models.DateTimeField(null=True, blank=True)
 

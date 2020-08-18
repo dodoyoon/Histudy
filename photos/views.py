@@ -34,6 +34,15 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # for device detection
 from django_user_agents.utils import get_user_agent
 
+def current_year():
+    return datetime.date.today().year
+
+def current_sem():
+    if datetime.date.today().month < 8 and datetime.date.today().month > 1:
+        return 1
+    else:
+        return 2
+
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
     ctx={}
@@ -406,6 +415,8 @@ def photoList(request, user):
 
 
 
+import datetime
+from django.db.models import Q
 def userList(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -414,12 +425,35 @@ def userList(request):
             return redirect('main')
     else:
         return redirect('loginpage')
+    
+    year_sem = ''
+    if request.GET.get('featured'):
+        year_sem = request.GET.get('featured')
+        print(year_sem)
+        #listings = Listing.objects.filter(featured_choices=featured_filter)
+    else:
+        print("else")
+        #listings = Listing.objects.all()
+        
 
-    userlist = User.objects.filter(is_staff=False).annotate(
+    #지속적이지 못함 수정 자동화 요망
+    if year_sem == '20-1':
+        year = 2020
+        sem = 1
+    elif year_sem == '20-2':
+        year = 2020
+        sem = 2
+    else:
+        year = current_year()
+        sem = current_sem()
+
+    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year=year) & Q(userinfo__sem=sem)).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
         total_dur = Sum('data__study_total_duration'),
     ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
+
+    print(userlist)
 
     ctx = {
         'list' : userlist,
@@ -438,7 +472,10 @@ def rank(request):
         ctx['user'] = user
         ctx['username'] = username
 
-    userlist = User.objects.filter(is_staff=False).annotate(
+    year = current_year()
+    sem = current_sem()
+
+    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year=year) & Q(userinfo__sem=sem)).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
         total_dur = Sum('data__study_total_duration'),
@@ -991,3 +1028,4 @@ def img_download(request):
 
     export_zip.close()
     return response
+
