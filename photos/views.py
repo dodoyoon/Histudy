@@ -418,6 +418,7 @@ def photoList(request, user):
 import datetime
 from django.db.models import Q
 def userList(request):
+    ctx={}
     if request.user.is_authenticated:
         username = request.user.username
         user = request.user
@@ -425,24 +426,15 @@ def userList(request):
             return redirect('main')
     else:
         return redirect('loginpage')
-    
-    year_sem = ''
-    if request.GET.get('featured'):
-        year_sem = request.GET.get('featured')
-        print(year_sem)
-        #listings = Listing.objects.filter(featured_choices=featured_filter)
-    else:
-        print("else")
-        #listings = Listing.objects.all()
-        
 
-    #지속적이지 못함 수정 자동화 요망
-    if year_sem == '20-1':
-        year = 2020
-        sem = 1
-    elif year_sem == '20-2':
-        year = 2020
-        sem = 2
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['sem']
+
+        if year != 'None' and sem != 'None':
+            ctx['chosen_year'] = year
+            ctx['chosen_sem'] = sem
+
     else:
         year = current_year()
         sem = current_sem()
@@ -453,12 +445,9 @@ def userList(request):
         total_dur = Sum('data__study_total_duration'),
     ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
 
-    print(userlist)
 
-    ctx = {
-        'list' : userlist,
-        'userobj' : user,
-    }
+    ctx['list'] = userlist
+    ctx['userobj'] = user
     if username:
         ctx['username'] = username
 
@@ -1043,4 +1032,3 @@ def img_download(request):
 
 
     return response
-

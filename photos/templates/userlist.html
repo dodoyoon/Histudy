@@ -7,13 +7,58 @@
     <a style="float:right;" href="{% url 'grid' %}" class="btn btn-outline-primary">GRID</a>
 </h4>
 
-<form action="{% url 'userList' %}" method="get">
-    <label for="featured">년도-학기</label>
-    <select name="featured">
-        <option value="20-1">20-1</option>
-        <option value="20-2">20-2</option>
+<form
+    method="POST"
+    action=""
+    enctype="multipart/form-data"
+    id="dataform"
+    class="form-inline"
+>
+    {% csrf_token %}
+
+    <span>
+		<h6>연도</h6>
+        <select name="year" id="year">
+            <option val="None">None</option>
+            <option val="2020"> 2020 </option>
+            <option val="2021"> 2021 </option>
+            <option val="2022"> 2022 </option>
+        </select>
+	</span>
+
+    {% if chosen_year %}
+    <script type="text/javascript">
+      document.getElementById('year').value = "{{chosen_year}}";
+    </script>
+    {% else %}
+    <script type="text/javascript">
+      document.getElementById('year').value = "None";
+    </script>
+    {% endif %}
+
+    <span>
+		<h6>학기</h6>
+        <select name="sem" id="sem">
+            <option val="None">None</option>
+            <option val="1"> 1 </option>
+            <option val="2"> 2 </option>
+        </select>
+	</span>
+
+
+    {% if chosen_sem %}
+    <script type="text/javascript">
+      document.getElementById('sem').value = "{{chosen_sem}}";
+    </script>
+    {% else %}
+    <script type="text/javascript">
+      document.getElementById('sem').value = "None";
+    </script>
+    {% endif %}
+
+
     <input type="submit" value="Filter" />
-</form>    
+</form>
 
 <br>
 
