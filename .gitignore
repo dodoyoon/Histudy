@@ -8,3 +8,4 @@ myvenv
 *.gif
 *.png
 uploads/
+**/migrations/**
