@@ -1,0 +1,24 @@
+{% extends "base_template.html" %}
+{% block content %}
+<style></style>
+<h1>write announcement</h1>
+<div class="container-fluid mb-4" id="form_container">
+    <br>
+    <form
+        method="POST"
+        action=""
+        enctype="multipart/form-data"
+        id="dataform"
+    >
+        {% csrf_token %}
+        {{ form.title }}
+        {{ form.content }}
+
+        <p>
+            <br>
+            <button id='submit' type="submit" class="btn-dark btn-block">+</button>
+        </p>
+    </form>
+</div>
+
+{% endblock %}

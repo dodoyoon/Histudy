@@ -1,0 +1,35 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+
+<div class="container-fluid" >
+    {% if post %}
+    <div class="d-flex justify-content-between">
+    <p><b>{{post.title}}</b></p>
+    <p><b>날짜</b>: {{post.date}}</p>
+    </div>
+    <hr>
+
+    {% autoescape off %}
+    <p>{{post.content|linebreaksbr}}</p>
+    {% endautoescape %}
+    {% endif %}
+
+    <hr>
+</div>
+
+<div class="d-flex justify-content-end">
+    {% if user.is_staff %}
+    <p class="d-flex flex-row-reverse">
+        <a class="btn btn-danger btn-sm confirm-delete" style="float:right;" href="{% url 'confirm_delete_announce' post.pk%}">공지 삭제</a>
+    </p>
+    {% endif %}
+</div>
+
+<script>
+    $(document).on('click', '.confirm-delete', function(){
+    return confirm('게시물을 삭제하시겠습니까?');
+    })
+</script>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base_template.html" %}
+{% block content %}
+  <h2>TOP 3
+      <a style="float:right;" href="{% url 'userList' %}" class="btn btn-outline-primary">Total Ranking</a>
+  </h2>
+  <br>
+
+  <table class="table table-inbox table-hover">
+  <tbody>
+      <tr>
+          <th></th>
+          <th>group</th>
+          <th>10번째 스터디 날짜</th>
+          <th>총 스터디 수</th>
+      </tr>
+   {% for group in list %}
+      <tr class="unread">
+          <td class="inbox-small-cells">
+              {{ forloop.counter }}
+          </td>
+
+          <td class="view-message  dont-show">
+              {{ group.username }}
+          </td>
+          <td>
+            {{ group.date }}
+          </td>
+          <td class="view-message ">{{ group.num_posts }}</td>
+      </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+
+{% endblock %}

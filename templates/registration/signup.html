@@ -1,0 +1,47 @@
+{% extends "base_template.html" %}
+{% block content %}
+
+
+<div class="d-flex align-items-center justify-content-center mt-4" id="login">
+    <!-- Default form register -->
+    <form class="text-center border border-light p-5" action="{% url 'signup' %}" method="POST" id="add_form">
+        {% csrf_token %}
+
+        <p class="h4 mb-4">Sign up</p>
+
+        <!-- Email -->
+        <input type="text" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="User Id" name="username" required="required">
+
+        <!-- Password -->
+        <input type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password" name="password1" required="required">
+
+        <input type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Confirm Password" name="password2" required="required">
+
+        <!-- <small class="form-text text-muted mb-4">
+            At least 8 characters and 1 digit
+        </small> -->
+
+        <!-- Sign up button -->
+        <button class="btn btn-info my-4 btn-block bg-dark" type="submit">Sign up</button>
+
+        <!-- Social register -->
+        <!-- <p>or sign up with:</p>
+
+        <a href="#" class="mx-2" role="button"><i class="fab fa-facebook-f light-blue-text"></i></a>
+        <a href="#" class="mx-2" role="button"><i class="fab fa-twitter light-blue-text"></i></a>
+        <a href="#" class="mx-2" role="button"><i class="fab fa-linkedin-in light-blue-text"></i></a>
+        <a href="#" class="mx-2" role="button"><i class="fab fa-github light-blue-text"></i></a>
+
+        <hr> -->
+
+        <!-- Terms of service -->
+        <!-- <p>By clicking
+            <em>Sign up</em> you agree to our
+            <a href="" target="_blank">terms of service</a> -->
+
+    </form>
+    <!-- Default form register -->
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+<h2>스터디 Pass 횟수 입력</h2>
+<form
+    method="POST"
+    action=""
+    enctype="multipart/form-data"
+    id="dataform"
+>
+    {% csrf_token %}
+    <input type="number" min="0" max="100" name="criterion" />
+    <button id='submit' type="submit" class="btn btn-dark btn-block">등록</button>
+</form>
+{% endblock %}
