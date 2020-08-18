@@ -1006,18 +1006,22 @@ def img_download(request):
     export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'w')
 
     for user in user_list:
+        cnt=1
         if not user.is_staff:
             # print(">>> User: " + user.username)
             image_list = Data.objects.raw('SELECT * FROM photos_data WHERE user_id = %s', [user.pk])
 
             for image in image_list:
+                file_name = user.username + '_' + str(cnt) + '.png'
                 product_image_url = image.image.url
 
                 image_path = settings.MEDIA_ROOT+ product_image_url[13:]
                 image_name = product_image_url; # Get your file name here.
 
-                export_zip.write(image_path, image_name)
+                export_zip.write(image_path, file_name)
+                cnt += 1
 
+    export_zip.close()
 
     wrapper = FileWrapper(open('/home/chickadee/projects/HGUstudy/histudy_img.zip', 'rb'))
     content_type = 'application/zip'
@@ -1026,6 +1030,6 @@ def img_download(request):
     response = HttpResponse(wrapper, content_type=content_type)
     response['Content-Disposition'] = content_disposition
 
-    export_zip.close()
+
     return response
 

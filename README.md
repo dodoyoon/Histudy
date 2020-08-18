@@ -1,2 +1,3 @@
-# Simple_Django_Project
-Photo Veirification Web App
+# Histudy ver. 1
+
+used in 2020-01
