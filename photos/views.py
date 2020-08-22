@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Data, Announcement, Member, Verification
+from .models import Data, Announcement, Member, Verification, Year
 from .forms import DataForm, AnnouncementForm, MemberForm
 
 from django.views.generic import ListView
@@ -427,6 +427,8 @@ def userList(request):
     else:
         return redirect('loginpage')
 
+    ctx['years'] = Year.objects.all()
+
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
@@ -441,7 +443,7 @@ def userList(request):
         ctx['year'] = year
         ctx['sem'] = sem
 
-    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year=year) & Q(userinfo__sem=sem)).annotate(
+    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
         total_dur = Sum('data__study_total_duration'),
@@ -466,7 +468,7 @@ def rank(request):
     year = current_year()
     sem = current_sem()
 
-    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year=year) & Q(userinfo__sem=sem)).annotate(
+    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
         total_dur = Sum('data__study_total_duration'),
@@ -489,6 +491,7 @@ def top3(request):
     else:
         return redirect('loginpage')
 
+    ctx['years'] = Year.objects.all()
 
     if request.method == 'POST':
         year = request.POST['year']
@@ -509,7 +512,7 @@ def top3(request):
                                 (SELECT auth_user.id, username, year, sem, \
 	                            (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, \
 	                            (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date \
-                                FROM auth_user INNER JOIN photos_userinfo ON auth_user.id = photos_userinfo.user_id) AS D \
+                                FROM auth_user INNER JOIN photos_userinfo ON auth_user.id = photos_userinfo.user_id INNER JOIN photos_year ON photos_userinfo.year_id = photos_year.id) AS D \
                                 WHERE num_posts>9 AND username <> "test" AND year=%s AND sem=%s ORDER BY date LIMIT 3', [year, sem])
 
 
@@ -772,6 +775,8 @@ def grid(request):
     if username:
         ctx['username'] = username
 
+    ctx['years'] = Year.objects.all()
+
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
@@ -787,7 +792,10 @@ def grid(request):
         ctx['sem'] = sem
 
 
-    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id INNER JOIN photos_userinfo ON photos_data.user_id = photos_userinfo.user_id WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL AND year=%s AND sem =%s ORDER BY date DESC', [year, sem])
+    ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN \
+        (SELECT MAX(id) as id FROM photos_data GROUP BY author) \
+            last_updates ON last_updates.id = photos_data.id INNER JOIN photos_userinfo ON photos_data.user_id = photos_userinfo.user_id INNER JOIN photos_year ON photos_userinfo.year_id = photos_year.id\
+                WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL AND year=%s AND sem =%s ORDER BY date DESC', [year, sem])
 
     return render(request, 'grid.html', ctx)
 

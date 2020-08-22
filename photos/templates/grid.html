@@ -14,9 +14,9 @@
 
             <div>
                 <select name="year" id="year" class="custom-select">
-                    <option val="2020"> 2020 </option>
-                    <option val="2021"> 2021 </option>
-                    <option val="2022"> 2022 </option>
+                    {% for year in years %}
+                    <option val={{ year.year }}> {{ year.year }} </option>
+                    {% endfor %}
                 </select>
             </div>
 
