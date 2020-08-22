@@ -2,8 +2,23 @@
 {% block content %}
 
 <div class="container">
-  <h4>TOP 3</h4>
 
+
+  <div class="tableDiv mypage_table">
+  <ul class="nav nav-tabs">
+      <li class="nav-item">
+      <a class="nav-link" href="{% url 'userList' %}">스터디 그룹 목록</a>
+      </li>
+      <li class="nav-item">
+      <a class="nav-link" href="{% url 'grid' %}">스터디 사진 모음</a>
+      </li>
+      <li class="nav-item">
+      <a class="nav-link active">TOP 3</a>
+      </li>
+  </ul>
+  </div>
+
+  <br>
 
   <div>
       <form
@@ -16,7 +31,7 @@
           {% csrf_token %}
 
           <div>
-            <select name="year" id="year" class="custom-select">
+            <select name="year" id="year" class="custom-select" style="float: right;">
                 {% for year in years %}
                 <option val={{ year.year }}> {{ year.year }} </option>
                 {% endfor %}
