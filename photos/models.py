@@ -82,9 +82,12 @@ def current_sem():
     else:
         return 2
 
+class Year(models.Model):
+    year = models.IntegerField()
+
 class UserInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    year = models.IntegerField(default=current_year)
+    year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True, blank=True)
     sem = models.IntegerField(default=current_sem)
     name = models.TextField()
     num_posts = models.IntegerField(default=0)
@@ -100,7 +103,6 @@ def create_user(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_data(sender, instance, **kwargs):
     instance.userinfo.save()
-
 
 class Verification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
