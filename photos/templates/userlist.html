@@ -8,10 +8,22 @@
 {% block content %}
 
 <div class="container">
-<h4>스터디그룹 현황
-    <a style="float:right;" href="{% url 'top3' %}" class="btn btn-outline-secondary">TOP 3</a>
-    <a style="float:right;" href="{% url 'grid' %}" class="btn btn-outline-secondary">GRID</a>
-</h4>
+
+<div class="tableDiv mypage_table">
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+    <a class="nav-link active">스터디 그룹 목록</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" href="{% url 'grid' %}">스터디 사진 모음</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" href="{% url 'top3' %}">TOP 3</a>
+    </li>
+</ul>
+</div>
+
+<br>
 
 <div>
     <form
