@@ -1,8 +1,60 @@
 {% extends "base_template.html" %}
 {% block content %}
-  <h2>TOP 3
-      <a style="float:right;" href="{% url 'userList' %}" class="btn btn-outline-primary">Total Ranking</a>
-  </h2>
+
+<div class="container">
+  <h4>TOP 3</h4>
+
+
+  <div>
+      <form
+          method="POST"
+          action=""
+          enctype="multipart/form-data"
+          id="dataform"
+          class="form-inline"
+      >
+          {% csrf_token %}
+
+          <div>
+              <select name="year" id="year" class="custom-select">
+                  <option val="2020"> 2020 </option>
+                  <option val="2021"> 2021 </option>
+                  <option val="2022"> 2022 </option>
+              </select>
+          </div>
+
+          {% if chosen_year %}
+          <script type="text/javascript">
+            document.getElementById('year').value = "{{chosen_year}}";
+          </script>
+          {% else %}
+          <script type="text/javascript">
+            document.getElementById('year').value = "{{year}}";
+          </script>
+          {% endif %}
+
+          <div>
+              <select name="sem" id="sem" class="custom-select">
+                  <option val="1"> 1 </option>
+                  <option val="2"> 2 </option>
+              </select>
+          </div>
+
+          {% if chosen_sem %}
+          <script type="text/javascript">
+            document.getElementById('sem').value = "{{chosen_sem}}";
+          </script>
+          {% else %}
+          <script type="text/javascript">
+            document.getElementById('sem').value = "{{sem}}";
+          </script>
+          {% endif %}
+
+          <input type="submit" value="Load" class="btn btn-secondary" />
+      </form>
+  </div>
+
+
   <br>
 
   <table class="table table-inbox table-hover">
@@ -30,5 +82,5 @@
   {% endfor %}
   </tbody>
   </table>
-
+</div>
 {% endblock %}

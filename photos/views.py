@@ -438,6 +438,8 @@ def userList(request):
     else:
         year = current_year()
         sem = current_sem()
+        ctx['year'] = year
+        ctx['sem'] = sem
 
     userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year=year) & Q(userinfo__sem=sem)).annotate(
         num_posts = Count('data'),
@@ -477,6 +479,8 @@ def rank(request):
 
 
 def top3(request):
+    ctx={}
+
     if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
@@ -485,8 +489,21 @@ def top3(request):
     else:
         return redirect('loginpage')
 
-    year = current_year()
-    sem = current_sem()
+
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['sem']
+
+        if year != 'None' and sem != 'None':
+            ctx['chosen_year'] = year
+            ctx['chosen_sem'] = sem
+
+    else:
+        year = current_year()
+        sem = current_sem()
+        ctx['year'] = year
+        ctx['sem'] = sem
+
 
     toplist = User.objects.raw('SELECT id, username, num_posts, date FROM \
                                 (SELECT auth_user.id, username, year, sem, \
@@ -495,10 +512,9 @@ def top3(request):
                                 FROM auth_user INNER JOIN photos_userinfo ON auth_user.id = photos_userinfo.user_id) AS D \
                                 WHERE num_posts>9 AND username <> "test" AND year=%s AND sem=%s ORDER BY date LIMIT 3', [year, sem])
 
-    ctx = {
-        'list' : toplist,
-        'userobj' : user,
-    }
+
+    ctx['list'] = toplist
+    ctx['userobj'] = user
     if username:
         ctx['username'] = username
 
@@ -756,8 +772,20 @@ def grid(request):
     if username:
         ctx['username'] = username
 
-    year = current_year()
-    sem = current_sem()
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['sem']
+
+        if year != 'None' and sem != 'None':
+            ctx['chosen_year'] = year
+            ctx['chosen_sem'] = sem
+
+    else:
+        year = current_year()
+        sem = current_sem()
+        ctx['year'] = year
+        ctx['sem'] = sem
+
 
     ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN (SELECT MAX(id) as id FROM photos_data GROUP BY author) last_updates ON last_updates.id = photos_data.id INNER JOIN photos_userinfo ON photos_data.user_id = photos_userinfo.user_id WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL AND year=%s AND sem =%s ORDER BY date DESC', [year, sem])
 
