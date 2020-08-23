@@ -1,8 +1,10 @@
 {% extends "base_template.html" %}
 {% block content %}
+
+<div class="container">
 <h2>공지사항
     {% if user.is_staff %}
-    <a style="float:right;" href="{% url 'announce_write' %}" class="btn btn-outline-primary">공지 추가</a>
+    <a style="float:right;" href="{% url 'announce_write' %}" class="btn btn-outline-secondarys">공지 추가</a>
     {% else %}
     <a style="float:right;" href="{% url 'inquiry' %}" class="btn btn-outline-primary">문의</a>
     {% endif %}
@@ -31,6 +33,8 @@
 {% endfor %}
 </tbody>
 </table>
+
+</div>
 
 <script>
     $(document).on('click', '.confirm-delete', function(){
