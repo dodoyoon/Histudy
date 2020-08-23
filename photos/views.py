@@ -825,8 +825,26 @@ def signup(request):
     if request.method == 'POST':
         if request.POST["password1"] == request.POST["password2"]:
             user = User.objects.create_user(
-                    username=request.POST["username"],
-                    password=request.POST["password1"])
+                username=request.POST["username"],
+                password=request.POST["password1"]
+            )
+
+            this_year = current_year()
+            try:
+                year = Year.objects.get(year = this_year)
+            except Year.DoesNotExist :
+                year = None
+
+            if not year:
+                year = Year(year=this_year)
+                year.save()
+                user.userinfo.year = year
+                user.userinfo.sem = current_sem()
+            else:
+                user.userinfo.year = year
+                user.userinfo.sem = current_sem()
+
+            user.save()
             messages.success(request, '유저가 성공적으로 추가되었습니다.', extra_tags='alert')
             return redirect("staff_profile")
 
