@@ -276,13 +276,30 @@ def csv_upload(request):
                         member_email = elem[2]
                         Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
                     else:
-                        User.objects.create_user(username=user_id,
+                        user = User.objects.create_user(username=user_id,
                                             email=user_email,
                                             password=user_pw)
                         member_student_id = elem[1]
                         member_name = elem[3]
                         member_email = elem[2]
                         Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
+
+                        this_year = current_year()
+                        try:
+                            year = Year.objects.get(year = this_year)
+                        except Year.DoesNotExist :
+                            year = None
+
+                        if not year:
+                            year = Year(year=this_year)
+                            year.save()
+                            user.userinfo.year = year
+                            user.userinfo.sem = current_sem()
+                        else:
+                            user.userinfo.year = year
+                            user.userinfo.sem = current_sem()
+
+                        user.save()
 
 
                 group_list.clear()
@@ -305,13 +322,30 @@ def csv_upload(request):
                 member_email = elem[2]
                 Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
             else:
-                User.objects.create_user(username=user_id,
+                user = User.objects.create_user(username=user_id,
                                     email=user_email,
                                     password=user_pw)
                 member_student_id = elem[1]
                 member_name = elem[3]
                 member_email = elem[2]
                 Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
+
+                this_year = current_year()
+                try:
+                    year = Year.objects.get(year = this_year)
+                except Year.DoesNotExist :
+                    year = None
+
+                if not year:
+                    year = Year(year=this_year)
+                    year.save()
+                    user.userinfo.year = year
+                    user.userinfo.sem = current_sem()
+                else:
+                    user.userinfo.year = year
+                    user.userinfo.sem = current_sem()
+
+                user.save()
 
         group_list.clear()
 
@@ -1034,12 +1068,46 @@ def inquiry(request):
     return render(request, 'inquiry.html', ctx)
 
 
+def img_download_page(request):
+    ctx={}
+
+    if request.user.is_authenticated:
+        username = request.user.username
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('loginpage')
+
+    years = Year.objects.all()
+    ctx['years'] = years
+
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['sem']
+
+        if year != 'None' and sem != 'None':
+            ctx['chosen_year'] = year
+            ctx['chosen_sem'] = sem
+
+            year_obj = Year.objects.get(year=year)
+            return redirect('img_download', year_obj.pk)
+
+    else:
+        year = current_year()
+        sem = current_sem()
+        ctx['year'] = year
+        ctx['sem'] = sem
+
+    return render(request, 'img_download_page.html', ctx)
+
 from django.conf import settings
 import zipfile
 from wsgiref.util import FileWrapper
 import os
 
-def img_download(request):
+def img_download(request, pk):
     home = os.path.expanduser('~')
     location = os.path.join(home, 'Downloads')
     location += '/'
@@ -1055,7 +1123,8 @@ def img_download(request):
         return redirect('loginpage')
 
 
-    user_list = User.objects.all()
+    year = Year.objects.get(pk=pk)
+    user_list = User.objects.filter(userinfo__year=year)
 
     export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'w')
 
