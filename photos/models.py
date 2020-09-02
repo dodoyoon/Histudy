@@ -9,12 +9,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator
 
-class Member(models.Model):
+class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     student_id = models.PositiveIntegerField(validators=[MaxValueValidator(99999999)], null=True)
     name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    attendance = models.IntegerField(default=0)
 
     def delete(self, *args, **kwargs):
         self.student_id.delete()
@@ -29,19 +28,38 @@ class Member(models.Model):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
         return url
 
+
+class Group(models.Model):
+    no = models.IntegerField(unique=True)
+
+import datetime
+
+def current_year():
+    return datetime.date.today().year
+
+def current_sem():
+    if datetime.date.today().month < 8 and datetime.date.today().month > 1:
+        return 1
+    else:
+        return 2
+
+class Year(models.Model):
+    year = models.IntegerField()
+
 class Data(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    year = models.ForeginKey(Year)
+    sem = models.IntegerField(default=current_sem)
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
     title = models.CharField(max_length=100, blank=True, null=True)
     text = models.TextField(null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
-    author = models.TextField(max_length=100, null=True, blank=True)
-    participator = models.ManyToManyField(Member)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    participator = models.ManyToManyField(User)
     code = models.IntegerField(blank=True, null=True)
     code_when_saved = models.DateTimeField(null=True, blank=True)
     study_start_time = models.CharField(max_length=100, blank=True, null=True)
     study_total_duration = models.IntegerField(default=0)
-    idgroup = models.IntegerField(blank=True, null=True)
 
     def delete(self, *args, **kwargs):
         self.image.delete()
@@ -52,7 +70,11 @@ class Data(models.Model):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
         return url
 
-
+class UserInfo(models.Model):
+    year = models.ForeginKey(Year)
+    sem = models.IntegerField(default=current_sem)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User)
 
 class Announcement(models.Model):
     author = models.TextField(max_length=100)
@@ -71,38 +93,6 @@ class Announcement(models.Model):
         url = reverse_lazy('announce_detail', kwargs={'pk': self.pk})
         return url
 
-import datetime
-
-def current_year():
-    return datetime.date.today().year
-
-def current_sem():
-    if datetime.date.today().month < 8 and datetime.date.today().month > 1:
-        return 1
-    else:
-        return 2
-
-class Year(models.Model):
-    year = models.IntegerField()
-
-class UserInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True, blank=True)
-    sem = models.IntegerField(default=current_sem)
-    name = models.TextField()
-    num_posts = models.IntegerField(default=0)
-    most_recent = models.DateTimeField(null=True, blank=True)
-
-@receiver(post_save, sender=User)
-def create_user(sender, instance, created, **kwargs):
-    if created:
-        this_user = UserInfo.objects.create(user=instance)
-        this_user.name = instance.username
-        this_user.save()
-
-@receiver(post_save, sender=User)
-def save_data(sender, instance, **kwargs):
-    instance.userinfo.save()
 
 class Verification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
