@@ -22,6 +22,7 @@
 	</style>
 
 	<body>
+	{% load socialaccount %}
 
 		<nav class="navbar navbar-expand-md navbar-light bg-dark mb-4">
 			<div class="navbar justify-content-start">
@@ -42,7 +43,7 @@
 					{% if username %}
 						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 					{% else %}
-						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% url 'loginpage' %}?next={{request.path}}">Login</a>
+						<a class="btn btn-secondary btn-sm btn-outline-secondary active mr-2" href="{% provider_login_url 'google' %}">Login</a>
 					{% endif %}
 				</div>
 			</div>
