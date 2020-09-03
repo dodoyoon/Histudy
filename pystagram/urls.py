@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('', main, name='main'),
     path('', include('photos.urls')),
+    path('accounts/', include('allauth.urls')),
     url(r'^delete_confirm/(?P<pk>\d+)$', confirm_delete_data, name='confirm_delete_data'),
     url(r'^announce_delete_confirm/(?P<pk>\d+)$', confirm_delete_announce, name='confirm_delete_announce'),
     url(r'^member_delete_confirm/(?P<pk>\d+)$', confirm_delete_member, name='confirm_delete_member'),
