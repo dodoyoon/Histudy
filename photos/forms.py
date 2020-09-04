@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django import forms
 
 from django.contrib.auth.models import User
-from .models import Data, Announcement, Member
+from .models import Data, Announcement, Profile
 from django_summernote.widgets import SummernoteWidget
 
 class DataForm(forms.ModelForm):
@@ -22,11 +22,11 @@ class DataForm(forms.ModelForm):
             'onchange': "javascript:document.getElementById('fileName').value = this.value",
         }
     ))
-
+    '''
     participator = forms.ModelMultipleChoiceField(
         widget = forms.CheckboxSelectMultiple,
         queryset = Member.objects.none()
-    )
+    )'''
 
 
     study_start_time = forms.CharField(label='', widget=forms.TextInput(
@@ -68,11 +68,8 @@ class DataForm(forms.ModelForm):
                     }
             )
 
-
-
-
-
-class MemberForm(forms.ModelForm):
+'''
+class ProfileForm(forms.ModelForm):
     student_id = forms.IntegerField(label='', widget=forms.NumberInput(
             attrs={
                 'class': 'form-control',
@@ -96,7 +93,7 @@ class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = ('student_id', 'name', 'email')
-
+'''
 
 class AnnouncementForm(forms.ModelForm):
     title = forms.CharField(label='', widget=forms.TextInput(

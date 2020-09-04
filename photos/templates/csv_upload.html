@@ -4,6 +4,13 @@
 <p>Upload csv file containing user information.</p>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    년도(ex. 2020): <input type="number" name="year"> <br>
+    학기: 
+    <select id="semester" name="semester">
+      <option value="spring">1</option>
+      <option value="fall">2</option>
+    </select> 
+    <br> <br>
     <input type="file" name="myfile">
     <button type="submit">Upload</button>
   </form>

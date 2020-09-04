@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Data, Announcement, Member, Verification, Year
-from .forms import DataForm, AnnouncementForm, MemberForm
+from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentID, Group
+from .forms import DataForm, AnnouncementForm#, ProfileForm
 
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
@@ -233,9 +233,33 @@ def csv_upload(request):
         return redirect('loginpage')
 
     if request.method == 'POST':
-        dataset = Dataset()
-        new_usergroup = request.FILES['myfile']
+        '''
+        year = request.POST['year']
+        if request.POST['semester'] == 'spring':
+            semester = 1
+        elif request.POST['semester'] == 'fall':
+            semester = 2
 
+        if int(year) < 2000: 
+            pass # 에러 처리 
+        else:
+            try:
+                yearobj = Year.objects.get(year=year)
+            except:
+                yearobj = Year.objects.create(year=year)
+
+        checklist = UserInfo.objects.filter(year=yearobj, sem=semester)
+        if checklist.exists():
+            pass #에러 처리
+        
+        '''
+        dataset = Dataset()
+        data = request.FILES
+        print(data)
+        new_usergroup = data['myfile']
+        print(new_usergroup)
+
+        
         csv_file = copy.deepcopy(new_usergroup)
 
         blob = csv_file.read()
@@ -246,7 +270,7 @@ def csv_upload(request):
             encoding = "euc-kr"
 
         imported_data = dataset.load(new_usergroup.read().decode(encoding), format='csv')
-
+        
 
         if imported_data is None:
             messages.warning(request, 'CSV파일의 Encoding이 UTF-8이거나 EUC-KR형식으로 변형해주세요.', extra_tags='alert')
@@ -254,7 +278,39 @@ def csv_upload(request):
 
         group_no = "1"
         group_list = []
+
+        year = request.POST['year']
+        if request.POST['semester'] == 'spring':
+            semester = 1
+        elif request.POST['semester'] == 'fall':
+            semester = 2
+
+        if int(year) < 2000: 
+            pass # 에러 처리 
+        else:
+            try:
+                yearobj = Year.objects.get(year=year)
+            except:
+                yearobj = Year.objects.create(year=year)
+
+        print("year", year, "sem", semester)
+
         for data in imported_data:
+            print("data", data)
+            try:
+                groupobj = Group.objects.get(no=data[0])
+            except:
+                groupobj = Group.objects.create(no=data[0])
+            
+            try:
+                idobj = StudentID.objects.get(student_id=data[1])
+            except:
+                idobj = StudentID.objects.create(student_id=data[1])
+            UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, user=idobj)
+            
+
+            '''
+            
             if group_no == data[0]:
                 group_list.append(data)
 
@@ -350,7 +406,7 @@ def csv_upload(request):
         group_list.clear()
 
         messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
-
+'''
     if username:
         ctx['username'] = username
 
@@ -477,17 +533,19 @@ def userList(request):
         ctx['year'] = year
         ctx['sem'] = sem
 
+    '''
     userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
         num_posts = Count('data'),
         recent = Max('data__date'),
         total_dur = Sum('data__study_total_duration'),
     ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
-
+    
 
     ctx['list'] = userlist
     ctx['userobj'] = user
     if username:
         ctx['username'] = username
+    '''
 
     return render(request, 'userlist.html', ctx)
 
