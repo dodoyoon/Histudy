@@ -75,55 +75,57 @@
     }
 </script>
 
+<div class="container">
+    <h2>스터디모임 보고서 작성</h2>
 
-<h2>스터디모임 보고서 작성</h2>
-
-<div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
-    <br>
+    <div class="container-fluid mb-4" id="form_container" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
+        <br>
 
 
-    <form
-        method="POST"
-        action=""
-        enctype="multipart/form-data"
-        id="dataform"
-    >
-        {% csrf_token %}
-        <h5>인증샷 올리기</h5>
-        <div class="filebox">
-          <label for="ex_file">사진촬영/이미지업로드</label>
-          {{ form.image }}
-          <input type="text" id="fileName"  name="fileName">
-        </div>
+        <form
+            method="POST"
+            action=""
+            enctype="multipart/form-data"
+            id="dataform"
+        >
+            {% csrf_token %}
+            <h5>인증샷 올리기</h5>
+            <div class="filebox">
+              <label for="ex_file">사진촬영/이미지업로드</label>
+              {{ form.image }}
+              <input type="text" id="fileName"  name="fileName">
+            </div>
 
-        <hr>
-        <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}'); countdown({{code_time}}); show_countdown()">코드생성</button>
+            <hr>
+            <button class="btn btn-outline-dark" onclick="open_page('{% url 'popup' %}'); countdown({{code_time}}); show_countdown()">코드생성</button>
 
-        <div id="countdown_div" style="visibility:hidden">코드가 소멸하기까지 <span id="time"></span> 남았어요!</div>
-        <hr>
-        <h5>참여 멤버</h5>
-        {% for participator in form.participator %}
-            <span>{{ participator }}</span>
-            <br>
-        {% endfor %}
-        <div id="my-text-box"></div>
-        <hr>
-        <h5>스터디 시작 시간 입력</h5>
-        {{ form.study_start_time }}
-        <hr>
-        <h5>스터디 시간 입력(분 단위)</h5>
-        {{ form.study_total_duration }}
-        <hr>
-        <h5>스터디 내용</h5>
-        {{ form.title }}
-        {{ form.text }}
-        <p id="demo"></p>
-        <p>
-            <br>
-            <button id='submit' type="submit" class="btn btn-dark btn-block" disabled=true>등록</button>
-        </p>
-    </form>
+            <div id="countdown_div" style="visibility:hidden">코드가 소멸하기까지 <span id="time"></span> 남았어요!</div>
+            <hr>
+            <h5>참여 멤버</h5>
+            {% for participator in form.participator %}
+                <span>{{ participator }}</span>
+                <br>
+            {% endfor %}
+            <div id="my-text-box"></div>
+            <hr>
+            <h5>스터디 시작 시간 입력</h5>
+            {{ form.study_start_time }}
+            <hr>
+            <h5>스터디 시간 입력(분 단위)</h5>
+            {{ form.study_total_duration }}
+            <hr>
+            <h5>스터디 내용</h5>
+            {{ form.title }}
+            {{ form.text }}
+            <p id="demo"></p>
+            <p>
+                <br>
+                <button id='submit' type="submit" class="btn btn-dark btn-block" disabled=true>등록</button>
+            </p>
+        </form>
+    </div>
 </div>
+
 
 <script>
 var checkBoxes = $(":input[id^=id_participator]")

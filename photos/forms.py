@@ -12,8 +12,11 @@ class DataForm(forms.ModelForm):
         self.is_mobile = kwargs.pop('is_mobile', None)
 
         super(DataForm, self).__init__(*args, **kwargs)
-        if user:
-            self.fields['participator'].queryset = Member.objects.filter(user=user)
+        if user and user.profile.group is not None:
+            self.fields['participator'].queryset = User.objects.filter(profile__group=user.profile.group)
+
+
+        print(type(self.fields['participator'].queryset[0]))
 
     image = forms.ImageField(label='', widget=forms.ClearableFileInput(
         attrs={
@@ -22,11 +25,11 @@ class DataForm(forms.ModelForm):
             'onchange': "javascript:document.getElementById('fileName').value = this.value",
         }
     ))
-    '''
+
     participator = forms.ModelMultipleChoiceField(
         widget = forms.CheckboxSelectMultiple,
-        queryset = Member.objects.none()
-    )'''
+        queryset = User.objects.none()
+    )
 
 
     study_start_time = forms.CharField(label='', widget=forms.TextInput(

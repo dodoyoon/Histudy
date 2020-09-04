@@ -60,8 +60,8 @@ urlpatterns = [
 urlpatterns += static('/upload_files/', document_root=settings.MEDIA_ROOT)
 
 #Add Django site authentication urls (for login, logout, password management)
-urlpatterns += [
-    path('accounts/', include('photos.urls')),
-]
+# urlpatterns += [
+#     path('accounts/', include('photos.urls')),
+# ]
 
 urlpatterns += staticfiles_urlpatterns()

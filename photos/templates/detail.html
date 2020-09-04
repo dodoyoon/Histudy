@@ -1,52 +1,54 @@
 {% extends "base_template.html" %}
 {% block content %}
 
-<div class="container-fluid" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
-    {% if post %}
-    <p><img class="img-fluid mt-3" src="{{ post.image.url }}" alt=""> </p>
-    {% endif %}
-    <hr>
-    <p><b>제목</b>: {{post.title}}</p>
-    <hr>
-    <p><b>날짜</b>: {{post.date}}</p>
-    {% if post.study_start_time %}
-        <p><b>스터디 시작 시간</b>: {{post.study_start_time}}</p>
-    {% endif %}
+<div class="container">
+    <div class="container-fluid" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
+        {% if post %}
+        <p><img class="img-fluid mt-3" src="{{ post.image.url }}" alt=""> </p>
+        {% endif %}
+        <hr>
+        <p><b>제목</b>: {{post.title}}</p>
+        <hr>
+        <p><b>날짜</b>: {{post.date}}</p>
+        {% if post.study_start_time %}
+            <p><b>스터디 시작 시간</b>: {{post.study_start_time}}</p>
+        {% endif %}
 
-    {% if post.study_total_duration %}
-        <p><b>스터디한 시간</b>: {{post.study_total_duration}} 분</p>
-    {% endif %}
+        {% if post.study_total_duration %}
+            <p><b>스터디한 시간</b>: {{post.study_total_duration}} 분</p>
+        {% endif %}
 
-    <hr>
-    {% autoescape off %}
-    <p><b>내용</b>: {{post.text|linebreaksbr}}</p>
-    {% endautoescape %}
+        <hr>
+        {% autoescape off %}
+        <p><b>내용</b>: {{post.text|linebreaksbr}}</p>
+        {% endautoescape %}
 
-    <hr>
-    <p><b>참여 멤버</b></p>
-    <ul>
-        {% for member in memberList %}
-            <li>{{member}}</li>
-        {% endfor %}
-    </ul>
-    {% if post.code %}
-    <hr>
-    <p><b>확인코드</b>: {{post.code}}</p>
-    <p><b>코드생성시간</b>: {{post.code_when_saved}}</p>
-    {% endif %}
+        <hr>
+        <p><b>참여 멤버</b></p>
+        <ul>
+            {% for participator in participators %}
+                <li>{{participator}}</li>
+            {% endfor %}
+        </ul>
+        {% if post.code %}
+        <hr>
+        <p><b>확인코드</b>: {{post.code}}</p>
+        <p><b>코드생성시간</b>: {{post.code_when_saved}}</p>
+        {% endif %}
 
-    {% if can_edit %}
-    <hr>
-    <p class="d-flex flex-row-reverse">
-        <a class="btn btn-outline-primary" href="{% url 'edit' post.pk %}">게시물수정</a>
-    </p>
-    {% endif %}
+        {% if can_edit %}
+        <hr>
+        <p class="d-flex flex-row-reverse">
+            <a class="btn btn-outline-primary" href="{% url 'edit' post.pk %}">게시물수정</a>
+        </p>
+        {% endif %}
 
-    <hr>
-    <p class="d-flex flex-row-reverse">
-        <a href="{% url 'confirm_delete_data' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>
-    </p>
+        <hr>
+        <p class="d-flex flex-row-reverse">
+            <a href="{% url 'confirm_delete_data' post.pk %}" class = "btn btn-danger btn-sm confirm-delete" role = "button">게시물삭제</a>
+        </p>
 
+    </div>
 </div>
 
 <script>

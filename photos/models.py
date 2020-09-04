@@ -9,14 +9,18 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator
 
+class Group(models.Model):
+    no = models.IntegerField(unique=True)
+
 class StudentID(models.Model):
     student_id = models.PositiveIntegerField(validators=[MaxValueValidator(99999999)], null=True)
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     student_id = models.OneToOneField(StudentID, on_delete=models.CASCADE)
     name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
 
     def delete(self, *args, **kwargs):
         self.student_id.delete()
@@ -32,8 +36,6 @@ class Profile(models.Model):
         return url
 
 
-class Group(models.Model):
-    no = models.IntegerField(unique=True)
 
 import datetime
 

@@ -147,7 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/photos/'
+LOGIN_REDIRECT_URL = '/user_check/'
 
 
 from django.contrib.messages import constants as messages
@@ -200,4 +200,4 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SITE_ID = 3
+SITE_ID = 4
