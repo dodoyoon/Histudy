@@ -53,12 +53,13 @@ def detail(request, pk):
     else:
         return redirect('loginpage')
 
-    memberList = Member.objects.filter(data__pk=pk)
+    participators = data.participator.all()
+    print("detail participators: ", participators)
 
     ctx = {
         'post': data,
         'username': username,
-        'memberList': memberList,
+        'participators': participators,
     }
 
     now_time = timezone.localtime()
@@ -106,12 +107,10 @@ def data_upload(request):
 
     time_diff = now_time - user.verification.code_when_saved
 
-
     if (60*10 - time_diff.seconds) > 0:
         ctx['code_time'] = time_diff.seconds
     else:
         ctx['code_time'] = 0
-
 
     if request.method == "GET":
         if is_mobile or is_tablet:
@@ -124,9 +123,8 @@ def data_upload(request):
         form = DataForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             obj = form.save()
-            obj.user = user
-            obj.author = username
-            latestid = Data.objects.filter(author=username).order_by('-id')
+            obj.author = user
+            latestid = Data.objects.filter(author=user).order_by('-id')
             if latestid:
                 obj.idgroup = latestid[0].idgroup + 1
             else:
@@ -143,12 +141,11 @@ def data_upload(request):
                     user.verification.code_when_saved = None
                     messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
 
-            num = user.userinfo.num_posts
-            user.userinfo.num_posts = num + 1
-            user.userinfo.most_recent = obj.date
-            user.userinfo.name = username
+            # num = user.userinfo.num_posts
+            # user.userinfo.num_posts = num + 1
+            # user.userinfo.most_recent = obj.date
+            # user.userinfo.name = username
             user.save()
-
             obj.save()
             messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
             return HttpResponseRedirect(reverse('main'))
@@ -240,8 +237,8 @@ def csv_upload(request):
         elif request.POST['semester'] == 'fall':
             semester = 2
 
-        if int(year) < 2000: 
-            pass # 에러 처리 
+        if int(year) < 2000:
+            pass # 에러 처리
         else:
             try:
                 yearobj = Year.objects.get(year=year)
@@ -251,7 +248,7 @@ def csv_upload(request):
         checklist = UserInfo.objects.filter(year=yearobj, sem=semester)
         if checklist.exists():
             pass #에러 처리
-        
+
         '''
         dataset = Dataset()
         data = request.FILES
@@ -259,7 +256,7 @@ def csv_upload(request):
         new_usergroup = data['myfile']
         print(new_usergroup)
 
-        
+
         csv_file = copy.deepcopy(new_usergroup)
 
         blob = csv_file.read()
@@ -270,7 +267,7 @@ def csv_upload(request):
             encoding = "euc-kr"
 
         imported_data = dataset.load(new_usergroup.read().decode(encoding), format='csv')
-        
+
 
         if imported_data is None:
             messages.warning(request, 'CSV파일의 Encoding이 UTF-8이거나 EUC-KR형식으로 변형해주세요.', extra_tags='alert')
@@ -285,8 +282,8 @@ def csv_upload(request):
         elif request.POST['semester'] == 'fall':
             semester = 2
 
-        if int(year) < 2000: 
-            pass # 에러 처리 
+        if int(year) < 2000:
+            pass # 에러 처리
         else:
             try:
                 yearobj = Year.objects.get(year=year)
@@ -301,16 +298,16 @@ def csv_upload(request):
                 groupobj = Group.objects.get(no=data[0])
             except:
                 groupobj = Group.objects.create(no=data[0])
-            
+
             try:
                 idobj = StudentID.objects.get(student_id=data[1])
             except:
                 idobj = StudentID.objects.create(student_id=data[1])
             UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, user=idobj)
-            
+
 
             '''
-            
+
             if group_no == data[0]:
                 group_list.append(data)
 
@@ -539,7 +536,7 @@ def userList(request):
         recent = Max('data__date'),
         total_dur = Sum('data__study_total_duration'),
     ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
-    
+
 
     ctx['list'] = userlist
     ctx['userobj'] = user
@@ -649,71 +646,19 @@ def main(request):
     else:
         return redirect('loginpage')
 
-
-    is_mobile = request.user_agent.is_mobile
-    is_tablet = request.user_agent.is_tablet
-
-    if request.method == "GET":
-        if is_mobile or is_tablet:
-            form = DataForm(user=request.user, is_mobile=True)
-            form.set_is_mobile()
-        else:
-            form = DataForm(user=request.user, is_mobile=False)
-            form.set_is_mobile()
-
-    elif request.method == "POST":
-        form = DataForm(request.POST, request.FILES, user=request.user)
-        if form.is_valid():
-            obj = form.save()
-            obj.user = user
-            obj.author = username
-            latestid = Data.objects.filter(author=username).order_by('-id')
-            if latestid:
-                obj.idgroup = latestid[0].idgroup + 1
-            else:
-                obj.idgroup = 1
-
-            if user.verification.code is not None:
-                now_time = timezone.localtime()
-                time_diff = now_time - user.verification.code_when_saved
-
-                if (time_diff.seconds)/60 < 10:
-                    obj.code = user.verification.code
-                    obj.code_when_saved = user.verification.code_when_saved
-                    user.verification.code = None
-                    user.verification.code_when_saved = None
-                else:
-                    user.verification.code = None
-                    user.verification.code_when_saved = None
-                    messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
-
-            num = user.userinfo.num_posts
-            user.userinfo.num_posts = num + 1
-            user.userinfo.most_recent = obj.date
-            user.userinfo.name = username
-            user.save()
-
-            obj.save()
-            messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
-            return HttpResponseRedirect(reverse('main'))
-        else:
-            messages.warning(request, '참여멤버를 지정해주세요.', extra_tags='alert')
-
-
-    dataList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [username])
+    dataList = Data.objects.filter(author=user).order_by('-id')
 
     paginator = Paginator(dataList, 10)
     page = request.GET.get('page', 1)
 
     try:
-        pics = paginator.page(page)
+        posts = paginator.page(page)
     except PageNotAnInteger:
-        pics = paginator.page(1)
+        posts = paginator.page(1)
     except EmptyPage:
-        pics = paginator.page(paginator.num_pages)
+        posts = paginator.page(paginator.num_pages)
 
-    ctx['form'] = form
-    ctx['pics'] = pics
+    ctx['posts'] = posts
     ctx['userobj'] = user
 
     return render(request, 'main.html', ctx)
@@ -830,11 +775,25 @@ def profile(request):
     if username:
         ctx['username'] = username
 
-    memberList = Member.objects.filter(user=user).annotate(
-        num_posts = Count('data'),
-        total_time = Sum('data__study_total_duration')
-    )
-    ctx['list'] = memberList
+    try:
+        user_group = user.profile.group
+    except Group.DoesNotExist:
+        user_group = None
+
+    if user_group:
+        # should be corrected
+        memberList = User.objects.filter(profile__group=user_group).annotate(
+            # num_posts = Count('data'),
+            # total_time = Sum('data__study_total_duration')
+        )
+        ctx['list'] = memberList
+    # else:
+    #     memberList = User.objects.filter(profile__group=user).annotate(
+    #         num_posts = Count('data'),
+    #         total_time = Sum('data__study_total_duration')
+    #     )
+
+
 
     return render(request, 'profile.html', ctx)
 
@@ -945,6 +904,47 @@ def signup(request):
         return render(request, 'signup.html', ctx)
 
     return render(request, 'signup.html', ctx)
+
+
+def user_check(request):
+    if request.user.email.endswith('@handong.edu'):
+        try:
+            user = User.objects.get(pk=request.user.pk)
+
+            # 학교 이메일이 학번으로 시작한다고 가정
+            std_id = user.username
+            username = user.last_name
+            email = user.email
+            print(std_id)
+            print("user name: ", username)
+
+            # Check if student id object exist
+            try:
+                student_id = StudentID.objects.get(student_id=std_id)
+            except StudentID.DoesNotExist:
+                student_id = StudentID.objects.create(student_id=std_id)
+
+            try:
+                user_profile = user.profile
+            except Profile.DoesNotExist:
+                user_profile = Profile.objects.create(user=user, name=username, student_id=student_id, email=email)
+                user_profile.save()
+                return HttpResponseRedirect(reverse('profile'))
+
+            # if user.profile.signin == False:
+            #     user.profile.nickname =user.username[1:3] + user.last_name
+            #     user.profile.signin = True
+            #     user.profile.save()
+            #     return HttpResponseRedirect(reverse('profile', args=(request.user.pk,)))
+            else:
+                return HttpResponseRedirect(reverse('main'))
+        except(KeyError, User.DoesNotExist):
+            return HttpResponseRedirect(reverse('loginpage'))
+    else:
+        messages.info(request, '한동 이메일로 로그인해주세요.')
+        User.objects.filter(pk=request.user.pk).delete()
+        return HttpResponseRedirect(reverse('loginpage'))
+
 
 def announce_write(request):
     ctx = {}

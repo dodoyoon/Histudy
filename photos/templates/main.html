@@ -33,46 +33,48 @@
 
 </style>
 
+<div class="container">
+    <div class="infinite-container m-1" id="post_container">
+        <h2>등록된 스터디모임 보고서
+            <a style="float:right;" href="{% url 'upload' %}" class="btn btn-outline-primary">보고서 쓰기</a>
+        </h2>
 
-<div class="infinite-container m-1" id="post_container">
-    <h2>등록된 스터디모임 보고서
-        <a style="float:right;" href="{% url 'upload' %}" class="btn btn-outline-primary">보고서 쓰기</a>
-    </h2>
+        <table class="table table-inbox table-hover infinite-item">
+        <tbody>
+            {% if not posts.has_previous %}
 
-    <table class="table table-inbox table-hover infinite-item">
-    <tbody>
-        {% if not pics.has_previous %}
-        
-        <tr>
-            <th></th>
-            <th>제목</th>
-            <th>날짜</th>
-        </tr>
-        {% endif %}
+            <tr>
+                <th></th>
+                <th>제목</th>
+                <th>날짜</th>
+            </tr>
+            {% endif %}
 
-    {% for photo in pics %}
-        <tr class="unread">
-            <td class="inbox-small-cells">
-                {{ photo.idgroup }}
-            </td>
+        {% for post in posts %}
+            <tr class="unread">
+                <td class="inbox-small-cells">
+                    {{ post.idgroup }}
+                </td>
 
-            <td class="view-message  dont-show">
-                <a href="{{ photo.get_absolute_url }}">
-                    {{ photo.title }}
-                </a>
-            </td>
-            <td class="view-message ">{{ photo.date }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-    </table>
+                <td class="view-message  dont-show">
+                    <a href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                </td>
+                <td class="view-message ">{{ post.date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
 
-{% if pics.has_next %}
-    <a class="infinite-more-link" href="?page={{ pics.next_page_number }}">More</a>
-{% endif %}
+    {% if posts.has_next %}
+        <a class="infinite-more-link" href="?page={{ posts.next_page_number }}">More</a>
+    {% endif %}
 
-<div class="loading" style="display: none;">
-    Loading...
+    <div class="loading" style="display: none;">
+        Loading...
+    </div>
 </div>
 
 <script>
