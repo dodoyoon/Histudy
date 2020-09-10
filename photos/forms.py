@@ -16,8 +16,6 @@ class DataForm(forms.ModelForm):
             self.fields['participator'].queryset = User.objects.filter(profile__group=user.profile.group)
 
 
-        print(type(self.fields['participator'].queryset[0]))
-
     image = forms.ImageField(label='', widget=forms.ClearableFileInput(
         attrs={
             'id': 'ex_file',

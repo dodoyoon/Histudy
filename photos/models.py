@@ -80,7 +80,7 @@ class UserInfo(models.Model):
     year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
     sem = models.IntegerField(default=current_sem)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(StudentID, on_delete=models.PROTECT, null=True)
+    student_id = models.ForeignKey(StudentID, on_delete=models.PROTECT, null=True)
 
 class Announcement(models.Model):
     author = models.TextField(max_length=100)

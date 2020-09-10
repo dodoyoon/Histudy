@@ -81,26 +81,20 @@ def detail(request, pk):
 all_pins = [format(i, '04') for i in range(1000, 10000)]
 possible = [i for i in all_pins if len(set(i)) > 3]
 
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def data_upload(request):
     ctx={}
 
-    if request.user.is_authenticated:
-        username = request.user.username
-        ctx['username'] = request.user.username
-    else:
-        return redirect('loginpage')
-
-    if username:
-        user = User.objects.get(username=username)
+    try:
+        user = User.objects.get(pk=request.user.pk)
         ctx['userobj'] = user
         if user.is_staff is True:
             return redirect('userList')
-    else:
-        return redirect('loginpage')
+    except User.DoesNotExist:
+        return redirect(reverse('loginpage'))
 
     is_mobile = request.user_agent.is_mobile
     is_tablet = request.user_agent.is_tablet
-
 
     now_time = timezone.localtime()
 
@@ -129,11 +123,11 @@ def data_upload(request):
         if form.is_valid():
             obj = form.save()
             obj.author = user
-            latestid = Data.objects.filter(author=user).order_by('-id')
-            if latestid:
-                obj.idgroup = latestid[0].idgroup + 1
-            else:
-                obj.idgroup = 1
+            # latestid = Data.objects.filter(author=user).order_by('-id')
+            # if latestid:
+            #     obj.idgroup = latestid[0].idgroup + 1
+            # else:
+            #     obj.idgroup = 1
 
             if user.verification.code is not None:
                 if (time_diff.seconds)/60 < 10:
@@ -151,6 +145,16 @@ def data_upload(request):
             # user.userinfo.most_recent = obj.date
             # user.userinfo.name = username
             user.save()
+
+            year = current_year()
+            try:
+                yearobj = Year.objects.get(year=year)
+            except:
+                yearobj = Year.objects.create(year=year)
+
+            obj.group = user.profile.group
+            obj.year = yearobj
+
             obj.save()
             messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
             return HttpResponseRedirect(reverse('main'))
@@ -308,7 +312,8 @@ def csv_upload(request):
                 idobj = StudentID.objects.get(student_id=data[1])
             except:
                 idobj = StudentID.objects.create(student_id=data[1])
-            UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, user=idobj)
+
+            UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, student_id=idobj)
 
 
             '''
@@ -767,41 +772,25 @@ def group_profile(request, user):
     return render(request, 'group_profile.html', ctx)
 
 
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def profile(request):
     ctx={}
 
-    if request.user.is_authenticated:
-        username = request.user.username
-        user = User.objects.get(username=username)
-        ctx['userobj'] = user
-    else:
-        return redirect('loginpage')
-
-    if username:
-        ctx['username'] = username
+    # Tag.objects.filter(person__yourcriterahere=whatever [, morecriteria]).annotate(cnt=Count('person')).order_by('-cnt')[0]
 
     try:
-        user_group = user.profile.group
-    except Group.DoesNotExist:
-        user_group = None
+        user = User.objects.get(pk=request.user.pk)
 
-    if user_group:
-        # should be corrected
-        memberList = User.objects.filter(profile__group=user_group).annotate(
-            # num_posts = Count('data'),
-            # total_time = Sum('data__study_total_duration')
-        )
-        ctx['list'] = memberList
-    # else:
-    #     memberList = User.objects.filter(profile__group=user).annotate(
-    #         num_posts = Count('data'),
-    #         total_time = Sum('data__study_total_duration')
-    #     )
+        # member_list annotate으로 num_posts, total_time 구해야되는데, data model이 없다고 뜸 ㅠ
+        member_list = User.objects.filter(profile__group=user.profile.group)
 
-
+        ctx['member_list'] = member_list
+    except User.DoesNotExist:
+        return redirect(reverse('loginpage'))
 
     return render(request, 'profile.html', ctx)
 
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def staff_profile(request):
     ctx={}
 
@@ -817,6 +806,7 @@ def staff_profile(request):
 
     return render(request, 'staff_profile.html', ctx)
 
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def grid(request):
     ctx = {}
     if request.user.is_authenticated:
@@ -931,6 +921,26 @@ def save_profile(request, pk):
 
 
 
+# UserInfo가 없을 때 관리자에게 문의하는 곳
+@login_required(login_url=LOGIN_REDIRECT_URL)
+@transaction.atomic
+def create_userinfo(request, pk):
+    messages.info(request, '학우님의 정보가 DB에 없습니다. 관리자에게 문의해주세요')
+
+    try:
+        user = User.objects.get(pk=pk)
+    except:
+        return redirect(reverse('loginpage'))
+
+    if request.method == 'POST':
+        student_id = request.POST['student_id']
+        email = request.POST['email']
+        print(student_id)
+        print(email)
+
+    return render(request, 'create_userinfo.html')
+
+
 def user_check(request):
     if request.user.email.endswith('@handong.edu'):
         try:
@@ -942,16 +952,25 @@ def user_check(request):
             username = user.last_name
             email = user.email
 
-            # Check if student id object exist
+
             try:
                 student_id = StudentID.objects.get(student_id=std_id)
             except StudentID.DoesNotExist:
                 student_id = StudentID.objects.create(student_id=std_id)
 
             try:
+                user_info = UserInfo.objects.get(student_id=student_id)
+            except UserInfo.DoesNotExist:
+                # user info 가 저장안된 유저는 문의 페이지로! (profile아직 생성안됨)
+                return redirect(reverse('create_userinfo', args=(user.pk,)))
+
+            try:
                 user_profile = user.profile
             except Profile.DoesNotExist:
                 user_profile = Profile.objects.create(user=user, name=username, email=email)
+                if user_info:
+                    user_profile.group = user_info.group
+
                 user_profile.save()
                 return HttpResponseRedirect(reverse('save_profile', args=(user.pk,)))
 
