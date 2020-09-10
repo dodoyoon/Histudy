@@ -61,7 +61,7 @@ class Data(models.Model):
     text = models.TextField(null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='author')
-    participator = models.ManyToManyField(User, related_name='participator')
+    participator = models.ManyToManyField(User, related_name='data')
     code = models.IntegerField(blank=True, null=True)
     code_when_saved = models.DateTimeField(null=True, blank=True)
     study_start_time = models.CharField(max_length=100, blank=True, null=True)

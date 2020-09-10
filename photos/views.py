@@ -17,7 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import transaction
 
-from django.db.models import Count, Max, Sum
+from django.db.models import Count, Max, Sum, Subquery, OuterRef
 from django.db.models.expressions import RawSQL
 
 #For Code Verification
@@ -777,12 +777,15 @@ def profile(request):
     ctx={}
 
     # Tag.objects.filter(person__yourcriterahere=whatever [, morecriteria]).annotate(cnt=Count('person')).order_by('-cnt')[0]
-
+    yearobj = Year.objects.all()[0]
     try:
         user = User.objects.get(pk=request.user.pk)
 
         # member_list annotate으로 num_posts, total_time 구해야되는데, data model이 없다고 뜸 ㅠ
-        member_list = User.objects.filter(profile__group=user.profile.group)
+        member_list = User.objects.filter(profile__group=user.profile.group).annotate(
+            num_posts = Count('data', filter=Q(data__year=yearobj)),
+            total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
+        )
 
         ctx['member_list'] = member_list
     except User.DoesNotExist:
