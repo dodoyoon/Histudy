@@ -1,0 +1,22 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<form method="POST" class="form-style-7">
+    {% csrf_token %}
+    <ul>
+        <h1>관리자에게 문의하기</h1>
+    <li>
+        <label for="email">학번</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="text" name="student_id" pattern="[0-9]{8}" maxlength="8" style="width:200px; margin-left:5%;" required>
+    </li>
+    <li>
+        <label for="email">연락받을 이메일</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="email" name="email" maxlength="50" style="width:200px; margin-right:5%;" required>
+    </li>
+    <li>
+        <input type="submit" value="제출" style="margin-left:40%;">
+    </li>
+    </ul>
+</form>
+
+{% endblock %}

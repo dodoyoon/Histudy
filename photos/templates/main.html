@@ -53,7 +53,8 @@
         {% for post in posts %}
             <tr class="unread">
                 <td class="inbox-small-cells">
-                    {{ post.idgroup }}
+                    <!-- {{ post.pk }} -->
+                    {{ forloop.counter }}
                 </td>
 
                 <td class="view-message  dont-show">
