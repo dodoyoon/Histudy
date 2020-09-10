@@ -10,10 +10,12 @@ from .forms import DataForm, AnnouncementForm#, ProfileForm
 
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.db import transaction
 
 from django.db.models import Count, Max, Sum
 from django.db.models.expressions import RawSQL
@@ -22,7 +24,6 @@ from django.db.models.expressions import RawSQL
 from datetime import datetime, timedelta
 from django.utils import timezone
 import json, random
-
 
 #CSV import
 from tablib import Dataset
@@ -33,6 +34,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # for device detection
 from django_user_agents.utils import get_user_agent
+
+
+LOGIN_REDIRECT_URL = '/user_check/'
+
 
 def current_year():
     return datetime.date.today().year
@@ -906,17 +911,36 @@ def signup(request):
     return render(request, 'signup.html', ctx)
 
 
+@login_required(login_url=LOGIN_REDIRECT_URL)
+@transaction.atomic
+def save_profile(request, pk):
+    user = User.objects.get(pk=pk)
+
+    if user.profile.phone and user.profile.student_id:
+        return redirect(reverse('main'))
+
+    if request.method == 'POST':
+        profile = user.profile
+        student_id = StudentID.objects.get(student_id=request.POST['student_id'])
+        profile.student_id = student_id
+        profile.phone = "010" + str(request.POST['phone1']) + str(request.POST['phone2'])
+        profile.save()
+        return redirect(reverse('main'))
+
+    return render(request, 'save_profile.html')
+
+
+
 def user_check(request):
     if request.user.email.endswith('@handong.edu'):
         try:
             user = User.objects.get(pk=request.user.pk)
+            user.email = request.user.email
 
             # 학교 이메일이 학번으로 시작한다고 가정
             std_id = user.username
             username = user.last_name
             email = user.email
-            print(std_id)
-            print("user name: ", username)
 
             # Check if student id object exist
             try:
@@ -927,17 +951,10 @@ def user_check(request):
             try:
                 user_profile = user.profile
             except Profile.DoesNotExist:
-                user_profile = Profile.objects.create(user=user, name=username, student_id=student_id, email=email)
+                user_profile = Profile.objects.create(user=user, name=username, email=email)
                 user_profile.save()
-                return HttpResponseRedirect(reverse('profile'))
+                return HttpResponseRedirect(reverse('save_profile', args=(user.pk,)))
 
-            # if user.profile.signin == False:
-            #     user.profile.nickname =user.username[1:3] + user.last_name
-            #     user.profile.signin = True
-            #     user.profile.save()
-            #     return HttpResponseRedirect(reverse('profile', args=(request.user.pk,)))
-            else:
-                return HttpResponseRedirect(reverse('main'))
         except(KeyError, User.DoesNotExist):
             return HttpResponseRedirect(reverse('loginpage'))
     else:
