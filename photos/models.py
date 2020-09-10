@@ -17,10 +17,11 @@ class StudentID(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    student_id = models.OneToOneField(StudentID, on_delete=models.CASCADE)
+    student_id = models.OneToOneField(StudentID, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    phone = models.CharField(default="",max_length=200)
 
     def delete(self, *args, **kwargs):
         self.student_id.delete()
