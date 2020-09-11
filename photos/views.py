@@ -96,7 +96,7 @@ def detail(request, pk):
     else:
         return redirect('loginpage')
 
-    if not ((data.group == request.user.profile.group and data.year == current.year and data.sem == current.sem) or request.user.is_staff):
+    if not (request.user.is_staff or (data.group == request.user.profile.group and data.year == current.year and data.sem == current.sem)):
         messages.warning(request, 'invalid access', extra_tags='alert')
         return HttpResponseRedirect(reverse('main'))
 
@@ -473,9 +473,11 @@ def export_mile(request):
 
     return response
 
-def photoList(request, user):
-    picList = Data.objects.raw('SELECT * FROM photos_data WHERE author = %s ORDER BY id DESC', [user])
-    listuser = user
+@staff_member_required
+def photoList(request, group, year, sem):
+    yearobj = Year.objects.get(year=year)
+    picList = Data.objects.raw('SELECT * FROM photos_data WHERE group_id = %s AND year_id = %s AND sem = %s ORDER BY id DESC', [group, yearobj.pk, sem])
+    listuser = group
     if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
@@ -495,10 +497,9 @@ def photoList(request, user):
 
     return render(request, 'list.html', ctx)
 
-
-
 import datetime
 from django.db.models import Q
+@staff_member_required
 def userList(request):
     ctx={}
     if request.user.is_authenticated:
@@ -518,6 +519,9 @@ def userList(request):
         
         yearobj = Year.objects.get(year=year)
         sem = int(sem)
+
+        ctx['year'] = year
+        ctx['sem'] = sem
 
         if year != 'None' and sem != 'None':
             ctx['chosen_year'] = year

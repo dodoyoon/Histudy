@@ -95,7 +95,7 @@
                 {{ forloop.counter }}
             </td>
             <td>
-                <a href="{% url 'list' group.group %}">
+                <a href="{% url 'list' group.group year sem%}">
                 {% if group.num_posts > 9 %}
                 <font color="green">
                 Group {{ group.group }}
