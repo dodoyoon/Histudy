@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentID, Group
+from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentID, Group, Current
 from .forms import DataForm, AnnouncementForm#, ProfileForm
 
 from django.views.generic import ListView
@@ -47,6 +47,40 @@ def current_sem():
         return 1
     else:
         return 2
+
+def set_current(request):
+    ctx = {}
+
+    currents = Current.objects.all()
+    if request.method == 'POST':
+        year = request.POST['year']
+        if request.POST['semester'] == 'spring':
+            semester = 1
+        elif request.POST['semester'] == 'fall':
+            semester = 2
+
+        if int(year) < 2000:
+            pass # 에러 처리
+        else:
+            try:
+                yearobj = Year.objects.get(year=year)
+            except:
+                yearobj = Year.objects.create(year=year)
+
+        if currents.exists():
+            current = currents[0]
+            current.year = yearobj
+            current.sem = semester
+            print(semester)
+            print(current.year, current.sem)
+            current.save()
+        else:
+            Current.objects.create(year=yearobj, sem=semester)
+
+    ctx['current'] = Current.objects.all()[0]
+    ctx['username'] = request.user.username
+    
+    return render(request, 'set_current.html', ctx)
 
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
@@ -806,6 +840,8 @@ def staff_profile(request):
 
     if username:
         ctx['username'] = username
+
+    ctx['current'] = Current.objects.all()[0]
 
     return render(request, 'staff_profile.html', ctx)
 

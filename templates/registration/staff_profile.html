@@ -2,9 +2,11 @@
 {% block content %}
 
     <h4>관리자 페이지입니다.</h4>
+    <p>현재 설정: {{ current.year.year }}년도 {{ current.sem }}학기</p>
     <hr>
     <p><a class="" href="{% url 'signup' %}">Create New User</a></p>
-    <p><a class="" href="{% url 'csv_upload' %}">Import User</a></p>
+    <p><a class="" href="{% url 'csv_upload' %}">CSV에 저장되어 있는 팀 구성 불러오기</a></p>
+    <p><a class="" href="{% url 'set_current' %}">이번 년도 & 학기 지정하기</a></p>
     <p><a class="" href="{% url 'export_page' %}">Export Students</a></p>
     <p><a class="" href="{% url 'export_mile' %}">Export Students(마일리지용)</a></p>
     <p><a class="" href="{% url 'img_download_page' %}">Download Images</a></p>

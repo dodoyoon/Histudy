@@ -52,6 +52,10 @@ def current_sem():
 class Year(models.Model):
     year = models.IntegerField()
 
+class Current(models.Model):
+    year = models.ForeignKey(Year, on_delete=models.CASCADE)
+    sem = models.IntegerField()
+
 class Data(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
