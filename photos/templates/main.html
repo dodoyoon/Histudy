@@ -46,6 +46,7 @@
             <tr>
                 <th></th>
                 <th>제목</th>
+                <th>작성자</th>
                 <th>날짜</th>
             </tr>
             {% endif %}
@@ -56,11 +57,13 @@
                     <!-- {{ post.pk }} -->
                     {{ forloop.counter }}
                 </td>
-
                 <td class="view-message  dont-show">
                     <a href="{{ post.get_absolute_url }}">
                         {{ post.title }}
                     </a>
+                </td>
+                <td class="view-message">
+                    {{ post.author.profile.name }}
                 </td>
                 <td class="view-message ">{{ post.date }}</td>
             </tr>
