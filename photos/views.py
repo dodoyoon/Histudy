@@ -290,26 +290,6 @@ def csv_upload(request):
         return redirect('loginpage')
 
     if request.method == 'POST':
-        '''
-        year = request.POST['year']
-        if request.POST['semester'] == 'spring':
-            semester = 1
-        elif request.POST['semester'] == 'fall':
-            semester = 2
-
-        if int(year) < 2000:
-            pass # 에러 처리
-        else:
-            try:
-                yearobj = Year.objects.get(year=year)
-            except:
-                yearobj = Year.objects.create(year=year)
-
-        checklist = UserInfo.objects.filter(year=yearobj, sem=semester)
-        if checklist.exists():
-            pass #에러 처리
-
-        '''
         dataset = Dataset()
         data = request.FILES
         print(data)
@@ -343,7 +323,8 @@ def csv_upload(request):
             semester = 2
 
         if int(year) < 2000:
-            pass # 에러 처리
+            messages.warning(request, '년도가 2000보다 작습니다', extra_tags='alert')
+            return render(request, 'csv_upload.html', ctx)
         else:
             try:
                 yearobj = Year.objects.get(year=year)
@@ -366,105 +347,8 @@ def csv_upload(request):
 
             UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, student_id=idobj)
 
+        messages.success(request, 'csv 정보를 저장했습니다. ', extra_tags='alert')
 
-            '''
-
-            if group_no == data[0]:
-                group_list.append(data)
-
-            else:
-                group_list.sort(key=lambda tup: tup[1])
-
-                is_first = 1
-
-                for elem in group_list:
-                    if is_first:
-                        user_id = "group"+elem[0]
-                        user_pw = elem[1]
-                        user_email = elem[2]
-                        is_first = 0
-
-                    if User.objects.filter(username=user_id).exists():
-                        member_student_id = elem[1]
-                        member_name = elem[3]
-                        member_email = elem[2]
-                        Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-                    else:
-                        user = User.objects.create_user(username=user_id,
-                                            email=user_email,
-                                            password=user_pw)
-                        member_student_id = elem[1]
-                        member_name = elem[3]
-                        member_email = elem[2]
-                        Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-
-                        this_year = current_year()
-                        try:
-                            year = Year.objects.get(year = this_year)
-                        except Year.DoesNotExist :
-                            year = None
-
-                        if not year:
-                            year = Year(year=this_year)
-                            year.save()
-                            user.userinfo.year = year
-                            user.userinfo.sem = current_sem()
-                        else:
-                            user.userinfo.year = year
-                            user.userinfo.sem = current_sem()
-
-                        user.save()
-
-
-                group_list.clear()
-                group_no = data[0]
-                group_list.append(data)
-
-
-        is_first = 1
-
-        for elem in group_list:
-            if is_first:
-                user_id = "group"+elem[0]
-                user_pw = elem[1]
-                user_email = elem[2]
-                is_first = 0
-
-            if User.objects.filter(username=user_id).exists():
-                member_student_id = elem[1]
-                member_name = elem[3]
-                member_email = elem[2]
-                Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-            else:
-                user = User.objects.create_user(username=user_id,
-                                    email=user_email,
-                                    password=user_pw)
-                member_student_id = elem[1]
-                member_name = elem[3]
-                member_email = elem[2]
-                Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-
-                this_year = current_year()
-                try:
-                    year = Year.objects.get(year = this_year)
-                except Year.DoesNotExist :
-                    year = None
-
-                if not year:
-                    year = Year(year=this_year)
-                    year.save()
-                    user.userinfo.year = year
-                    user.userinfo.sem = current_sem()
-                else:
-                    user.userinfo.year = year
-                    user.userinfo.sem = current_sem()
-
-                user.save()
-
-        group_list.clear()
-
-        messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
-'''
     if username:
         ctx['username'] = username
 
