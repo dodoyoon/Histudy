@@ -9,6 +9,7 @@
         <hr>
         <p><b>제목</b>: {{post.title}}</p>
         <hr>
+        <p><b>작성자</b>: {{post.author.profile.name}}</p>
         <p><b>날짜</b>: {{post.date}}</p>
         {% if post.study_start_time %}
             <p><b>스터디 시작 시간</b>: {{post.study_start_time}}</p>
@@ -27,7 +28,7 @@
         <p><b>참여 멤버</b></p>
         <ul>
             {% for participator in participators %}
-                <li>{{participator}}</li>
+                <li>{{participator.profile.name}}</li>
             {% endfor %}
         </ul>
         {% if post.code %}

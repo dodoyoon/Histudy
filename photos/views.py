@@ -11,6 +11,7 @@ from .forms import DataForm, AnnouncementForm#, ProfileForm
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import authenticate, login, logout
@@ -48,6 +49,7 @@ def current_sem():
     else:
         return 2
 
+@staff_member_required
 def set_current(request):
     ctx = {}
 
@@ -82,15 +84,20 @@ def set_current(request):
     
     return render(request, 'set_current.html', ctx)
 
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
+    current = Current.objects.all()[0]
     ctx={}
     if request.user.is_authenticated:
         username = request.user.username
-        user = request.user
-        ctx['userobj'] = user
+        ctx['userobj'] = request.user
     else:
         return redirect('loginpage')
+
+    if not ((data.group == request.user.profile.group and data.year == current.year and data.sem == current.sem) or request.user.is_staff):
+        messages.warning(request, 'invalid access', extra_tags='alert')
+        return HttpResponseRedirect(reverse('main'))
 
     participators = data.participator.all()
     print("detail participators: ", participators)
@@ -679,7 +686,6 @@ def main(request):
     current = Current.objects.all()[0]
     cur_year = current.year
     cur_sem = current.sem
-    print(cur_year, cur_sem)
 
     if request.user.is_authenticated:
         username = request.user.username
@@ -833,7 +839,7 @@ def profile(request):
 
     return render(request, 'profile.html', ctx)
 
-@login_required(login_url=LOGIN_REDIRECT_URL)
+@staff_member_required
 def staff_profile(request):
     ctx={}
 
@@ -851,10 +857,10 @@ def staff_profile(request):
 
     return render(request, 'staff_profile.html', ctx)
 
-@login_required(login_url=LOGIN_REDIRECT_URL)
+@staff_member_required
 def grid(request):
     ctx = {}
-    if request.user.is_authenfticated:
+    if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -1028,7 +1034,7 @@ def user_check(request):
         User.objects.filter(pk=request.user.pk).delete()
         return HttpResponseRedirect(reverse('loginpage'))
 
-
+@staff_member_required
 def announce_write(request):
     ctx = {}
     if request.user.is_authenticated:
