@@ -811,7 +811,7 @@ def profile(request):
     ctx={}
 
     # Tag.objects.filter(person__yourcriterahere=whatever [, morecriteria]).annotate(cnt=Count('person')).order_by('-cnt')[0]
-    yearobj = Year.objects.all()[0]
+    yearobj = Current.objects.all()[0].year
     try:
         user = User.objects.get(pk=request.user.pk)
 
@@ -848,7 +848,7 @@ def staff_profile(request):
 @login_required(login_url=LOGIN_REDIRECT_URL)
 def grid(request):
     ctx = {}
-    if request.user.is_authenticated:
+    if request.user.is_authenfticated:
         username = request.user.username
         user = User.objects.get(username=username)
         ctx['userobj'] = user
@@ -1015,6 +1015,8 @@ def user_check(request):
 
         except(KeyError, User.DoesNotExist):
             return HttpResponseRedirect(reverse('loginpage'))
+
+        return HttpResponseRedirect(reverse('main'))
     else:
         messages.info(request, '한동 이메일로 로그인해주세요.')
         User.objects.filter(pk=request.user.pk).delete()
