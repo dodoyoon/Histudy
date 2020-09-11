@@ -243,6 +243,9 @@ def data_edit(request, pk):
 
     # find the target post
     post = Data.objects.get(id=pk)
+    if post.group != user.profile.group:
+        messages.warning(request, '해당 게시물의 그룹이 아닙니다', extra_tags='alert')
+        return HttpResponseRedirect(reverse('main'))
 
     if request.method == "GET":
         if is_mobile or is_tablet:
