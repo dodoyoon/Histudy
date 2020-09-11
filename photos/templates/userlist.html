@@ -73,7 +73,11 @@
         <input type="submit" value="Load" class="btn btn-secondary" />
     </form>
 </div>
-
+<!--
+{% for group in grouplist %}
+<p>{{group.group}} {{group.pk}}</p>
+{% endfor %}
+-->
 <br>
 
     <table class="table table-inbox table-hover" style="font-size:12px; width:100%;">
@@ -85,28 +89,25 @@
             <th>누적 공부 시간(분)</th>
             <th></th>
         </tr>
-    {% for user in list %}
-        {% if not user.is_staff %}
+    {% for group in grouplist %}
         <tr>
             <td>
                 {{ forloop.counter }}
             </td>
             <td>
-                <a href="{% url 'list' user.username %}">
-                {% if user.num_posts > 9 %}
+                <a href="{% url 'list' group.group %}">
+                {% if group.num_posts > 9 %}
                 <font color="green">
-                {{ user.username }}
+                Group {{ group.group }}
                 </font>
                 {% else %}
-                {{ user.username }}
+                Group {{ group.group }}
                 {% endif %}
                 </a>
             </td>
-            <td>{{ user.num_posts }}</td>
-            <td>{{ user.recent }}</td>
-            <td>{{ user.total_dur }}</td>
-            <td><a class="confirm-delete" href="{% url 'confirm_delete_user' user.pk %}">유저삭제</a></td>
-        {% endif %}
+            <td>{{ group.num_posts }}</td>
+            <td>{{ group.recent }}</td>
+            <td>{{ group.total_dur }}</td>
     {% endfor %}
     </table>
 </div>

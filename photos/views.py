@@ -460,20 +460,34 @@ def userList(request):
         return redirect('loginpage')
 
     ctx['years'] = Year.objects.all()
+    
 
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
+        
+        yearobj = Year.objects.get(year=year)
+        sem = int(sem)
 
         if year != 'None' and sem != 'None':
             ctx['chosen_year'] = year
             ctx['chosen_sem'] = sem
 
     else:
-        year = current_year()
-        sem = current_sem()
-        ctx['year'] = year
+        current = Current.objects.all().first()
+        yearobj = current.year
+        sem = current.sem
+        ctx['year'] = yearobj.year
         ctx['sem'] = sem
+        
+
+    grouplist = UserInfo.objects.filter(year=yearobj, sem=1).values("group").distinct().annotate(
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+    ).order_by('-num_posts')
+
+    ctx['grouplist'] = grouplist
 
     '''
     userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
