@@ -28,6 +28,7 @@ import json, random
 
 #CSV import
 from tablib import Dataset
+import pandas
 import magic, copy, csv
 
 # for Infinite Scroll
@@ -276,7 +277,53 @@ def data_edit(request, pk):
 
     return render(request, 'edit.html', ctx)
 
+
+def warn_overwrite(request, year_pk, sem):
+    ctx={}
+    yearobj = Year.objects.get(pk=year_pk)
+    userinfo_list = UserInfo.objects.filter(year=yearobj, sem=sem)
+    ctx['userinfo_list'] = userinfo_list
+    
+    if request.method == 'POST':
+        imported_data_string = request.session.get('imported_data_string', None)
+        imported_data_json = json.loads(imported_data_string)
+        imported_data_list = []
+
+        for data in imported_data_json.items():
+            value_list = list(data[1].values())
+            imported_data_list.append(copy.deepcopy(value_list))
+
+        # but first remove existing userinfo
+        
+        userinfo_list.delete()
+
+        num_of_ppl = len(data[1])
+        for i in range(num_of_ppl):
+            groupNo = imported_data_list[0][i]
+            stuID = imported_data_list[1][i]
+
+            try:
+                groupobj = Group.objects.get(no=groupNo)
+            except:
+                groupobj = Group.objects.create(no=groupNo)
+
+            try:
+                idobj = StudentID.objects.get(student_id=stuID)
+            except:
+                idobj = StudentID.objects.create(student_id=stuID)
+
+            UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_id=idobj)
+
+        return redirect(reverse('csv_upload'))
+
+    else:
+        return render(request, 'warn_overwrite.html', ctx)
+
+    
+
+    
 @csrf_exempt
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def csv_upload(request):
     ctx = {}
 
@@ -292,10 +339,7 @@ def csv_upload(request):
     if request.method == 'POST':
         dataset = Dataset()
         data = request.FILES
-        print(data)
         new_usergroup = data['myfile']
-        print(new_usergroup)
-
 
         csv_file = copy.deepcopy(new_usergroup)
 
@@ -331,7 +375,13 @@ def csv_upload(request):
             except:
                 yearobj = Year.objects.create(year=year)
 
-        print("year", year, "sem", semester)
+
+        userinfo_list = UserInfo.objects.filter(year=yearobj, sem=semester)
+        if userinfo_list:
+            df = pandas.DataFrame(data=list(imported_data))
+            request.session['imported_data_string'] = df.to_json()
+            return redirect(reverse('warn_overwrite', args=(yearobj.pk, semester)))
+
 
         for data in imported_data:
             print("data", data)
