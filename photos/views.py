@@ -5,12 +5,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentID, Group
+from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentID, Group, Current
 from .forms import DataForm, AnnouncementForm#, ProfileForm
 
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import authenticate, login, logout
@@ -49,15 +50,55 @@ def current_sem():
     else:
         return 2
 
+@staff_member_required
+def set_current(request):
+    ctx = {}
+
+    currents = Current.objects.all()
+    if request.method == 'POST':
+        year = request.POST['year']
+        if request.POST['semester'] == 'spring':
+            semester = 1
+        elif request.POST['semester'] == 'fall':
+            semester = 2
+
+        if int(year) < 2000:
+            pass # 에러 처리
+        else:
+            try:
+                yearobj = Year.objects.get(year=year)
+            except:
+                yearobj = Year.objects.create(year=year)
+
+        if currents.exists():
+            current = currents[0]
+            current.year = yearobj
+            current.sem = semester
+            print(semester)
+            print(current.year, current.sem)
+            current.save()
+        else:
+            Current.objects.create(year=yearobj, sem=semester)
+
+    ctx['current'] = Current.objects.all()[0]
+    ctx['username'] = request.user.username
+    
+    return render(request, 'set_current.html', ctx)
+
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)
+    current = Current.objects.all()[0]
     ctx={}
     if request.user.is_authenticated:
         username = request.user.username
-        user = request.user
-        ctx['userobj'] = user
+        ctx['userobj'] = request.user
     else:
         return redirect('loginpage')
+
+    if not ((data.group == request.user.profile.group and data.year == current.year and data.sem == current.sem) or request.user.is_staff):
+        messages.warning(request, 'invalid access', extra_tags='alert')
+        return HttpResponseRedirect(reverse('main'))
 
     participators = data.participator.all()
     print("detail participators: ", participators)
@@ -147,14 +188,21 @@ def data_upload(request):
             # user.userinfo.name = username
             user.save()
 
-            year = current_year()
-            try:
-                yearobj = Year.objects.get(year=year)
-            except:
-                yearobj = Year.objects.create(year=year)
+            current = Current.objects.all()
+            if current.exists():
+                yearobj = current[0].year
+                semester = current[0].sem
+            else:
+                year = current_year()
+                try:
+                    yearobj = Year.objects.get(year=year)
+                except:
+                    yearobj = Year.objects.create(year=year)
+                semester = current_sem()
 
             obj.group = user.profile.group
             obj.year = yearobj
+            obj.sem = semester
 
             obj.save()
             messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
@@ -196,6 +244,9 @@ def data_edit(request, pk):
 
     # find the target post
     post = Data.objects.get(id=pk)
+    if post.group != user.profile.group:
+        messages.warning(request, '해당 게시물의 그룹이 아닙니다', extra_tags='alert')
+        return HttpResponseRedirect(reverse('main'))
 
     if request.method == "GET":
         if is_mobile or is_tablet:
@@ -316,7 +367,8 @@ def csv_upload(request):
             semester = 2
 
         if int(year) < 2000:
-            pass # 에러 처리
+            messages.warning(request, '년도가 2000보다 작습니다', extra_tags='alert')
+            return render(request, 'csv_upload.html', ctx)
         else:
             try:
                 yearobj = Year.objects.get(year=year)
@@ -345,105 +397,8 @@ def csv_upload(request):
 
             UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, student_id=idobj)
 
+        messages.success(request, 'csv 정보를 저장했습니다. ', extra_tags='alert')
 
-            '''
-
-            if group_no == data[0]:
-                group_list.append(data)
-
-            else:
-                group_list.sort(key=lambda tup: tup[1])
-
-                is_first = 1
-
-                for elem in group_list:
-                    if is_first:
-                        user_id = "group"+elem[0]
-                        user_pw = elem[1]
-                        user_email = elem[2]
-                        is_first = 0
-
-                    if User.objects.filter(username=user_id).exists():
-                        member_student_id = elem[1]
-                        member_name = elem[3]
-                        member_email = elem[2]
-                        Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-                    else:
-                        user = User.objects.create_user(username=user_id,
-                                            email=user_email,
-                                            password=user_pw)
-                        member_student_id = elem[1]
-                        member_name = elem[3]
-                        member_email = elem[2]
-                        Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-
-                        this_year = current_year()
-                        try:
-                            year = Year.objects.get(year = this_year)
-                        except Year.DoesNotExist :
-                            year = None
-
-                        if not year:
-                            year = Year(year=this_year)
-                            year.save()
-                            user.userinfo.year = year
-                            user.userinfo.sem = current_sem()
-                        else:
-                            user.userinfo.year = year
-                            user.userinfo.sem = current_sem()
-
-                        user.save()
-
-
-                group_list.clear()
-                group_no = data[0]
-                group_list.append(data)
-
-
-        is_first = 1
-
-        for elem in group_list:
-            if is_first:
-                user_id = "group"+elem[0]
-                user_pw = elem[1]
-                user_email = elem[2]
-                is_first = 0
-
-            if User.objects.filter(username=user_id).exists():
-                member_student_id = elem[1]
-                member_name = elem[3]
-                member_email = elem[2]
-                Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-            else:
-                user = User.objects.create_user(username=user_id,
-                                    email=user_email,
-                                    password=user_pw)
-                member_student_id = elem[1]
-                member_name = elem[3]
-                member_email = elem[2]
-                Member.objects.create(user=User.objects.get(username=user_id), student_id = member_student_id, name = member_name, email = member_email)
-
-                this_year = current_year()
-                try:
-                    year = Year.objects.get(year = this_year)
-                except Year.DoesNotExist :
-                    year = None
-
-                if not year:
-                    year = Year(year=this_year)
-                    year.save()
-                    user.userinfo.year = year
-                    user.userinfo.sem = current_sem()
-                else:
-                    user.userinfo.year = year
-                    user.userinfo.sem = current_sem()
-
-                user.save()
-
-        group_list.clear()
-
-        messages.success(request, '계정들을 성공적으로 생성하였습니다.', extra_tags='alert')
-'''
     if username:
         ctx['username'] = username
 
@@ -555,20 +510,34 @@ def userList(request):
         return redirect('loginpage')
 
     ctx['years'] = Year.objects.all()
+    
 
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
+        
+        yearobj = Year.objects.get(year=year)
+        sem = int(sem)
 
         if year != 'None' and sem != 'None':
             ctx['chosen_year'] = year
             ctx['chosen_sem'] = sem
 
     else:
-        year = current_year()
-        sem = current_sem()
-        ctx['year'] = year
+        current = Current.objects.all().first()
+        yearobj = current.year
+        sem = current.sem
+        ctx['year'] = yearobj.year
         ctx['sem'] = sem
+        
+
+    grouplist = UserInfo.objects.filter(year=yearobj, sem=1).values("group").distinct().annotate(
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+    ).order_by('-num_posts')
+
+    ctx['grouplist'] = grouplist
 
     '''
     userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
@@ -672,6 +641,10 @@ def announce(request):
 def main(request):
     ctx={}
 
+    current = Current.objects.all()[0]
+    cur_year = current.year
+    cur_sem = current.sem
+
     if request.user.is_authenticated:
         username = request.user.username
         ctx['username'] = username
@@ -686,7 +659,8 @@ def main(request):
     else:
         return redirect('loginpage')
 
-    dataList = Data.objects.filter(author=user).order_by('-id')
+    groupobj = user.profile.group
+    dataList = Data.objects.filter(author__profile__group=groupobj, year=cur_year, sem=cur_sem).order_by('-id')
 
     paginator = Paginator(dataList, 10)
     page = request.GET.get('page', 1)
@@ -807,7 +781,7 @@ def profile(request):
     ctx={}
 
     # Tag.objects.filter(person__yourcriterahere=whatever [, morecriteria]).annotate(cnt=Count('person')).order_by('-cnt')[0]
-    yearobj = Year.objects.all()[0]
+    yearobj = Current.objects.all()[0].year
     try:
         user = User.objects.get(pk=request.user.pk)
 
@@ -823,7 +797,7 @@ def profile(request):
 
     return render(request, 'profile.html', ctx)
 
-@login_required(login_url=LOGIN_REDIRECT_URL)
+@staff_member_required
 def staff_profile(request):
     ctx={}
 
@@ -837,9 +811,11 @@ def staff_profile(request):
     if username:
         ctx['username'] = username
 
+    ctx['current'] = Current.objects.all()[0]
+
     return render(request, 'staff_profile.html', ctx)
 
-@login_required(login_url=LOGIN_REDIRECT_URL)
+@staff_member_required
 def grid(request):
     ctx = {}
     if request.user.is_authenticated:
@@ -1009,12 +985,14 @@ def user_check(request):
 
         except(KeyError, User.DoesNotExist):
             return HttpResponseRedirect(reverse('loginpage'))
+
+        return HttpResponseRedirect(reverse('main'))
     else:
         messages.info(request, '한동 이메일로 로그인해주세요.')
         User.objects.filter(pk=request.user.pk).delete()
         return HttpResponseRedirect(reverse('loginpage'))
 
-
+@staff_member_required
 def announce_write(request):
     ctx = {}
     if request.user.is_authenticated:
