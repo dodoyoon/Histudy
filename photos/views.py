@@ -676,6 +676,11 @@ def announce(request):
 def main(request):
     ctx={}
 
+    current = Current.objects.all()[0]
+    cur_year = current.year
+    cur_sem = current.sem
+    print(cur_year, cur_sem)
+
     if request.user.is_authenticated:
         username = request.user.username
         ctx['username'] = username
@@ -690,7 +695,8 @@ def main(request):
     else:
         return redirect('loginpage')
 
-    dataList = Data.objects.filter(author=user).order_by('-id')
+    groupobj = user.profile.group
+    dataList = Data.objects.filter(author__profile__group=groupobj, year=cur_year, sem=cur_sem).order_by('-id')
 
     paginator = Paginator(dataList, 10)
     page = request.GET.get('page', 1)
