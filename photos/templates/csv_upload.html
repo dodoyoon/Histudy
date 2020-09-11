@@ -1,17 +1,30 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-<p>Upload csv file containing user information.</p>
-  <form method="post" enctype="multipart/form-data">
+  <form method="POST" class="form-style-7" enctype="multipart/form-data">
     {% csrf_token %}
-    년도(ex. 2020): <input type="number" name="year"> <br>
-    학기: 
-    <select id="semester" name="semester">
-      <option value="spring">1</option>
-      <option value="fall">2</option>
-    </select> 
-    <br> <br>
-    <input type="file" name="myfile">
-    <button type="submit">Upload</button>
-  </form>
+    <ul>
+        <h1>Upload User Information</h1>
+    <li>
+        <label for="email">현재 연도</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <input placeholder="ex. 2020" type="number" name="year" pattern="[0-9]{4}" maxlength="4" style="width:100px;" required>
+    </li>
+    <li>
+        <label for="email">현재 학기</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <select id="semester" name="semester" style="width:100px;">
+          <option value="spring">1</option>
+          <option value="fall">2</option>
+        </select> 
+    </li>
+    <li>
+      <label for="email">CSV 파일 선택</label>
+      <input type="file" name="myfile">
+    </li>
+    <li>
+        <input type="submit" value="제출" style="margin-left:40%;">
+    </li>
+    </ul>
+</form>
 {% endblock %}
