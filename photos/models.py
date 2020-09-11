@@ -59,7 +59,7 @@ class Current(models.Model):
 class Data(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
-    sem = models.IntegerField(default=current_sem)
+    sem = models.IntegerField(null=True)
     image = models.ImageField(upload_to='%Y/%m/%d/orig')
     title = models.CharField(max_length=100, blank=True, null=True)
     text = models.TextField(null=True, blank=True)
@@ -82,7 +82,7 @@ class Data(models.Model):
 
 class UserInfo(models.Model):
     year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
-    sem = models.IntegerField(default=current_sem)
+    sem = models.IntegerField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     student_id = models.ForeignKey(StudentID, on_delete=models.PROTECT, null=True)
 

@@ -187,14 +187,21 @@ def data_upload(request):
             # user.userinfo.name = username
             user.save()
 
-            year = current_year()
-            try:
-                yearobj = Year.objects.get(year=year)
-            except:
-                yearobj = Year.objects.create(year=year)
+            current = Current.objects.all()
+            if current.exists():
+                yearobj = current[0].year
+                semester = current[0].sem
+            else:
+                year = current_year()
+                try:
+                    yearobj = Year.objects.get(year=year)
+                except:
+                    yearobj = Year.objects.create(year=year)
+                semester = current_sem()
 
             obj.group = user.profile.group
             obj.year = yearobj
+            obj.sem = semester
 
             obj.save()
             messages.success(request, '게시물을 등록하였습니다.', extra_tags='alert')
