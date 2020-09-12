@@ -6,40 +6,34 @@
 </h4>
 
 <hr>
-    <table style="font-size:12px;" class="table table-inbox table-hover" style="width:90%">
-        <tbody>
-        <tr>
-            <th></th>
-            <th>group</th>
-            <th>posts</th>
-            <th>most recent</th>
-            <th>누적 공부 시간(분)</th>
-        </tr>
-    {% for user in list %}
-        {% if not user.is_staff %}
-        <tr>
-            <td>
-                {{ forloop.counter }}
-            </td>
-            <td>
-                <a>
-                {% if user.num_posts > 9 %}
-                <font color="green">
-                {{ user.username }}
-                </font>
-                {% else %}
-                {{ user.username }}
-                {% endif %}
-                </a>
-            </td>
-            <td>{{ user.num_posts }}</td>
-            <td>{{ user.recent }}</td>
-            <td>{{ user.total_dur }}</td>
-        </tr>
-        {% endif %}
-    {% endfor %}
-    <tbody>
-    </table>
+<table class="table table-inbox table-hover" style="font-size:12px; width:100%;">
+    <tr>
+        <th></th>
+        <th>group</th>
+        <th>posts</th>
+        <th>most recent</th>
+        <th>누적 공부 시간(분)</th>
+        <th></th>
+    </tr>
+{% for group in list %}
+    <tr>
+        <td>
+            {{ forloop.counter }}
+        </td>
+        <td>
+            {% if group.num_posts > 9 %}
+            <font color="green">
+            Group {{ group.group }}
+            </font>
+            {% else %}
+            Group {{ group.group }}
+            {% endif %}
+        </td>
+        <td>{{ group.num_posts }}</td>
+        <td>{{ group.recent }}</td>
+        <td>{{ group.total_dur }}</td>
+{% endfor %}
+</table>
 </div>
 
 {% endblock %}

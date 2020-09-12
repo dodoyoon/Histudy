@@ -5,6 +5,7 @@
 
 <div>
     <h2>Overwrite 경고</h2>
+    <h4>이미 데이터가 존재합니다. 덮어쓰시겠습니까?</h4>
     <form method="POST">
         {% csrf_token %}
         <a href="{% url 'csv_upload' %}" type="button" class="btn btn-primary">Cancel</a>
