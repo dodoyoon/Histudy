@@ -1,6 +1,7 @@
 {% extends "base_template.html" %}
 {% block content %}
 
+<div class="container">
     <h4>관리자 페이지입니다.</h4>
     <p>현재 설정: {{ current.year.year }}년도 {{ current.sem }}학기</p>
     <hr>
@@ -10,5 +11,5 @@
     <p><a class="" href="{% url 'export_page' %}">Export Students</a></p>
     <p><a class="" href="{% url 'export_mile' %}">Export Students(마일리지용)</a></p>
     <p><a class="" href="{% url 'img_download_page' %}">Download Images</a></p>
-
+</div>
 {% endblock %}

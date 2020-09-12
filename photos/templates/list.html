@@ -15,36 +15,39 @@
 {% endblock %}
 
 {% block content %}
-<style>
-</style>
 
-<h3>{{year}}년도 {{sem}}학기 Group {{group}}</h3>
+<div class="container">
+    <h3>{{year}}년도 {{sem}}학기 Group {{group}}</h3>
+    <a href="{% url 'group_profile' group_pk %}" class="btn btn-outline-primary">Group Detail</a>
 
-<a href="{% url 'group_profile' listuser%}" class="btn btn-outline-primary">Group Detail</a>
+    <div class="infinite-container m-1" id="post_container">
+    {% for photo in list %}
+        <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
+            <div class="d-flex justify-content-between">
+                <h4>{{photo.title}}</h4>
+                <b>{{photo.date}}</b>
+            </div>
+            <p>
+              <a href="{{photo.get_absolute_url}}">
+                {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
+              </a>
+            </p>
 
-<div class="infinite-container m-1" id="post_container">
-{% for photo in list %}
-    <div class="infinite-item p-3" style="border-style:solid; border-color: #ebe6e3; border-width: 1px;">
-        <div class="d-flex justify-content-between">
-            <h4>{{photo.title}}</h4>
-            <b>{{photo.date}}</b>
         </div>
-        <p>
-          <a href="{{photo.get_absolute_url}}">
-            {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
-          </a>
-        </p>
+    {% endfor %}
     </div>
-{% endfor %}
+
+    {% if pics.has_next %}
+        <a class="infinite-more-link" href="?page={{ pics.next_page_number }}">More</a>
+    {% endif %}
+
+    <div class="loading" style="display: none;">
+        Loading...
+    </div>
+
+    {% if msg %} <script>alert("{{ msg }}")</script> {% endif %}
 </div>
 
-{% if pics.has_next %}
-    <a class="infinite-more-link" href="?page={{ pics.next_page_number }}">More</a>
-{% endif %}
-
-<div class="loading" style="display: none;">
-    Loading...
-</div>
 
 <script>
     var infinite = new Waypoint.Infinite({
@@ -57,9 +60,6 @@
       }
     });
 </script>
-
-
-{% if msg %} <script>alert("{{ msg }}")</script> {% endif %}
 
 
 {% endblock %}
