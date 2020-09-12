@@ -18,7 +18,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import transaction
 
-from django.db.models import Count, Max, Sum, Subquery, OuterRef
+from django.db.models import Count, Max, Sum, Subquery, OuterRef, F
 from django.db.models.expressions import RawSQL
 
 #For Code Verification
@@ -536,10 +536,11 @@ def userList(request):
         ctx['year'] = yearobj.year
         ctx['sem'] = sem
 
-    grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct().annotate(
-        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+    grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
         recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
-        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        no = F('group__no'),
     ).order_by('-num_posts')
 
 
