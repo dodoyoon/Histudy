@@ -1,39 +1,47 @@
 {% extends "base_template.html" %}
 {% block content %}
-  <h2>멤버정보
 
-  </h2>
-  <hr>
+<div class="container">
+    <h2>Group {{ user.profile.group.no }} 멤버정보</h2>
+    <hr>
 
-  <table class="table table-inbox table-hover">
-  <tbody>
-      <tr>
-          <th>학번</th>
-          <th>이름</th>
-          <th>출석횟수</th>
-          <th>누적시간</th>
-      </tr>
-   {% for member in list %}
-      <tr class="unread">
-          <td class="inbox-small-cells">
-              {{ member.student_id }}
-          </td>
+    <table class="table table-inbox table-hover">
+    <tbody>
+        <tr>
+            <th>학번</th>
+            <th>이름</th>
+            <th>출석횟수</th>
+            <th>누적시간</th>
+        </tr>
+      {% if member_list %}
+      {% for member in member_list %}
+        <tr class="unread">
+            <td class="inbox-small-cells">
+                {{ member.profile.student_id.student_id }}
+            </td>
 
-          <td class="view-message  dont-show">
-              {% if member.num_posts > 9 %}
-              <font color="green">
-              {{ member.name }}
-              </font>
-              {% else %}
-              {{ member.name }}
-              {% endif %}
-          </td>
-          <td class="view-message ">{{ member.num_posts }}</td>
-          <td class="view-message ">{{ member.total_time }}</td>
-      </tr>
-  {% endfor %}
-  </tbody>
-  </table>
+            <td class="view-message  dont-show">
+                {% if member.num_posts > 9 %}
+                <font color="green">
+                {{ member.profile.name }}
+                </font>
+                {% else %}
+                {{ member.profile.name }}
+                {% endif %}
+            </td>
+            <td class="view-message ">{{ member.num_posts }}</td>
+            <td class="view-message ">{{ member.total_time }}</td>
+        </tr>
+      {% endfor %}
+      {% endif %}
+    </tbody>
+    </table>
+</div>
 
+<script>
+    $(document).on('click', '.confirm-delete', function(){
+    return confirm('멤버를 삭제하시겠습니까?');
+    })
+</script>
 
 {% endblock %}

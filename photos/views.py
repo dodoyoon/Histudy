@@ -82,7 +82,7 @@ def set_current(request):
 
     ctx['current'] = Current.objects.all()[0]
     ctx['username'] = request.user.username
-    
+
     return render(request, 'set_current.html', ctx)
 
 @login_required(login_url=LOGIN_REDIRECT_URL)
@@ -283,7 +283,7 @@ def warn_overwrite(request, year_pk, sem):
     yearobj = Year.objects.get(pk=year_pk)
     userinfo_list = UserInfo.objects.filter(year=yearobj, sem=sem)
     ctx['userinfo_list'] = userinfo_list
-    
+
     if request.method == 'POST':
         imported_data_string = request.session.get('imported_data_string', None)
         imported_data_json = json.loads(imported_data_string)
@@ -294,7 +294,7 @@ def warn_overwrite(request, year_pk, sem):
             imported_data_list.append(copy.deepcopy(value_list))
 
         # but first remove existing userinfo
-        
+
         userinfo_list.delete()
 
         num_of_ppl = len(data[1])
@@ -319,9 +319,9 @@ def warn_overwrite(request, year_pk, sem):
     else:
         return render(request, 'warn_overwrite.html', ctx)
 
-    
 
-    
+
+
 @csrf_exempt
 @login_required(login_url=LOGIN_REDIRECT_URL)
 def csv_upload(request):
@@ -475,9 +475,11 @@ def export_mile(request):
 
 @staff_member_required
 def photoList(request, group, year, sem):
+    # group is group.pk
+
     yearobj = Year.objects.get(year=year)
     picList = Data.objects.raw('SELECT * FROM photos_data WHERE group_id = %s AND year_id = %s AND sem = %s ORDER BY id DESC', [group, yearobj.pk, sem])
-    listuser = group
+    group_pk = group
     if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
@@ -489,7 +491,7 @@ def photoList(request, group, year, sem):
     ctx = {
         'list' : picList,
         'user' : user,
-        'listuser' : listuser,
+        'group_pk' : group_pk,
     }
 
     if username:
@@ -511,12 +513,12 @@ def userList(request):
         return redirect('loginpage')
 
     ctx['years'] = Year.objects.all()
-    
+
 
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
-        
+
         yearobj = Year.objects.get(year=year)
         sem = int(sem)
 
@@ -533,7 +535,6 @@ def userList(request):
         sem = current.sem
         ctx['year'] = yearobj.year
         ctx['sem'] = sem
-        
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
@@ -541,6 +542,7 @@ def userList(request):
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
         no = F('group__no'),
     ).order_by('-num_posts')
+
 
     ctx['grouplist'] = grouplist
 
@@ -570,14 +572,24 @@ def rank(request):
 
     year = current_year()
     sem = current_sem()
+    try:
+        yearobj = Year.objects.get(year=year)
+    except Year.DoesNotExist:
+        yearobj = None
 
-    userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
-        num_posts = Count('data'),
-        recent = Max('data__date'),
-        total_dur = Sum('data__study_total_duration'),
-    ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
+    grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct().annotate(
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+    ).order_by('-num_posts', 'recent')
 
-    ctx['list'] = userlist
+    # userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
+    #     num_posts = Count('data'),
+    #     recent = Max('data__date'),
+    #     total_dur = Sum('data__study_total_duration'),
+    # ).exclude(username='test').order_by('-num_posts', 'recent', 'id')
+
+    ctx['list'] = grouplist
 
     return render(request, 'rank.html', ctx)
 
@@ -646,7 +658,19 @@ def announce(request):
 def main(request):
     ctx={}
 
-    current = Current.objects.all()[0]
+    try:
+        year = current_year()
+        sem = current_sem()
+        yearobj = Year.objects.get(year=year)
+    except Year.DoesNotExist:
+        yearobj = Year.objects.create(year=year)
+
+
+    try:
+        current = Current.objects.get(year=yearobj, sem=sem)
+    except Current.DoesNotExist:
+        current = Current.objects.create(year=yearobj, sem=sem)
+
     cur_year = current.year
     cur_sem = current.sem
 
@@ -756,27 +780,26 @@ def loginpage(request):
 
     return render(request, 'login.html', ctx)
 
-def group_profile(request, user):
-    memuser = User.objects.get(username=user)
+
+@login_required(login_url=LOGIN_REDIRECT_URL)
+def group_profile(request, group_pk):
     ctx={}
 
-    if request.user.is_authenticated:
-        username = request.user.username
-        user = User.objects.get(username=username)
-        ctx['user'] = user
-        if user.is_staff is False:
-            return redirect('loginpage')
-    else:
-        return redirect('loginpage')
+    group = Group.objects.get(pk=group_pk)
 
-    if username:
-        ctx['username'] = username
+    try:
+        year = current_year()
+        yearobj = Year.objects.get(year=year)
+    except Year.DoesNotExist:
+        yearobj = None
 
-    memberList = Member.objects.filter(user=memuser).annotate(
-        num_posts = Count('data'),
-        total_time = Sum('data__study_total_duration')
-    )
-    ctx['list'] = memberList
+    if yearobj:
+        member_list = User.objects.filter(profile__group=group).annotate(
+            num_posts = Count('data', filter=Q(data__year=yearobj)),
+            total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
+        )
+
+        ctx['member_list'] = member_list
 
     return render(request, 'group_profile.html', ctx)
 
@@ -790,7 +813,7 @@ def profile(request):
     try:
         user = User.objects.get(pk=request.user.pk)
 
-        # member_list annotate으로 num_posts, total_time 구해야되는데, data model이 없다고 뜸 ㅠ
+        # User를 기준으로 하면 가입한 사람만 뜨고, UserInfo를 기준으로 하면 가입하지 않은 사람도 뜬다.
         member_list = User.objects.filter(profile__group=user.profile.group).annotate(
             num_posts = Count('data', filter=Q(data__year=yearobj)),
             total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
