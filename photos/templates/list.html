@@ -17,6 +17,7 @@
 {% block content %}
 
 <div class="container">
+    <h3>{{year}}년도 {{sem}}학기 Group {{group}}</h3>
     <a href="{% url 'group_profile' group_pk %}" class="btn btn-outline-primary">Group Detail</a>
 
     <div class="infinite-container m-1" id="post_container">
@@ -31,6 +32,7 @@
                 {% if photo.image %}<img class="img-fluid" src="{{photo.image.url}}" />{% endif %}
               </a>
             </p>
+
         </div>
     {% endfor %}
     </div>
