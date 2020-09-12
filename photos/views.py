@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentID, Group, Current
+from .models import Data, Announcement, Profile, Verification, Year, UserInfo, StudentInfo, Group, Current
 from .forms import DataForm, AnnouncementForm#, ProfileForm
 
 from django.views.generic import ListView
@@ -294,13 +294,13 @@ def warn_overwrite(request, year_pk, sem):
             imported_data_list.append(copy.deepcopy(value_list))
 
         # but first remove existing userinfo
-
         userinfo_list.delete()
 
         num_of_ppl = len(data[1])
         for i in range(num_of_ppl):
             groupNo = imported_data_list[0][i]
             stuID = imported_data_list[1][i]
+            name = imported_data_list[3][i]
 
             try:
                 groupobj = Group.objects.get(no=groupNo)
@@ -308,11 +308,13 @@ def warn_overwrite(request, year_pk, sem):
                 groupobj = Group.objects.create(no=groupNo)
 
             try:
-                idobj = StudentID.objects.get(student_id=stuID)
+                student_info_obj = StudentInfo.objects.get(student_id=stuID)
             except:
-                idobj = StudentID.objects.create(student_id=stuID)
+                student_info_obj = StudentInfo.objects.create(student_id=stuID, name=name)
 
-            UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_id=idobj)
+            UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_info=student_info_obj)
+
+        messages.success(request, 'csv 정보를 성공적으로 덮어씌웠습니다. ', extra_tags='alert')
 
         return redirect(reverse('csv_upload'))
 
@@ -391,11 +393,11 @@ def csv_upload(request):
                 groupobj = Group.objects.create(no=data[0])
 
             try:
-                idobj = StudentID.objects.get(student_id=data[1])
+                student_info_obj = StudentInfo.objects.get(student_id=data[1])
             except:
-                idobj = StudentID.objects.create(student_id=data[1])
+                student_info_obj = StudentInfo.objects.create(student_id=data[1], name=data[3])
 
-            UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, student_id=idobj)
+            UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, student_info=student_info_obj)
 
         messages.success(request, 'csv 정보를 저장했습니다. ', extra_tags='alert')
 
@@ -542,9 +544,9 @@ def userList(request):
         ctx['sem'] = sem
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
-        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
-        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
     ).order_by('-num_posts')
 
@@ -619,7 +621,7 @@ def top3(request):
         sem = request.POST['sem']
         ctx['year'] = year
         ctx['sem'] = sem
-        
+
         yearobj = Year.objects.get(year=year)
 
         if year != 'None' and sem != 'None':
@@ -636,9 +638,9 @@ def top3(request):
 
     '''
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
-        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
-        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
     ).order_by('-num_posts')
     '''
@@ -646,7 +648,7 @@ def top3(request):
     print(yearobj.year, sem)
 
     toplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
-        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         # to fix - add date (10th study date)
         no = F('group__no'),
     ).filter(num_posts__gte=10).order_by('-num_posts')
@@ -977,7 +979,7 @@ def save_profile(request, pk):
 
     if request.method == 'POST':
         profile = user.profile
-        student_id = StudentID.objects.get(student_id=request.POST['student_id'])
+        student_id = StudentInfo.objects.get(student_id=request.POST['student_id'])
         profile.student_id = student_id
         profile.phone = "010" + str(request.POST['phone1']) + str(request.POST['phone2'])
         profile.save()
@@ -1020,12 +1022,12 @@ def user_check(request):
 
 
             try:
-                student_id = StudentID.objects.get(student_id=std_id)
-            except StudentID.DoesNotExist:
-                student_id = StudentID.objects.create(student_id=std_id)
+                student_info_obj = StudentInfo.objects.get(student_id=std_id)
+            except StudentInfo.DoesNotExist:
+                student_info_obj = StudentInfo.objects.create(student_id=std_id, name=username)
 
             try:
-                user_info = UserInfo.objects.get(student_id=student_id)
+                user_info = UserInfo.objects.get(student_info=student_info_obj)
             except UserInfo.DoesNotExist:
                 # user info 가 저장안된 유저는 문의 페이지로! (profile아직 생성안됨)
                 return redirect(reverse('create_userinfo', args=(user.pk,)))

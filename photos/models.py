@@ -12,19 +12,20 @@ from django.core.validators import MaxValueValidator
 class Group(models.Model):
     no = models.IntegerField(unique=True)
 
-class StudentID(models.Model):
+class StudentInfo(models.Model):
     student_id = models.PositiveIntegerField(validators=[MaxValueValidator(99999999)], null=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    student_id = models.OneToOneField(StudentID, on_delete=models.CASCADE, null=True)
+    student_info = models.OneToOneField(StudentInfo, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     phone = models.CharField(default="",max_length=200)
 
     def delete(self, *args, **kwargs):
-        self.student_id.delete()
+        self.student_info.delete()
         self.name.delete()
         self.email.delete()
         super(Data, self).delete(*args, **kwargs)
@@ -56,6 +57,12 @@ class Current(models.Model):
     year = models.ForeignKey(Year, on_delete=models.CASCADE)
     sem = models.IntegerField()
 
+class UserInfo(models.Model):
+    year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
+    sem = models.IntegerField()
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    student_info = models.ForeignKey(StudentInfo, on_delete=models.PROTECT, null=True)
+
 class Data(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
     year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
@@ -65,7 +72,7 @@ class Data(models.Model):
     text = models.TextField(null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='author')
-    participator = models.ManyToManyField(User, related_name='data')
+    participator = models.ManyToManyField(UserInfo, related_name='data')
     code = models.IntegerField(blank=True, null=True)
     code_when_saved = models.DateTimeField(null=True, blank=True)
     study_start_time = models.CharField(max_length=100, blank=True, null=True)
@@ -80,11 +87,6 @@ class Data(models.Model):
         url = reverse_lazy('detail', kwargs={'pk': self.pk})
         return url
 
-class UserInfo(models.Model):
-    year = models.ForeignKey(Year, on_delete=models.CASCADE, null=True)
-    sem = models.IntegerField()
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
-    student_id = models.ForeignKey(StudentID, on_delete=models.PROTECT, null=True)
 
 class Announcement(models.Model):
     author = models.TextField(max_length=100)
