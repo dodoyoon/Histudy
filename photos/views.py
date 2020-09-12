@@ -495,7 +495,7 @@ def photoList(request, group, year, sem):
         'user' : user,
         'year' : year,
         'sem' : sem,
-        'group' : groupno.no
+        'group' : groupno.no,
         'group_pk' : group_pk,
     }
 
