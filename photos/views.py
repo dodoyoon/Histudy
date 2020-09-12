@@ -889,27 +889,58 @@ def grid(request):
     if username:
         ctx['username'] = username
 
+    current = Current.objects.all().first()
     ctx['years'] = Year.objects.all()
 
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
 
+        yearobj = Year.objects.get(year=year)
+        sem = sem
+
         if year != 'None' and sem != 'None':
             ctx['chosen_year'] = year
             ctx['chosen_sem'] = sem
 
     else:
-        year = current_year()
-        sem = current_sem()
+        yearobj = current.year
+        year = current.year.year
+        sem = current.sem
         ctx['year'] = year
         ctx['sem'] = sem
 
-
+    
+    '''
     ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN \
         (SELECT MAX(id) as id FROM photos_data GROUP BY author) \
             last_updates ON last_updates.id = photos_data.id INNER JOIN photos_userinfo ON photos_data.user_id = photos_userinfo.user_id INNER JOIN photos_year ON photos_userinfo.year_id = photos_year.id\
                 WHERE author <> "kate" AND author <> "test" AND author IS NOT NULL AND year=%s AND sem =%s ORDER BY date DESC', [year, sem])
+    '''
+    '''
+    data_ids = Data.objects.filter(year=yearobj, sem=sem).annotate(
+        latest_date=Max('date')
+    ).values_list('id', flat=True)
+
+    print(data_ids)
+    '''
+
+    model_max_set = Data.objects.filter(year=yearobj, sem=sem).values('group').annotate(
+        latest_date = Max('date')
+    ).order_by()
+
+    q_statement = Q()
+    for pair in model_max_set:
+        print("pair", pair)
+        q_statement |= (Q(group__exact=pair['group']) & Q(date=pair['latest_date']))
+
+    print("q_statement", q_statement)
+    print(len(q_statement))
+    if(len(q_statement)==0):
+        data = Data.objects.none()
+    else:
+        data = Data.objects.filter(q_statement)
+    ctx['data'] = data
 
     return render(request, 'grid.html', ctx)
 
