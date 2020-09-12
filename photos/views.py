@@ -486,10 +486,15 @@ def photoList(request, group, year, sem):
     else:
         return redirect('loginpage')
 
+    groupno = Group.objects.get(pk=group)
+
     ctx = {
         'list' : picList,
         'user' : user,
         'listuser' : listuser,
+        'year' : year,
+        'sem' : sem,
+        'group' : groupno.no
     }
 
     if username:
@@ -594,11 +599,16 @@ def top3(request):
     else:
         return redirect('loginpage')
 
+    current = Current.objects.all().first()
     ctx['years'] = Year.objects.all()
 
     if request.method == 'POST':
         year = request.POST['year']
         sem = request.POST['sem']
+        ctx['year'] = year
+        ctx['sem'] = sem
+        
+        yearobj = Year.objects.get(year=year)
 
         if year != 'None' and sem != 'None':
             ctx['chosen_year'] = year
@@ -607,17 +617,36 @@ def top3(request):
     else:
         year = current_year()
         sem = current_sem()
+        yearobj = current.year
+        sem = current.sem
         ctx['year'] = year
         ctx['sem'] = sem
 
+    '''
+    grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        no = F('group__no'),
+    ).order_by('-num_posts')
+    '''
 
+    print(yearobj.year, sem)
+
+    toplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
+        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), 
+        # to fix - add date (10th study date)
+        no = F('group__no'),
+    ).filter(num_posts__gte=10).order_by('-num_posts')
+
+    '''
     toplist = User.objects.raw('SELECT id, username, num_posts, date FROM \
                                 (SELECT auth_user.id, username, year, sem, \
 	                            (SELECT count(*) FROM photos_data WHERE auth_user.username = photos_data.author) AS num_posts, \
 	                            (SELECT date FROM photos_data WHERE auth_user.username = photos_data.author AND photos_data.idgroup = 10) AS date \
                                 FROM auth_user INNER JOIN photos_userinfo ON auth_user.id = photos_userinfo.user_id INNER JOIN photos_year ON photos_userinfo.year_id = photos_year.id) AS D \
                                 WHERE num_posts>9 AND username <> "test" AND year=%s AND sem=%s ORDER BY date LIMIT 3', [year, sem])
-
+    '''
 
     ctx['list'] = toplist
     ctx['userobj'] = user

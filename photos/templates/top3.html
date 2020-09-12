@@ -87,7 +87,9 @@
           </td>
 
           <td class="view-message  dont-show">
-              {{ group.username }}
+            <a href="{% url 'list' group.group year sem%}">
+              Group {{ group.no }}
+            </a>
           </td>
           <td>
             {{ group.date }}
