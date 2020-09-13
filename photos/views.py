@@ -817,17 +817,23 @@ def group_profile(request, group_pk):
     ctx={}
 
     group = Group.objects.get(pk=group_pk)
+    ctx['group'] = group
 
     try:
+        current = Current.objects.all().first()
+        yearobj = current.year
+        sem = current.sem
+    except Year.DoesNotExist:
         year = current_year()
         yearobj = Year.objects.get(year=year)
-    except Year.DoesNotExist:
-        yearobj = None
+        sem = current_sem()
+    ctx['year'] = yearobj
+    ctx['sem'] = sem
 
     if yearobj:
-        member_list = User.objects.filter(profile__group=group).annotate(
-            num_posts = Count('data', filter=Q(data__year=yearobj)),
-            total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
+        member_list = UserInfo.objects.filter(year=yearobj, sem=sem, group=group).annotate(
+            num_posts = Count('data', filter=Q(data__year=yearobj, data__sem=sem)),
+            total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj, data__sem=sem))
         )
 
         ctx['member_list'] = member_list
