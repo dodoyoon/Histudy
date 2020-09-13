@@ -818,7 +818,11 @@ def main(request):
     else:
         return redirect('loginpage')
 
-    groupobj = user.profile.group
+    try:
+        groupobj = user.profile.group
+    except:
+        return redirect(reverse('user_check'))
+
     dataList = Data.objects.filter(author__profile__group=groupobj, year=cur_year, sem=cur_sem).order_by('-id')
 
     paginator = Paginator(dataList, 10)
@@ -948,8 +952,10 @@ def profile(request):
     current = Current.objects.all().first()
     yearobj = current.year
     sem = current.sem
-    print(request.user.profile.student_info)
-    userinfoobj = UserInfo.objects.get(year=yearobj, sem=sem, student_info=request.user.profile.student_info)
+    try:
+        userinfoobj = UserInfo.objects.get(year=yearobj, sem=sem, student_info=request.user.profile.student_info)
+    except:
+        return redirect(reverse('user_check'))
     try:
         user = User.objects.get(pk=request.user.pk)
 
@@ -1151,6 +1157,9 @@ def create_userinfo(request, pk):
 
     return render(request, 'create_userinfo.html')
 
+def no_group_notice(request):
+    return render(request, 'no_group_notice.html')
+
 
 def user_check(request):
     if request.user.email.endswith('@handong.edu'):
@@ -1184,7 +1193,7 @@ def user_check(request):
                 user_info = UserInfo.objects.get(year=yearobj, sem=sem, student_info=student_info_obj)
             except UserInfo.DoesNotExist:
                 # user info 가 저장안된 유저는 문의 페이지로! (profile아직 생성안됨)
-                return redirect(reverse('create_userinfo', args=(user.pk,)))
+                return redirect(reverse('no_group_notice'))
 
             try:
                 user_profile = user.profile
