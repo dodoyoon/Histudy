@@ -545,7 +545,7 @@ def userList(request):
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
     ).order_by('-num_posts')
@@ -591,7 +591,7 @@ def rank(request):
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
     ).order_by('-num_posts', 'recent')
@@ -641,17 +641,6 @@ def top3(request):
         sem = current.sem
         ctx['year'] = year
         ctx['sem'] = sem
-
-    '''
-    grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
-        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
-        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        no = F('group__no'),
-    ).order_by('-num_posts')
-    '''
-
-    print(yearobj.year, sem)
 
     toplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
