@@ -695,17 +695,19 @@ def main(request):
     ctx={}
 
     try:
-        year = current_year()
-        sem = current_sem()
-        yearobj = Year.objects.get(year=year)
-    except Year.DoesNotExist:
-        yearobj = Year.objects.create(year=year)
+        current = Current.objects.all().first()
+    except:
+        try:
+            year = current_year()
+            sem = current_sem()
+            yearobj = Year.objects.get(year=year)
+        except Year.DoesNotExist:
+            yearobj = Year.objects.create(year=year)
 
-
-    try:
-        current = Current.objects.get(year=yearobj, sem=sem)
-    except Current.DoesNotExist:
-        current = Current.objects.create(year=yearobj, sem=sem)
+        try:
+            current = Current.objects.get(year=yearobj, sem=sem)
+        except Current.DoesNotExist:
+            current = Current.objects.create(year=yearobj, sem=sem)
 
     cur_year = current.year
     cur_sem = current.sem
@@ -1313,8 +1315,13 @@ def img_download_page(request):
             return redirect('img_download', year_obj.pk)
 
     else:
-        year = current_year()
-        sem = current_sem()
+        try:
+            current = Current.objects.all().first()
+            year = current.year.year
+            sem = current.sem
+        except:
+            year = current_year()
+            sem = current_sem()
         ctx['year'] = year
         ctx['sem'] = sem
 
