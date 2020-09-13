@@ -18,7 +18,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import transaction
 
-from django.db.models import Count, Max, Sum, Subquery, OuterRef, F
+from django.db.models import Count, Max, Sum, Subquery, OuterRef, F, Min, Value, DateTimeField, CharField
 from django.db.models.expressions import RawSQL
 
 #For Code Verification
@@ -37,6 +37,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # for device detection
 from django_user_agents.utils import get_user_agent
 
+from operator import attrgetter, itemgetter # toplist
 
 LOGIN_REDIRECT_URL = '/user_check/'
 
@@ -642,12 +643,28 @@ def top3(request):
         ctx['year'] = year
         ctx['sem'] = sem
 
+    groupno = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct()
+    tenth_date = {}
+    for group in groupno:
+        data = Data.objects.filter(year=yearobj, sem=sem, group=group['group'])
+        if data.exists():
+            if data.count() >= 10: #important
+                tenth_date[group[str('group')]] = data[9].date #important
+
     toplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        # to fix - add date (10th study date)
         no = F('group__no'),
-    ).filter(num_posts__gte=10).order_by('-num_posts')
+    ).filter(num_posts__gte=10) #important
 
+    for top in toplist:
+        if top['no'] in tenth_date.keys():
+            top['date'] = tenth_date[top['no']]
+
+    finallist = sorted(toplist, key=itemgetter('date'), reverse=False)
+    #toplist = toplist.order_by('date')
+    #toplist = sorted(toplist, key=attrgetter('date'))
+
+    #to fix - order by date
     '''
     toplist = User.objects.raw('SELECT id, username, num_posts, date FROM \
                                 (SELECT auth_user.id, username, year, sem, \
@@ -657,7 +674,7 @@ def top3(request):
                                 WHERE num_posts>9 AND username <> "test" AND year=%s AND sem=%s ORDER BY date LIMIT 3', [year, sem])
     '''
 
-    ctx['list'] = toplist
+    ctx['list'] = finallist
     ctx['userobj'] = user
     if username:
         ctx['username'] = username
