@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="container">
-    <h2>Group {{ user.profile.group.no }} 멤버정보</h2>
+    <h3>{{ year.year }}년도 {{ sem }}학기 Group {{ group.no }} 멤버정보</h3>
     <hr>
 
     <table class="table table-inbox table-hover">
@@ -17,16 +17,16 @@
       {% for member in member_list %}
         <tr class="unread">
             <td class="inbox-small-cells">
-                {{ member.profile.student_id.student_id }}
+                {{ member.student_info.student_id }}
             </td>
 
             <td class="view-message  dont-show">
                 {% if member.num_posts > 9 %}
                 <font color="green">
-                {{ member.profile.name }}
+                {{ member.student_info.name }}
                 </font>
                 {% else %}
-                {{ member.profile.name }}
+                {{ member.student_info.name }}
                 {% endif %}
             </td>
             <td class="view-message ">{{ member.num_posts }}</td>
