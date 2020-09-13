@@ -1,0 +1,53 @@
+.form-signin .btn {
+  font-size: 90%;
+  border-radius: 5rem;
+  letter-spacing: .1rem;
+  font-weight: bold;
+  padding: 1rem;
+  transition: all 0.2s;
+  width: 300px;
+}
+
+#sign_in_div{
+  position: relative;
+  left: calc(50% - 300px);
+  top: 100px;
+  width: 600px;
+  height: 330px;
+  padding: 40px;
+}
+
+#logo{
+  position: relative;
+  width: 300px;
+  left: calc(50% - 150px);
+}
+
+.btn-google {
+  color: white;
+  background-color: #db3d30;
+}
+
+#google {
+  position: relative;
+  left: calc(50% - 150px);
+  top: 15px;
+  width: 300px;
+}
+
+#contact_info{
+  width: 350px;
+  height: 250px;
+  padding: 20px;
+  position: relative;
+  left: calc(50% - 175px);
+  top: 100px;
+}
+
+#contact_info_icon{
+  width: 20px;
+}
+
+#contact_info_icon{
+  width: 20px;
+}

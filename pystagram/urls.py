@@ -21,7 +21,7 @@ from django.conf import settings
 
 from photos.views import detail, announce_write, announce_detail, confirm_delete_announce, confirm_delete_member, confirm_delete_user
 from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce, inquiry, data_edit, export_page
-from photos.views import data_upload, top3, group_profile, rank, grid, export_mile, set_current, warn_overwrite
+from photos.views import data_upload, top3, group_profile, rank, grid, export_all_page, set_current, warn_overwrite
 
 from django.urls import include
 from django.urls import path
@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^photos/csv_upload/$', csv_upload, name='csv_upload'),
     path('photos/warn_overwrite/<int:year_pk>/<int:sem>', warn_overwrite, name='warn_overwrite'),
     url(r'^export_page/$', export_page, name='export_page'),
-    url(r'^export_mile/$', export_mile, name='export_mile'),
+    url(r'^export_all_page/$', export_all_page, name='export_all_page'),
     url(r'^user/', userList, name='userList'),
     url(r'^grid/', grid, name='grid'),
     url(r'^announce/write/$', announce_write, name='announce_write'),
