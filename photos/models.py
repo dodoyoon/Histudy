@@ -107,15 +107,15 @@ class Announcement(models.Model):
 
 
 class Verification(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, null=True)
     code = models.IntegerField(null=True, blank=True)
     code_when_saved = models.DateTimeField(null=True, blank=True)
 
-@receiver(post_save, sender=User)
-def create_user_verification(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Group)
+def create_group_verification(sender, instance, created, **kwargs):
     if created:
-        Verification.objects.create(user=instance)
+        Verification.objects.create(group=instance)
 
-@receiver(post_save, sender=User)
-def save_user_verification(sender, instance, **kwargs):
+@receiver(post_save, sender=Group)
+def save_group_verification(sender, instance, **kwargs):
     instance.verification.save()
