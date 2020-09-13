@@ -398,16 +398,17 @@ def csv_upload(request):
                 groupobj = Group.objects.get(no=data[0])
             except:
                 groupobj = Group.objects.create(no=data[0])
-                try:
-                    verifyobj = Verification.objects.create(group=groupobj)
-                except Verification.DoesNotExist:
-                    messages.warning(request, 'Group에 대한 Verification을 생성할 수 없습니다.', extra_tags='alert')
+                verifyobj = Verification.objects.filter(group=groupobj)
+                if not verifyobj.exists():
+                    try:
+                        verifyobj = Verification.objects.create(group=groupobj)
+                    except Verification.DoesNotExist:
+                        messages.warning(request, 'Group에 대한 Verification을 생성할 수 없습니다.', extra_tags='alert')
 
             try:
                 student_info_obj = StudentInfo.objects.get(student_id=data[1])
             except:
                 student_info_obj = StudentInfo.objects.create(student_id=data[1], name=data[3])
-
             UserInfo.objects.create(year=yearobj, sem=semester, group=groupobj, student_info=student_info_obj)
 
         messages.success(request, 'csv 정보를 저장했습니다. ', extra_tags='alert')
