@@ -850,8 +850,8 @@ def profile(request):
 
         # User를 기준으로 하면 가입한 사람만 뜨고, UserInfo를 기준으로 하면 가입하지 않은 사람도 뜬다.
         member_list = UserInfo.objects.filter(year=yearobj, sem=sem, group=userinfoobj.group).annotate(
-            #num_posts = Count('data', filter=Q(data__year=yearobj)),
-            #total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
+            num_posts = Count('data', filter=Q(data__year=yearobj, data__sem=sem)),
+            total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj, data__sem=sem))
         )
 
         ctx['member_list'] = member_list
