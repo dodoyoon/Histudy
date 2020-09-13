@@ -577,12 +577,17 @@ def rank(request):
         ctx['user'] = user
         ctx['username'] = username
 
-    year = current_year()
-    sem = current_sem()
     try:
-        yearobj = Year.objects.get(year=year)
-    except Year.DoesNotExist:
-        yearobj = None
+        current = Current.objects.all().first()
+        yearobj = current.year
+        sem = current.sem
+    except:
+        year = current_year()
+        sem = current_sem()
+        try:
+            yearobj = Year.objects.get(year=year)
+        except Year.DoesNotExist:
+            yearobj = None
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
@@ -981,20 +986,27 @@ def signup(request):
                 password=request.POST["password1"]
             )
 
-            this_year = current_year()
-            try:
-                year = Year.objects.get(year = this_year)
-            except Year.DoesNotExist :
-                year = None
+            try: 
+                current = Current.objects.all().first()
+                this_year = current.year.year
+                year = current.year
+                sem = current.sem
+            except:
+                this_year = current_year()
+                try:
+                    year = Year.objects.get(year = this_year)
+                except Year.DoesNotExist :
+                    year = None
+                sem = current_sem()
 
             if not year:
                 year = Year(year=this_year)
                 year.save()
                 user.userinfo.year = year
-                user.userinfo.sem = current_sem()
+                user.userinfo.sem = sem
             else:
                 user.userinfo.year = year
-                user.userinfo.sem = current_sem()
+                user.userinfo.sem = sem
 
             user.save()
             messages.success(request, '유저가 성공적으로 추가되었습니다.', extra_tags='alert')
