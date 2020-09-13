@@ -4,9 +4,12 @@ from django import forms
 from django.forms import ModelMultipleChoiceField
 
 from django.contrib.auth.models import User
-from .models import Data, Announcement, Profile, UserInfo
+from .models import Data, Announcement, Profile, UserInfo, Current
 from django_summernote.widgets import SummernoteWidget
 
+class ParticipatorModelChoiceField(ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return obj.student_info.name
 
 class DataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -16,7 +19,8 @@ class DataForm(forms.ModelForm):
         super(DataForm, self).__init__(*args, **kwargs)
 
         if user and user.profile.group is not None:
-            self.fields['participator'].queryset = UserInfo.objects.filter(group=user.profile.group)
+            current = Current.objects.all().first()
+            self.fields['participator'].queryset = UserInfo.objects.filter(group=user.profile.group, year=current.year, sem=current.sem)
 
         print(type(self.fields['participator']))
 
@@ -28,7 +32,7 @@ class DataForm(forms.ModelForm):
         }
     ))
 
-    participator = forms.ModelMultipleChoiceField(
+    participator = ParticipatorModelChoiceField(
         widget = forms.CheckboxSelectMultiple,
         queryset = UserInfo.objects.none()
     )

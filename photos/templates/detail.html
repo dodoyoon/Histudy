@@ -28,7 +28,7 @@
         <p><b>참여 멤버</b></p>
         <ul>
             {% for participator in participators %}
-                <li>{{participator.profile.name}}</li>
+                <li>{{participator.student_info.name}}</li>
             {% endfor %}
         </ul>
         {% if post.code %}
