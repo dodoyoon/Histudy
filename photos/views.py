@@ -326,7 +326,7 @@ def warn_overwrite(request, year_pk, sem):
 
 
 @csrf_exempt
-@login_required(login_url=LOGIN_REDIRECT_URL)
+@staff_member_required
 def csv_upload(request):
     ctx = {}
 
@@ -407,6 +407,42 @@ def csv_upload(request):
 
     return render(request, 'csv_upload.html', ctx)
 
+@csrf_exempt
+@staff_member_required
+def new_userinfo(request):
+    ctx = {}
+
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['semester']
+        student_id = request.POST['student_id']
+        name = request.POST['name']
+        groupno = request.POST['group']
+        try:
+            yearobj = Year.objects.get(year=year)
+        except:
+            yearobj = Year.objects.create(year=year)
+        try:
+            student_info_obj = StudentInfo.objects.get(student_id=student_id)
+        except:
+            student_info_obj = StudentInfo.objects.create(student_id=student_id, name=name)
+        
+        checklist = UserInfo.objects.filter(year=yearobj, sem=sem, student_info=student_info_obj)
+        if checklist.exists():
+            group = checklist[0].group.no
+            msg = '이번 학기 해당 학생의 조가 존재합니다: Group ' + str(group)
+            messages.info(request, msg)
+        else:
+            try:
+                groupobj = Group.objects.get(no=groupno)
+            except:
+                groupobj = Group.objects.create(no=groupno)
+            UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_info=student_info_obj)
+            messages.info(request, '해당 정보가 성공적으로 생성되었습니다.')
+    else:
+        pass
+
+    return render(request, 'new_userinfo.html', ctx)
 
 @csrf_exempt
 def export_page(request):
@@ -1088,8 +1124,10 @@ def save_profile(request, pk):
 @login_required(login_url=LOGIN_REDIRECT_URL)
 @transaction.atomic
 def create_userinfo(request, pk):
-    messages.info(request, '학우님의 정보가 DB에 없습니다. 관리자에게 문의해주세요')
-
+    messages.info(request, '학우님의 Group을 찾을 수 없습니다. 관리자에게 문의해주세요')
+    user = User.objects.get(pk=request.user.pk)
+    print(request.user.username)
+    print(request.user.last_name)
     try:
         user = User.objects.get(pk=pk)
     except:
@@ -1115,6 +1153,17 @@ def user_check(request):
             username = user.last_name
             email = user.email
 
+            try:
+                current = Current.objects.all().first()
+                yearobj = current.year
+                sem = current.sem
+            except:
+                year = current_year()
+                try:
+                    yearobj = Year.object.get(year=year)
+                except:
+                    yearobj = Year.object.create(year=year)
+                sem = current_sem()
 
             try:
                 student_info_obj = StudentInfo.objects.get(student_id=std_id)
@@ -1122,7 +1171,7 @@ def user_check(request):
                 student_info_obj = StudentInfo.objects.create(student_id=std_id, name=username)
 
             try:
-                user_info = UserInfo.objects.get(student_info=student_info_obj)
+                user_info = UserInfo.objects.get(year=yearobj, sem=sem, student_info=student_info_obj)
             except UserInfo.DoesNotExist:
                 # user info 가 저장안된 유저는 문의 페이지로! (profile아직 생성안됨)
                 return redirect(reverse('create_userinfo', args=(user.pk,)))
