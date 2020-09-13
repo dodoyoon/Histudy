@@ -840,14 +840,18 @@ def profile(request):
     ctx={}
 
     # Tag.objects.filter(person__yourcriterahere=whatever [, morecriteria]).annotate(cnt=Count('person')).order_by('-cnt')[0]
-    yearobj = Current.objects.all()[0].year
+    current = Current.objects.all().first()
+    yearobj = current.year
+    sem = current.sem
+    print(request.user.profile.student_info)
+    userinfoobj = UserInfo.objects.get(year=yearobj, sem=sem, student_info=request.user.profile.student_info)
     try:
         user = User.objects.get(pk=request.user.pk)
 
         # User를 기준으로 하면 가입한 사람만 뜨고, UserInfo를 기준으로 하면 가입하지 않은 사람도 뜬다.
-        member_list = User.objects.filter(profile__group=user.profile.group).annotate(
-            num_posts = Count('data', filter=Q(data__year=yearobj)),
-            total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
+        member_list = UserInfo.objects.filter(year=yearobj, sem=sem, group=userinfoobj.group).annotate(
+            #num_posts = Count('data', filter=Q(data__year=yearobj)),
+            #total_time = Sum('data__study_total_duration', filter=Q(data__year=yearobj))
         )
 
         ctx['member_list'] = member_list
@@ -931,11 +935,8 @@ def grid(request):
 
     q_statement = Q()
     for pair in model_max_set:
-        print("pair", pair)
         q_statement |= (Q(group__exact=pair['group']) & Q(date=pair['latest_date']))
 
-    print("q_statement", q_statement)
-    print(len(q_statement))
     if(len(q_statement)==0):
         data = Data.objects.none()
     else:
@@ -1003,6 +1004,7 @@ def signup(request):
 @login_required(login_url=LOGIN_REDIRECT_URL)
 @transaction.atomic
 def save_profile(request, pk):
+    print('save profile')
     user = User.objects.get(pk=pk)
 
     if user.profile.phone and user.profile.student_id:
@@ -1010,8 +1012,11 @@ def save_profile(request, pk):
 
     if request.method == 'POST':
         profile = user.profile
-        student_id = StudentInfo.objects.get(student_id=request.POST['student_id'])
-        profile.student_id = student_id
+        try:
+            student_info = StudentInfo.objects.get(student_id=request.POST['student_id'])
+        except:
+            pass #to fix --> inquiry page with message
+        profile.student_info = student_info
         profile.phone = "010" + str(request.POST['phone1']) + str(request.POST['phone2'])
         profile.save()
         return redirect(reverse('main'))
