@@ -584,7 +584,7 @@ def userList(request):
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
     ).order_by('-num_posts')
@@ -616,17 +616,23 @@ def rank(request):
         ctx['user'] = user
         ctx['username'] = username
 
-    year = current_year()
-    sem = current_sem()
     try:
-        yearobj = Year.objects.get(year=year)
-    except Year.DoesNotExist:
-        yearobj = None
+        current = Current.objects.all().first()
+        yearobj = current.year
+        sem = current.sem
+    except:
+        year = current_year()
+        sem = current_sem()
+        try:
+            yearobj = Year.objects.get(year=year)
+        except Year.DoesNotExist:
+            yearobj = None
 
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
+        recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+        no = F('group__no'),
     ).order_by('-num_posts', 'recent')
 
     # userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
@@ -675,17 +681,6 @@ def top3(request):
         ctx['year'] = year
         ctx['sem'] = sem
 
-    '''
-    grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
-        num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
-        total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
-        no = F('group__no'),
-    ).order_by('-num_posts')
-    '''
-
-    print(yearobj.year, sem)
-
     toplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         # to fix - add date (10th study date)
@@ -729,17 +724,19 @@ def main(request):
     ctx={}
 
     try:
-        year = current_year()
-        sem = current_sem()
-        yearobj = Year.objects.get(year=year)
-    except Year.DoesNotExist:
-        yearobj = Year.objects.create(year=year)
+        current = Current.objects.all().first()
+    except:
+        try:
+            year = current_year()
+            sem = current_sem()
+            yearobj = Year.objects.get(year=year)
+        except Year.DoesNotExist:
+            yearobj = Year.objects.create(year=year)
 
-
-    try:
-        current = Current.objects.get(year=yearobj, sem=sem)
-    except Current.DoesNotExist:
-        current = Current.objects.create(year=yearobj, sem=sem)
+        try:
+            current = Current.objects.get(year=yearobj, sem=sem)
+        except Current.DoesNotExist:
+            current = Current.objects.create(year=yearobj, sem=sem)
 
     cur_year = current.year
     cur_sem = current.sem
@@ -1340,8 +1337,13 @@ def img_download_page(request):
             return redirect('img_download', year_obj.pk)
 
     else:
-        year = current_year()
-        sem = current_sem()
+        try:
+            current = Current.objects.all().first()
+            year = current.year.year
+            sem = current.sem
+        except:
+            year = current_year()
+            sem = current_sem()
         ctx['year'] = year
         ctx['sem'] = sem
 
