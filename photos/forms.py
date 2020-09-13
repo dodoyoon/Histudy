@@ -22,7 +22,6 @@ class DataForm(forms.ModelForm):
             current = Current.objects.all().first()
             self.fields['participator'].queryset = UserInfo.objects.filter(group=user.profile.group, year=current.year, sem=current.sem)
 
-        print(type(self.fields['participator']))
 
     image = forms.ImageField(label='', widget=forms.ClearableFileInput(
         attrs={

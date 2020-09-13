@@ -5,7 +5,7 @@
 <form method="POST" class="form-style-7" enctype="multipart/form-data">
   {% csrf_token %}
   <ul>
-      <h1>Export Student Info</h1>
+      <h1>모든 학생들 정보 Export</h1>
   <li>
       <label for="email">Export할 연도</label>
       &nbsp&nbsp&nbsp&nbsp
@@ -18,10 +18,6 @@
         <option value="1">1</option>
         <option value="2">2</option>
       </select>
-  </li>
-  <li>
-      <label for="email">스터디 Pass 횟수 입력</label>
-      <input type="number" min="0" max="100" name="criterion" style="width:100px; margin-right:90px;" required />
   </li>
   <li>
       <input type="submit" value="Export" style="margin-left:40%;">

@@ -423,22 +423,34 @@ def export_page(request):
         return redirect('loginpage')
 
     if request.method == 'POST':
-        criterion = request.POST['criterion']
+        criterion = int(request.POST['criterion'])
+        year = request.POST['year']
+        sem = request.POST['semester']
 
-        orig_query = 'SELECT username, student_id AS id, name, count_id, count_mem, (count_mem/count_id*100) AS percent FROM photos_member JOIN auth_user ON photos_member.user_id = auth_user.id JOIN (SELECT user_id, COUNT(id) AS count_id FROM photos_data GROUP BY user_id) AS count_data ON photos_member.user_id = count_data.user_id JOIN (SELECT member_id, COUNT(data_id) AS count_mem FROM photos_data_participator JOIN photos_member ON photos_member.id = photos_data_participator.member_id GROUP BY member_id) AS participator ON photos_member.id = participator.member_id WHERE username <> "test" AND count_id >= '
+        try:
+            yearobj = Year.objects.get(year=year)
+        except Year.DoesNotExist:
+            yearobj = None
 
-        criterion_str = str(criterion)
-        query = orig_query + criterion_str
+        pass_stu_list = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
+            total_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+            no = F('group__no'),
+            student_id = F('group__userinfo__student_info__student_id'),
+            name = F('group__userinfo__student_info__name'),
+            total_participation = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
+        ).order_by('no', 'student_id').filter(total_participation__gte=criterion)
 
-        member = Data.objects.raw(query)
+
         response = HttpResponse(content_type = 'text/csv')
         response['Content-Disposition'] = 'attachment; filename="student_final.csv"'
 
         writer = csv.writer(response, delimiter=',')
         writer.writerow(['group', 'student_id', 'name', '%'])
 
-        for stu in member:
-            writer.writerow([stu.username, stu.id, stu.name, stu.percent])
+        for stu in pass_stu_list:
+            percent = float(stu['total_participation']) / float(stu['total_posts']) * 100
+            percent = round(percent, 2)
+            writer.writerow([stu['no'], stu['student_id'], stu['name'], percent])
 
         return response
     else:
@@ -447,7 +459,7 @@ def export_page(request):
     return render(request, 'export_page.html', ctx)
 
 @csrf_exempt
-def export_mile(request):
+def export_all_page(request):
     ctx={}
     if request.user.is_authenticated:
         username = request.user.username
@@ -461,19 +473,46 @@ def export_mile(request):
     else:
         return redirect('loginpage')
 
-    query = 'SELECT name, student_id AS id, username, count_id, count_mem, sum_study FROM photos_member LEFT JOIN auth_user ON photos_member.user_id = auth_user.id LEFT JOIN (SELECT user_id, COUNT(id) AS count_id FROM photos_data GROUP BY user_id) AS count_data ON photos_member.user_id = count_data.user_id LEFT JOIN (select member_id, count(data_id) AS count_mem, sum(study_total_duration) AS sum_study from photos_data_participator join photos_data on photos_data_participator.data_id = photos_data.id group by member_id) AS participator ON photos_member.id = participator.member_id WHERE username <> "test" ORDER BY username, name'
-    member = Data.objects.raw(query)
-    response = HttpResponse(content_type = 'text/csv')
-    response['Content-Disposition'] = 'attachment; filename="histudy_mileage_list.csv"'
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['semester']
 
-    response.write(u'\ufeff'.encode('utf8'))
-    writer = csv.writer(response, delimiter=',')
-    writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
+        try:
+            yearobj = Year.objects.get(year=year)
+        except Year.DoesNotExist:
+            yearobj = None
 
-    for stu in member:
-        writer.writerow([stu.name, stu.id, stu.username, stu.count_id, stu.count_mem, stu.sum_study])
+        pass_stu_list = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
+            total_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+            no = F('group__no'),
+            student_id = F('group__userinfo__student_info__student_id'),
+            name = F('group__userinfo__student_info__name'),
+            total_participation = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
+            # total_time = Sum('group__data__study_total_duration', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__name__icontains=F('group__userinfo__student_info__name'))),
+        ).order_by('no', 'student_id')
 
-    return response
+        for stu in pass_stu_list:
+            total_time = stu['total_time']
+            if total_time:
+                print(stu)
+
+
+        # response = HttpResponse(content_type = 'text/csv')
+        # response['Content-Disposition'] = 'attachment; filename="student_final.csv"'
+        #
+        # writer = csv.writer(response, delimiter=',')
+        # writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
+        #
+        # for stu in pass_stu_list:
+        #     writer.writerow([stu['name'], stu['student_id'], stu['no'], stu['total_posts'], stu['total_participation'], stu['total_time']])
+        #
+        #
+        # return response
+    else:
+        return render(request, 'export_all_page.html', ctx)
+
+    return render(request, 'export_all_page.html', ctx)
+
 
 @staff_member_required
 def photoList(request, group, year, sem):
@@ -920,7 +959,7 @@ def grid(request):
         ctx['year'] = year
         ctx['sem'] = sem
 
-    
+
     '''
     ctx['data'] = Data.objects.raw('SELECT * FROM photos_data INNER JOIN \
         (SELECT MAX(id) as id FROM photos_data GROUP BY author) \
@@ -961,50 +1000,50 @@ def logout_view(request):
     return render(request, 'home.html', {})
 
 
-def signup(request):
-    ctx = {}
-
-    if request.user.is_authenticated:
-        username = request.user.username
-        user = User.objects.get(username=username)
-        ctx['userobj'] = user
-        if user.is_staff is False:
-            return redirect('main')
-    else:
-        return redirect('loginpage')
-
-    ctx['username'] = username
-    if request.method == 'POST':
-        if request.POST["password1"] == request.POST["password2"]:
-            user = User.objects.create_user(
-                username=request.POST["username"],
-                password=request.POST["password1"]
-            )
-
-            this_year = current_year()
-            try:
-                year = Year.objects.get(year = this_year)
-            except Year.DoesNotExist :
-                year = None
-
-            if not year:
-                year = Year(year=this_year)
-                year.save()
-                user.userinfo.year = year
-                user.userinfo.sem = current_sem()
-            else:
-                user.userinfo.year = year
-                user.userinfo.sem = current_sem()
-
-            user.save()
-            messages.success(request, '유저가 성공적으로 추가되었습니다.', extra_tags='alert')
-            return redirect("staff_profile")
-
-        else:
-            messages.warning(request, '유저를 만드는데 실패하였습니다.', extra_tags='alert')
-        return render(request, 'signup.html', ctx)
-
-    return render(request, 'signup.html', ctx)
+# def signup(request):
+#     ctx = {}
+#
+#     if request.user.is_authenticated:
+#         username = request.user.username
+#         user = User.objects.get(username=username)
+#         ctx['userobj'] = user
+#         if user.is_staff is False:
+#             return redirect('main')
+#     else:
+#         return redirect('loginpage')
+#
+#     ctx['username'] = username
+#     if request.method == 'POST':
+#         if request.POST["password1"] == request.POST["password2"]:
+#             user = User.objects.create_user(
+#                 username=request.POST["username"],
+#                 password=request.POST["password1"]
+#             )
+#
+#             this_year = current_year()
+#             try:
+#                 year = Year.objects.get(year = this_year)
+#             except Year.DoesNotExist :
+#                 year = None
+#
+#             if not year:
+#                 year = Year(year=this_year)
+#                 year.save()
+#                 user.userinfo.year = year
+#                 user.userinfo.sem = current_sem()
+#             else:
+#                 user.userinfo.year = year
+#                 user.userinfo.sem = current_sem()
+#
+#             user.save()
+#             messages.success(request, '유저가 성공적으로 추가되었습니다.', extra_tags='alert')
+#             return redirect("staff_profile")
+#
+#         else:
+#             messages.warning(request, '유저를 만드는데 실패하였습니다.', extra_tags='alert')
+#         return render(request, 'signup.html', ctx)
+#
+#     return render(request, 'signup.html', ctx)
 
 
 @login_required(login_url=LOGIN_REDIRECT_URL)
