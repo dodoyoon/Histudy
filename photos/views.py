@@ -593,6 +593,7 @@ def rank(request):
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         recent = Max('group__data__date'), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+        no = F('group__no'),
     ).order_by('-num_posts', 'recent')
 
     # userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
