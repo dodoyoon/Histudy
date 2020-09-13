@@ -1,0 +1,38 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<form method="POST" class="form-style-7">
+    {% csrf_token %}
+    <ul>
+        <h3>새 UserInfo 추가하기</h3>
+    <li>
+        <label for="email">년도(ex.2020)</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="text" name="year" pattern="[0-9]{4}" minlength="4" maxlength="4" style="width:200px; margin-left:5%;" required>
+    </li>
+    <li>
+        <label for="email">학기</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <select id="semester" name="semester" style="width:100px;">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+    </li>
+    <li>
+        <label for="email">Group 번호</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="text" name="group" style="width:200px; margin-left:5%;" required>
+    </li>
+    <li>
+        <label for="email">학번</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="text" name="student_id" pattern="[0-9]{8}" maxlength="8" style="width:200px; margin-left:5%;" required>
+    </li>
+    <li>
+        <label for="email">이름(ex.홍길동)</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="text" name="name" style="width:200px; margin-left:5%;" required>
+    </li>
+    <li>
+        <input type="submit" value="제출" style="margin-left:40%;">
+    </li>
+    </ul>
+</form>
+
+{% endblock %}
