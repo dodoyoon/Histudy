@@ -141,13 +141,15 @@ def data_upload(request):
 
     now_time = timezone.localtime()
 
-    if user.verification.code_when_saved is None:
-        user.verification.code_when_saved = now_time
-        verify_code = random.choice(possible)
-        user.verification.code = verify_code
-        user.save()
+    verification = user.profile.group.verification
 
-    time_diff = now_time - user.verification.code_when_saved
+    if verification.code_when_saved is None:
+        verification.code_when_saved = now_time
+        verify_code = random.choice(possible)
+        verification.code = verify_code
+        verification.save()
+
+    time_diff = now_time - verification.code_when_saved
 
     if (60*10 - time_diff.seconds) > 0:
         ctx['code_time'] = time_diff.seconds
@@ -172,22 +174,22 @@ def data_upload(request):
             # else:
             #     obj.idgroup = 1
 
-            if user.verification.code is not None:
+            if verification.code is not None:
                 if (time_diff.seconds)/60 < 10:
-                    obj.code = user.verification.code
-                    obj.code_when_saved = user.verification.code_when_saved
-                    user.verification.code = None
-                    user.verification.code_when_saved = None
+                    obj.code = verification.code
+                    obj.code_when_saved = verification.code_when_saved
+                    verification.code = None
+                    verification.code_when_saved = None
                 else:
-                    user.verification.code = None
-                    user.verification.code_when_saved = None
+                    verification.code = None
+                    verification.code_when_saved = None
                     messages.warning(request, '코드가 생성된지 10분이 지났습니다.', extra_tags='alert')
 
             # num = user.userinfo.num_posts
             # user.userinfo.num_posts = num + 1
             # user.userinfo.most_recent = obj.date
             # user.userinfo.name = username
-            user.save()
+            verification.save()
 
             current = Current.objects.all()
             if current.exists():
@@ -307,6 +309,10 @@ def warn_overwrite(request, year_pk, sem):
                 groupobj = Group.objects.get(no=groupNo)
             except:
                 groupobj = Group.objects.create(no=groupNo)
+                try:
+                    verifyobj = Verification.objects.create(group=groupobj)
+                except Verification.DoesNotExist:
+                    messages.warning(request, 'Group에 대한 Verification을 생성할 수 없습니다.', extra_tags='alert')
 
             try:
                 student_info_obj = StudentInfo.objects.get(student_id=stuID)
@@ -392,6 +398,10 @@ def csv_upload(request):
                 groupobj = Group.objects.get(no=data[0])
             except:
                 groupobj = Group.objects.create(no=data[0])
+                try:
+                    verifyobj = Verification.objects.create(group=groupobj)
+                except Verification.DoesNotExist:
+                    messages.warning(request, 'Group에 대한 Verification을 생성할 수 없습니다.', extra_tags='alert')
 
             try:
                 student_info_obj = StudentInfo.objects.get(student_id=data[1])
@@ -1278,38 +1288,44 @@ def popup(request):
     if request.user.is_authenticated:
         username = request.user.username
         user = User.objects.get(username=username)
-        orig, created = Verification.objects.get_or_create(user=user)
+        group = user.profile.group
+        orig, created = Verification.objects.get_or_create(group=group)
+
+        if orig:
+            verification = orig
+        else:
+            verification = created
 
         now_time = timezone.localtime()
 
 
-        if user.verification.code_when_saved is None:
-            user.verification.code_when_saved = now_time
+        if verification.code_when_saved is None:
+            verification.code_when_saved = now_time
             verify_code = random.choice(possible)
-            user.verification.code = verify_code
-            user.save()
+            verification.code = verify_code
+            verification.save()
             ctx['code'] = verify_code
 
 
-        save_time = user.verification.code_when_saved
+        save_time = verification.code_when_saved
 
         time_diff = now_time - save_time
 
         if (time_diff.seconds)/60 >= 10:
             verify_code = random.choice(possible)
-            user.verification.code = verify_code
-            user.verification.code_when_saved = now_time
-            user.save()
+            verification.code = verify_code
+            verification.code_when_saved = now_time
+            verification.save()
             ctx['code'] = verify_code
         else:
-            if user.verification.code is None:
+            if verification.code is None:
                 verify_code = random.choice(possible)
-                user.verification.code = verify_code
-                user.verification.code_when_saved = now_time
-                user.save()
+                verification.code = verify_code
+                verification.code_when_saved = now_time
+                verification.save()
                 ctx['code'] = verify_code
             else:
-                ctx['code'] = user.verification.code
+                ctx['code'] = verification.code
 
         return render(request, 'popup.html', ctx)
     else:
