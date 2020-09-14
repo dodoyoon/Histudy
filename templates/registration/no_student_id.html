@@ -1,0 +1,26 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<form method="POST" class="form-style-7">
+    {% csrf_token %}
+    <ul>
+        <h1>Sign Up</h1>
+    <li>
+        <label for="email">학번</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="text" name="student_id" pattern="[0-9]{8}" maxlength="8" style="width:200px; margin-left:5%;" required>
+    </li>
+    <li>
+        <label for="email">연락받을 이메일</label>
+        &nbsp&nbsp&nbsp&nbsp<input type="email" name="email" maxlength="50" style="width:200px; margin-right:5%;" required>
+    </li>
+    <li>
+        <label for="email">Phone</label>
+        010&nbsp&nbsp-&nbsp&nbsp<input type="text" name="phone1" pattern="[0-9]{4}" maxlength="4" style="width:80px;" required>&nbsp&nbsp-&nbsp&nbsp<input type="text" name="phone2" maxlength="4" style="width:80px;" pattern="[0-9]{4}" required>
+    </li>
+    <li>
+        <input type="submit" value="제출" style="margin-left:40%;">
+    </li>
+    </ul>
+</form>
+
+{% endblock %}

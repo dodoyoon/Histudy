@@ -437,7 +437,7 @@ def new_userinfo(request):
             student_info_obj = StudentInfo.objects.get(student_id=student_id)
         except:
             student_info_obj = StudentInfo.objects.create(student_id=student_id, name=name)
-        
+
         checklist = UserInfo.objects.filter(year=yearobj, sem=sem, student_info=student_info_obj)
         if checklist.exists():
             group = checklist[0].group.no
@@ -1116,7 +1116,6 @@ def logout_view(request):
 @login_required(login_url=LOGIN_REDIRECT_URL)
 @transaction.atomic
 def save_profile(request, pk):
-    print('save profile')
     user = User.objects.get(pk=pk)
 
     if user.profile.phone and user.profile.student_id:
@@ -1161,6 +1160,57 @@ def create_userinfo(request, pk):
 def no_group_notice(request):
     return render(request, 'no_group_notice.html')
 
+def no_student_id(request, pk):
+    messages.info(request, '학우님의 학번 정보를 찾을 수 없습니다. 관리자에게 문의해주세요')
+    user = User.objects.get(pk=request.user.pk)
+
+    try:
+        user = User.objects.get(pk=pk)
+    except:
+        return redirect(reverse('loginpage'))
+
+    if request.method == 'POST':
+        student_id = request.POST['student_id']
+        stu_phone_num = "010" + str(request.POST['phone1']) + str(request.POST['phone2'])
+        email = request.POST['email']
+        username = user.last_name
+
+        try:
+            current = Current.objects.all().first()
+            yearobj = current.year
+            sem = current.sem
+        except:
+            year = current_year()
+            try:
+                yearobj = Year.object.get(year=year)
+            except:
+                yearobj = Year.object.create(year=year)
+            sem = current_sem()
+
+        try:
+            student_info_obj = StudentInfo.objects.get(student_id=student_id)
+        except StudentInfo.DoesNotExist:
+            student_info_obj = StudentInfo.objects.create(student_id=student_id, name=username)
+
+        try:
+            user_info = UserInfo.objects.get(year=yearobj, sem=sem, student_info=student_info_obj)
+        except UserInfo.DoesNotExist:
+            # user info 가 저장안된 유저는 문의 페이지로! (profile아직 생성안됨)
+            return redirect(reverse('no_group_notice'))
+
+        try:
+            user_profile = user.profile
+            if not user_profile.phone:
+                user_profile.phone = stu_phone_num
+        except Profile.DoesNotExist:
+            user_profile = Profile.objects.create(user=user, name=username, email=email, student_info=student_info_obj, phone=stu_phone_num)
+            if user_info:
+                user_profile.group = user_info.group
+
+            user_profile.save()
+            return redirect(reverse('main'))
+
+    return render(request, 'no_student_id.html')
 
 def user_check(request):
     if request.user.email.endswith('@handong.edu'):
@@ -1169,7 +1219,13 @@ def user_check(request):
             user.email = request.user.email
 
             # 학교 이메일이 학번으로 시작한다고 가정
-            std_id = user.username
+            email = request.user.email
+            email = email.split('@')
+            std_id = email[0]
+
+            if not std_id.isnumeric():
+                return HttpResponseRedirect(reverse('no_student_id', args=(user.pk,)))
+
             username = user.last_name
             email = user.email
 
