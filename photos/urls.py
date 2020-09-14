@@ -16,4 +16,5 @@ urlpatterns = [
     path('img_download/<int:pk>/', views.img_download, name='img_download'),
     path('img_download_page/', views.img_download_page, name='img_download_page'),
     path('user_check/', views.user_check, name='user_check'),
+    path('no_student_id/<int:pk>/', views.no_student_id, name='no_student_id'),
 ]
