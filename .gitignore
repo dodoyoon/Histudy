@@ -9,3 +9,4 @@ myvenv
 *.png
 uploads/
 **/migrations/**
+staticfiles/
