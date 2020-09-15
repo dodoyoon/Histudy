@@ -449,6 +449,16 @@ def new_userinfo(request):
             except:
                 groupobj = Group.objects.create(no=groupno)
             UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_info=student_info_obj)
+            
+            current = Current.objects.all().first()
+            if yearobj == current.year and sem == current.sem:
+                try:
+                    user_profile = Profile.objects.get(student_info=student_info_obj)
+                    user_profile.group = groupobj
+                    user_profile.save()
+                except:
+                    pass
+
             messages.info(request, '해당 정보가 성공적으로 생성되었습니다.')
     else:
         pass
@@ -1254,6 +1264,9 @@ def user_check(request):
 
             try:
                 user_profile = user.profile
+                if not user_profile.group == user_info.group:
+                    user_profile.group = user_info.group
+                    user_profile.save()
             except Profile.DoesNotExist:
                 user_profile = Profile.objects.create(user=user, name=username, email=email)
                 if user_info:
