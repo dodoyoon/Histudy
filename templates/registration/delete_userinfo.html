@@ -1,0 +1,74 @@
+{% extends "base_template.html" %}
+{% block content %}
+<div class="container">
+    <form
+        method="POST"
+        action=""
+        enctype="multipart/form-data"
+        id="dataform"
+        class="form-style-7"
+    >
+        {% csrf_token %}
+        <ul>
+            <h1>그룹에서 유저 삭제하기</h1>
+
+            <li>
+                <label for="email">연도</label>
+                <div>
+                    <select name="year" id="year" class="custom-select" style="width:80px;">
+                        {% for year in years %}
+                        <option val={{ year.year }}> {{ year.year }} </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </li>
+
+            <li>
+                <label for="email">학기</label>
+                <div>
+                    <select name="sem" id="sem" class="custom-select" style="width:80px;">
+                        <option val="1"> 1 </option>
+                        <option val="2"> 2 </option>
+                    </select>
+                </div>
+            </li>
+
+            <li>
+                <label for="email">그룹 번호</label>
+                <div>
+                    <select name="group" id="group" class="custom-select" style="width:80px;">
+                        {% for group in groups %}
+                        <option val={{ group.no }}> {{ group.no }} </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </li>
+
+            <li>
+                <input type="submit" value="Load" style="margin-left:40%;">
+            </li>
+        </ul>
+    </form>
+</div>
+
+<script>
+    {% if chosen_year %}
+      document.getElementById('year').value = "{{chosen_year}}";
+    {% else %}
+      document.getElementById('year').value = "{{year}}";
+    {% endif %}
+
+    {% if chosen_sem %}
+      document.getElementById('sem').value = "{{chosen_sem}}";
+    {% else %}
+      document.getElementById('sem').value = "{{sem}}";
+    {% endif %}
+
+    {% if chosen_group %}
+      document.getElementById('group').value = "{{chosen_group}}";
+    {% else %}
+      document.getElementById('group').value = "{{group}}";
+    {% endif %}
+</script>
+
+{% endblock %}

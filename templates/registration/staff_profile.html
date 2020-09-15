@@ -6,6 +6,7 @@
     <p>현재 설정: {{ current.year.year }}년도 {{ current.sem }}학기</p>
     <hr>
     <p><a class="" href="{% url 'new_userinfo' %}">Group에 멤버 추가하기</a></p>
+    <p><a class="" href="{% url 'delete_userinfo' %}">Group에 멤버 삭제하기</a></p>
     <p><a class="" href="{% url 'csv_upload' %}">CSV에 저장되어 있는 팀 구성 불러오기</a></p>
     <p><a class="" href="{% url 'set_current' %}">이번 년도 & 학기 지정하기</a></p>
     <p><a class="" href="{% url 'export_page' %}">기준 Pass하는 학생정보 Export</a></p>

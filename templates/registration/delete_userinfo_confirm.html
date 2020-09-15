@@ -4,32 +4,31 @@
 <div class="container">
 
 <div>
-    <h2>Overwrite 경고</h2>
-    <h4>이미 데이터가 존재합니다. 덮어쓰시겠습니까?</h4>
-    <form method="POST">
-        {% csrf_token %}
-        <a href="{% url 'csv_upload' %}" type="button" class="btn btn-primary">Cancel</a>
-        <input type="submit" value="Overwrite" style="margin-left:40%;" class="btn btn-danger">
-    </form>
+    <h2>Group {{group_no}} 정보</h2>
 </div>
 <hr>
 <table class="table table-inboxx table-hover style="width:100%">
     <tbody>
     <tr>
         <th></th>
-        <th>그룹</th>
         <th>학번</th>
         <th>이름</th>
+        <th></th>
     </tr>
 {% for info in userinfo_list %}
     <tr class="unread">
         <td class="inbox-small-cells"> {{ forloop.counter }}</td>
-        <td class="view-message">{{ info.group.no }}</td>
         <td class="view-message dont-show">
             {{ info.student_info.student_id }}
         </td>
         <td class="view-message dont-show">
             {{ info.student_info.name }}
+        </td>
+        <td>
+            <form method="POST">
+                {% csrf_token %}
+                <button id="confirm-delete" type="submit" name="userinfo_pk" style="margin-left:40%;" class="btn btn-danger" value="{{ info.pk }}">삭제</button>
+            </form>
         </td>
     </tr>
 {% endfor %}
@@ -39,8 +38,8 @@
 </div>
 
 <script>
-    $(document).on('click', '.confirm-delete', function(){
-    return confirm('공지를 삭제하시겠습니까?');
+    $(document).on('click', '#confirm-delete', function(){
+    return confirm('유저를 삭제하시겠습니까?');
     })
 </script>
 

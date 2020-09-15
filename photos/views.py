@@ -449,7 +449,7 @@ def new_userinfo(request):
             except:
                 groupobj = Group.objects.create(no=groupno)
             UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_info=student_info_obj)
-            
+
             current = Current.objects.all().first()
             print(current.year.year, sem)
             if yearobj == current.year and int(sem) == current.sem:
@@ -467,6 +467,79 @@ def new_userinfo(request):
         pass
 
     return render(request, 'new_userinfo.html', ctx)
+
+
+@staff_member_required
+def delete_userinfo(request):
+    ctx = {}
+    if request.user.is_authenticated:
+        username = request.user.username
+        user = User.objects.get(username=username)
+        ctx['userobj'] = user
+        if user.is_staff is False:
+            return redirect('main')
+    else:
+        return redirect('loginpage')
+
+    if username:
+        ctx['username'] = username
+
+    current = Current.objects.all().first()
+    ctx['years'] = Year.objects.all()
+
+    groups = Group.objects.all()
+    ctx['groups'] = groups
+
+    if request.method == 'POST':
+        year = request.POST['year']
+        sem = request.POST['sem']
+        group = request.POST['group']
+
+        print(">>> POST")
+        print(year)
+        print(sem)
+        print(group)
+
+        yearobj = Year.objects.get(year=year)
+        sem = sem
+
+        if year != 'None' and sem != 'None' and group != 'None':
+            ctx['chosen_year'] = year
+            ctx['chosen_sem'] = sem
+            ctx['chosen_group'] = group
+            return redirect(reverse('delete_userinfo_confirm', args=(year, sem, group)))
+
+    else:
+        yearobj = current.year
+        year = current.year.year
+        sem = current.sem
+        group = groups.first().no
+
+        ctx['year'] = year
+        ctx['sem'] = sem
+        ctx['group'] = group
+
+    return render(request, 'delete_userinfo.html', ctx)
+
+@staff_member_required
+def delete_userinfo_confirm(request, year, sem, group_no):
+    ctx={}
+    yearobj = Year.objects.get(year=year)
+    groupobj = Group.objects.get(no=group_no)
+    userinfo_list = UserInfo.objects.filter(year=yearobj, sem=sem, group=groupobj)
+    ctx['userinfo_list'] = userinfo_list
+    ctx['group_no'] = group_no
+
+    if request.method == 'POST':
+        userinfo_pk = request.POST['userinfo_pk']
+        userinfo = UserInfo.objects.get(pk=userinfo_pk).delete()
+        messages.success(request, '유저를 성공적으로 삭제했습니다. ', extra_tags='alert')
+        return redirect(reverse('delete_userinfo'))
+
+    return render(request, 'delete_userinfo_confirm.html', ctx)
+
+
+
 
 @csrf_exempt
 def export_page(request):
