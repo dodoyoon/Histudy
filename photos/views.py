@@ -745,15 +745,21 @@ def top3(request):
     groupno = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct()
     tenth_date = {}
     for group in groupno:
+        gno = Group.objects.get(pk=group['group'])
+        if gno.no == 0:
+            continue
         data = Data.objects.filter(year=yearobj, sem=sem, group=group['group'])
         if data.exists():
-            if data.count() >= 10: #important
-                tenth_date[group[str('group')]] = data[9].date #important
+            if data.count() >= 10: #real
+            #if data.count() >= 0: #debug
+                tenth_date[group[str('group')]] = data[9].date #real
+                #tenth_date[group[str('group')]] = datetime.datetime.now() #debug
 
     toplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
-    ).filter(num_posts__gte=10) #important
+    ).exclude(group__no=0).filter(num_posts__gte=10) #real
+    #).exclude(group__no=0).filter(num_posts__gte=1) #debug
 
     for top in toplist:
         if top['no'] in tenth_date.keys():
