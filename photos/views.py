@@ -451,13 +451,16 @@ def new_userinfo(request):
             UserInfo.objects.create(year=yearobj, sem=sem, group=groupobj, student_info=student_info_obj)
             
             current = Current.objects.all().first()
-            if yearobj == current.year and sem == current.sem:
+            print(current.year.year, sem)
+            if yearobj == current.year and int(sem) == current.sem:
                 try:
                     user_profile = Profile.objects.get(student_info=student_info_obj)
                     user_profile.group = groupobj
                     user_profile.save()
                 except:
                     pass
+            else:
+                print("else", yearobj, (yearobj == current.year), (sem == current.sem), (yearobj == current.year and sem == current.sem))
 
             messages.info(request, '해당 정보가 성공적으로 생성되었습니다.')
     else:
@@ -793,12 +796,14 @@ def announce(request):
 
     return render(request, 'announce.html', ctx)
 
-
+@login_required(login_url=LOGIN_REDIRECT_URL)
 def main(request):
     ctx={}
 
     try:
         current = Current.objects.all().first()
+        yearobj = current.year
+        sem = current.sem
     except:
         try:
             year = current_year()
@@ -812,8 +817,8 @@ def main(request):
         except Current.DoesNotExist:
             current = Current.objects.create(year=yearobj, sem=sem)
 
-    cur_year = current.year
-    cur_sem = current.sem
+    cur_year = yearobj
+    cur_sem = sem
 
     if request.user.is_authenticated:
         username = request.user.username
@@ -830,6 +835,7 @@ def main(request):
         return redirect('loginpage')
 
     try:
+        userinfoobj = UserInfo.objects.get(year=yearobj, sem=sem, student_info=request.user.profile.student_info)
         groupobj = user.profile.group
     except:
         return redirect(reverse('user_check'))
