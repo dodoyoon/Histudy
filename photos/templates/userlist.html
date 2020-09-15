@@ -106,8 +106,18 @@
                 </a>
             </td>
             <td>{{ group.num_posts }}</td>
+
+            {% if group.recent is None %}
+            <td>-</td>
+            {% else %}
             <td>{{ group.recent }}</td>
+            {% endif %}
+
+            {% if group.total_dur is None %}
+            <td>0</td>
+            {% else %}
             <td>{{ group.total_dur }}</td>
+            {% endif %}
     {% endfor %}
     </table>
 </div>
