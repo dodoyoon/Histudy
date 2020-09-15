@@ -635,7 +635,7 @@ def userList(request):
         recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
-    ).order_by('-num_posts', 'recent', 'no')
+    ).order_by('-num_posts', 'recent', 'no').exclude(group__no=0)
 
 
     ctx['grouplist'] = grouplist
@@ -681,7 +681,7 @@ def rank(request):
         recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
         total_dur = Sum('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
-    ).order_by('-num_posts', 'recent', 'no')
+    ).order_by('-num_posts', 'recent', 'no').exclude(group__no=0)
 
     # userlist = User.objects.filter(Q(is_staff=False) & Q(userinfo__year__year=year) & Q(userinfo__sem=sem)).annotate(
     #     num_posts = Count('data'),
@@ -1043,7 +1043,7 @@ def grid(request):
 
     model_max_set = Data.objects.filter(year=yearobj, sem=sem).values('group').annotate(
         latest_date = Max('date')
-    ).order_by()
+    ).order_by().exclude(group__no=0)
 
     q_statement = Q()
     for pair in model_max_set:
