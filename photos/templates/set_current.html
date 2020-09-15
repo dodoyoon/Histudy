@@ -1,17 +1,27 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-<p>현재 설정: {{ current.year.year }}년도 {{ current.sem }}학기</p>
-
-  <form method="post" enctype="multipart/form-data">
+  <form method="POST" class="form-style-7" enctype="multipart/form-data">
     {% csrf_token %}
-    년도(ex. 2020): <input type="number" name="year"> <br>
-    학기: 
-    <select id="semester" name="semester">
-      <option value="spring">1</option>
-      <option value="fall">2</option>
-    </select> 
-    <br>
-    <button type="submit">지정</button>
+    <ul>
+        <h1>현재 연도와 학기 설정</h1>
+        <p>현재 설정: {{ current.year.year }}년도 {{ current.sem }}학기</p>
+    <li>
+        <label for="email">현재 연도</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <input placeholder="ex. 2020" type="number" name="year" pattern="[0-9]{4}" maxlength="4" style="width:100px;" required>
+    </li>
+    <li>
+        <label for="email">현재 학기</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <select id="semester" name="semester" style="width:100px;">
+          <option value="spring">1</option>
+          <option value="fall">2</option>
+        </select>
+    </li>
+    <li>
+        <input type="submit" value="지정" style="margin-left:40%;">
+    </li>
+    </ul>
   </form>
 {% endblock %}
