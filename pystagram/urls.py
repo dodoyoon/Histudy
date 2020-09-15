@@ -63,7 +63,7 @@ urlpatterns = [
     url(r'^photos/(?P<pk>[0-9]+)/edit', data_edit, name='edit'),
 ]
 
-urlpatterns += static('/upload_files/', document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #Add Django site authentication urls (for login, logout, password management)
 # urlpatterns += [
