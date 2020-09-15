@@ -1475,25 +1475,16 @@ def img_download_page(request):
 
     if request.method == 'POST':
         year = request.POST['year']
-        sem = request.POST['sem']
+        sem = request.POST['semester']
+
+        year = int(year)
+        sem = int(sem)
 
         if year != 'None' and sem != 'None':
-            ctx['chosen_year'] = year
-            ctx['chosen_sem'] = sem
+            return redirect('img_download', year, sem)
+        else:
+            messages.warning(request, '연도와 학기정보를 정확하게 입력해주세요.', extra_tags='alert')
 
-            year_obj = Year.objects.get(year=year)
-            return redirect('img_download', year_obj.pk)
-
-    else:
-        try:
-            current = Current.objects.all().first()
-            year = current.year.year
-            sem = current.sem
-        except:
-            year = current_year()
-            sem = current_sem()
-        ctx['year'] = year
-        ctx['sem'] = sem
 
     return render(request, 'img_download_page.html', ctx)
 
@@ -1502,7 +1493,7 @@ import zipfile
 from wsgiref.util import FileWrapper
 import os
 
-def img_download(request, pk):
+def img_download(request, year, sem):
     home = os.path.expanduser('~')
     location = os.path.join(home, 'Downloads')
     location += '/'
@@ -1518,8 +1509,8 @@ def img_download(request, pk):
         return redirect('loginpage')
 
 
-    year = Year.objects.get(pk=pk)
-    user_list = User.objects.filter(userinfo__year=year)
+    year = Year.objects.get(year=year)
+    user_list = User.objects.filter(profile__student_info__userinfo__year=year, profile__student_info__userinfo__sem=sem)
 
     export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'w')
 
@@ -1547,6 +1538,8 @@ def img_download(request, pk):
 
     response = HttpResponse(wrapper, content_type=content_type)
     response['Content-Disposition'] = content_disposition
+
+    messages.success(request, '이미지 다운로드를 완료하였습니다.', extra_tags='alert')
 
 
     return response
