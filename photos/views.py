@@ -1308,6 +1308,9 @@ def no_student_id(request, pk):
     return render(request, 'no_student_id.html')
 
 def user_check(request):
+    if not request.user.is_authenticated:
+        return redirect('loginpage')
+
     if request.user.email.endswith('@handong.edu'):
         try:
             user = User.objects.get(pk=request.user.pk)
