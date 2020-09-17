@@ -850,6 +850,8 @@ def top3(request):
     ).exclude(group__no=0).filter(num_posts__gte=10) #real
     #).exclude(group__no=0).filter(num_posts__gte=1) #debug
 
+    print(toplist)
+
     for top in toplist:
         if top['no'] in tenth_date.keys():
             top['date'] = tenth_date[top['no']]
@@ -953,6 +955,7 @@ def main(request):
     return render(request, 'main.html', ctx)
 
 def confirm_delete_data(request, pk):
+    # to fix - 그룹의 멤버들과 관리자만 삭제할 수 있게 한다
     ctx={}
 
     if request.user.is_authenticated:
@@ -964,10 +967,6 @@ def confirm_delete_data(request, pk):
     item = Data.objects.get(id=pk)
     username = item.author
     user = User.objects.get(username=username)
-
-    if user.userinfo.num_posts > 0:
-        user.userinfo.num_posts -= 1
-        user.save()
 
     Data.objects.filter(id=pk).delete()
     return redirect('main')
