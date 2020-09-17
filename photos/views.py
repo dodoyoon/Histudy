@@ -428,7 +428,7 @@ def new_userinfo(request):
         sem = request.POST['semester']
         student_id = request.POST['student_id']
         name = request.POST['name']
-        groupno = request.POST['group']
+        groupno = int(request.POST['group'])
         try:
             yearobj = Year.objects.get(year=year)
         except:
@@ -446,10 +446,18 @@ def new_userinfo(request):
         if user_info:
             prev_group = user_info.group.no
             if prev_group != groupno:
-                user_info.group.no = groupno
-                user_info.save()
-                msg = str(year) + '년 ' + str(sem) + '학기 해당 학생의 그룹 정보가 변경되었습니다: Group ' + str(prev_group) + ' --> Group ' + str(user_info.group.no)
-                messages.success(request, msg)
+                try:
+                    groupobj = Group.objects.get(no=groupno)
+                except:
+                    groupobj = None
+
+                if groupobj:
+                    user_info.group = groupobj
+                    user_info.save()
+                    msg = str(year) + '년 ' + str(sem) + '학기 해당 학생의 그룹 정보가 변경되었습니다: Group ' + str(prev_group) + ' --> Group ' + str(user_info.group.no)
+                    messages.success(request, msg)
+                else:
+                    messages.warning(request, "해당 그룹이 존재하지 않습니다.")
 
         else:
             try:
