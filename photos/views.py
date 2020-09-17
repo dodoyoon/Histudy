@@ -438,11 +438,19 @@ def new_userinfo(request):
         except:
             student_info_obj = StudentInfo.objects.create(student_id=student_id, name=name)
 
-        checklist = UserInfo.objects.filter(year=yearobj, sem=sem, student_info=student_info_obj)
-        if checklist.exists():
-            group = checklist[0].group.no
-            msg = '이번 학기 해당 학생의 조가 존재합니다: Group ' + str(group)
-            messages.info(request, msg)
+        try:
+            user_info = UserInfo.objects.get(year=yearobj, sem=sem, student_info=student_info_obj)
+        except:
+            user_info = None
+
+        if user_info:
+            prev_group = user_info.group.no
+            if prev_group != groupno:
+                user_info.group.no = groupno
+                user_info.save()
+                msg = str(year) + '년 ' + str(sem) + '학기 해당 학생의 그룹 정보가 변경되었습니다: Group ' + str(prev_group) + ' --> Group ' + str(user_info.group.no)
+                messages.success(request, msg)
+
         else:
             try:
                 groupobj = Group.objects.get(no=groupno)
