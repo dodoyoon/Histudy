@@ -86,6 +86,38 @@ def set_current(request):
 
     return render(request, 'set_current.html', ctx)
 
+@staff_member_required
+def reset_profile_group(request):
+    ctx = {}
+
+    if request.method == 'POST':
+        year = request.POST['year']
+        if request.POST['semester'] == '1':
+            semester = 1
+        elif request.POST['semester'] == '2':
+            semester = 2
+
+        if int(year) < 2000:
+            pass # 에러 처리
+        else:
+            try:
+                yearobj = Year.objects.get(year=year)
+            except:
+                yearobj = Year.objects.create(year=year)
+
+        userinfo_list = UserInfo.objects.filter(year=yearobj, sem=semester)
+        for userinfo in userinfo_list:
+            try:
+                profile = Profile.objects.get(student_info=userinfo.student_info)
+                if profile.group != userinfo.group:
+                    profile.group = userinfo.group
+                    profile.save()
+            except:
+                pass
+            
+
+    return render(request, 'reset_profile_group.html')
+
 @login_required(login_url=LOGIN_REDIRECT_URL)
 def detail(request, pk):
     data = get_object_or_404(Data, pk=pk)

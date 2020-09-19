@@ -1,0 +1,26 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+  <form method="POST" class="form-style-7" enctype="multipart/form-data">
+    {% csrf_token %}
+    <ul>
+        <h1>사용자들의 group을 지정할 년도와 학기 선택</h1>
+    <li>
+        <label for="email">해당 연도</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <input placeholder="ex. 2020" type="number" name="year" pattern="[0-9]{4}" maxlength="4" style="width:100px;" required>
+    </li>
+    <li>
+        <label for="email">해당 학기</label>
+        &nbsp&nbsp&nbsp&nbsp
+        <select id="semester" name="semester" style="width:100px;">
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+    </li>
+    <li>
+        <input type="submit" value="지정" style="margin-left:40%;">
+    </li>
+    </ul>
+  </form>
+{% endblock %}
