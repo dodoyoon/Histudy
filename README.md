@@ -1,3 +1,3 @@
-# Histudy ver. 1
+# Histudy
 
-used in 2020-01
+Website to manage CSEE study group
