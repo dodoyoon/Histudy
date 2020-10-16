@@ -767,11 +767,20 @@ def userList(request):
     grouplist = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
         num_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         recent = Max('group__data__date', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)), # 해당 학기로 바꿔야함 to fix
-        total_dur = Sum('group__data__study_total_duration', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+        #total_dur = Sum('group__data__study_total_duration', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
         no = F('group__no'),
     ).order_by('-num_posts', 'recent', 'no').exclude(group__no=0)
 
-
+    groupno = UserInfo.objects.filter(year=yearobj, sem=sem).values('group').distinct()
+    total_duration = {}
+    for group in groupno:
+        gno = Group.objects.get(pk=group['group'])
+        data = Data.objects.filter(year=yearobj, sem=sem, group=group['group']).aggregate(Sum('study_total_duration'))
+        total_duration[group[str('group')]] = data['study_total_duration__sum']
+    
+    for group in grouplist:
+        group['total_dur'] = total_duration[group['group']]
+    
     ctx['grouplist'] = grouplist
 
     '''
