@@ -7,19 +7,34 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
-import os
+import os, json
 from django.core.exceptions import ImproperlyConfigured
+from pathlib import Path
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def get_env_variable(var_name):
-  try:
-    return os.environ[var_name]
-  except KeyError:
-    error_msg = "Set the {} environment variable".format(var_name)
-    raise ImproperlyConfigured(error_msg)
 
 
-SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
+HOME = str(Path.home()) + '/'
+SECRET_BASE = HOME + 'HisSecret'
+secret_file = os.path.join(SECRET_BASE, 'secret.json')
+
+# LOCAL_BASE = HOME + 'Desktop' + '/' + 'django_project' + '/' +'HisSecret'
+# local_secret_file = os.path.join(LOCAL_BASE, 'secret.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+
+SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -87,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'study',
         'USER': 'root',
-        'PASSWORD': get_env_variable("DB_PASSWORD"),
+        'PASSWORD': get_secret("DB_PASSWORD"),
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
