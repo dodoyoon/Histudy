@@ -8,17 +8,18 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def get_env_variable(var_name):
+  try:
+    return os.environ[var_name]
+  except KeyError:
+    error_msg = "Set the {} environment variable".format(var_name)
+    raise ImproperlyConfigured(error_msg)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*y_wwvq8k8$b$ll*73q45bji!)*d4*j=yc7hct%#c$fghf4ef('
-#SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -86,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'study',
         'USER': 'root',
-        'PASSWORD': 'wkdak1317',
+        'PASSWORD': get_env_variable("DB_PASSWORD"),
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
