@@ -1009,6 +1009,14 @@ def confirm_delete_data(request, pk):
     username = item.author
     user = User.objects.get(username=username)
 
+    if request.user.is_staff:
+        pass
+    elif item.group == request.user.profile.group:
+        pass
+    else:
+        messages.warning(request, 'Invalid Access.', extra_tags='alert')
+        return redirect('main')
+
     Data.objects.filter(id=pk).delete()
     return redirect('main')
 
