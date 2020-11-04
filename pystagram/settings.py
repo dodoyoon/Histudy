@@ -9,18 +9,12 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os, json
 from django.core.exceptions import ImproperlyConfigured
-from pathlib import Path
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-
-HOME = str(Path.home()) + '/'
-SECRET_BASE = HOME + 'HisSecret'
+SECRET_BASE = '/home/chickadee/HisSecret'
 secret_file = os.path.join(SECRET_BASE, 'secret.json')
-
-# LOCAL_BASE = HOME + 'Desktop' + '/' + 'django_project' + '/' +'HisSecret'
-# local_secret_file = os.path.join(LOCAL_BASE, 'secret.json')
 
 with open(secret_file) as f:
     secrets = json.loads(f.read())
