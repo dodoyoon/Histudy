@@ -673,7 +673,7 @@ def export_all_page(request):
             # total_participation = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
             # total_time = Count('group__data__study_total_duration', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
             # total_time = Count('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj, group__data__sem=sem, group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
-        ).order_by('no', 'student_id')
+        ).order_by('no', 'student_id').exclude(no=0)
 
         for stu in pass_stu_list:
             study1 = Data.objects.filter(year=yearobj, sem=sem, group_id=stu['group_id'], participator__student_info__student_id=stu['student_id']).distinct()
