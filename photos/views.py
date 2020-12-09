@@ -891,11 +891,9 @@ def top3(request):
     ).exclude(group__no=0).filter(num_posts__gte=10) #real
     #).exclude(group__no=0).filter(num_posts__gte=1) #debug
 
-    print(toplist)
-
     for top in toplist:
-        if top['no'] in tenth_date.keys():
-            top['date'] = tenth_date[top['no']]
+        if top['group'] in tenth_date.keys():
+            top['date'] = tenth_date[top['group']]
 
     finallist = sorted(toplist, key=itemgetter('date'), reverse=False)
     #toplist = toplist.order_by('date')
