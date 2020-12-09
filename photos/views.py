@@ -667,29 +667,41 @@ def export_all_page(request):
         pass_stu_list = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
             total_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
             no = F('group__no'),
+            group_id = F('group'),
             student_id = F('group__userinfo__student_info__student_id'),
             name = F('group__userinfo__student_info__name'),
-            total_participation = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
-            # total_time = Sum('group__data__study_total_duration', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__name__icontains=F('group__userinfo__student_info__name'))),
+            # total_participation = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
+            # total_time = Count('group__data__study_total_duration', filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
+            # total_time = Count('group__data__study_total_duration', distinct=True, filter=Q(group__data__year=yearobj, group__data__sem=sem, group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
         ).order_by('no', 'student_id')
 
         for stu in pass_stu_list:
-            total_time = stu['total_time']
-            if total_time:
-                print(stu)
+            study1 = Data.objects.filter(year=yearobj, sem=sem, group_id=stu['group_id'], participator__student_info__student_id=stu['student_id']).distinct()
+            study = Data.objects.filter(year=yearobj, sem=sem, group_id=stu['group_id'], participator__student_info__student_id=stu['student_id']).distinct().aggregate(
+                total_time = Sum('study_total_duration'), 
+                total_participation = Count('id')
+            )
+            stu['total_time'] = study['total_time']
+            stu['total_participation'] = study['total_participation']
 
-
-        # response = HttpResponse(content_type = 'text/csv')
-        # response['Content-Disposition'] = 'attachment; filename="student_final.csv"'
-        #
-        # writer = csv.writer(response, delimiter=',')
-        # writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
-        #
+        # print(pass_stu_list)
         # for stu in pass_stu_list:
-        #     writer.writerow([stu['name'], stu['student_id'], stu['no'], stu['total_posts'], stu['total_participation'], stu['total_time']])
-        #
-        #
-        # return response
+        #     total_time = stu['total_time']
+        #     if total_time:
+        #         print(stu)
+
+
+        response = HttpResponse(content_type = 'text/csv')
+        response['Content-Disposition'] = 'attachment; filename="histudy_all_student.csv"'
+        
+        writer = csv.writer(response, delimiter=',')
+        writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
+        
+        for stu in pass_stu_list:
+            writer.writerow([stu['name'], stu['student_id'], stu['no'], stu['total_posts'], stu['total_participation'], stu['total_time']])
+        
+        
+        return response
     else:
         return render(request, 'export_all_page.html', ctx)
 
