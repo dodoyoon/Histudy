@@ -55,7 +55,7 @@
             <tr class="unread">
                 <td class="inbox-small-cells">
                     <!-- {{ post.pk }} -->
-                    {{ forloop.counter }}
+                    {{ forloop.revcounter }}
                 </td>
                 <td class="view-message  dont-show">
                     <a href="{{ post.get_absolute_url }}">
@@ -70,14 +70,6 @@
         {% endfor %}
         </tbody>
         </table>
-    </div>
-
-    {% if posts.has_next %}
-        <a class="infinite-more-link" href="?page={{ posts.next_page_number }}">More</a>
-    {% endif %}
-
-    <div class="loading" style="display: none;">
-        Loading...
     </div>
 </div>
 

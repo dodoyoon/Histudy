@@ -980,17 +980,7 @@ def main(request):
 
     dataList = Data.objects.filter(author__profile__group=groupobj, year=cur_year, sem=cur_sem).order_by('-id')
 
-    paginator = Paginator(dataList, 10)
-    page = request.GET.get('page', 1)
-
-    try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        posts = paginator.page(1)
-    except EmptyPage:
-        posts = paginator.page(paginator.num_pages)
-
-    ctx['posts'] = posts
+    ctx['posts'] = dataList
     ctx['userobj'] = user
 
     return render(request, 'main.html', ctx)
