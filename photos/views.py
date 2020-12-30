@@ -617,23 +617,36 @@ def export_page(request):
         pass_stu_list = UserInfo.objects.filter(year=yearobj, sem=sem).values("group").distinct().annotate(
             total_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
             no = F('group__no'),
+            group_id = F('group'),
             student_id = F('group__userinfo__student_info__student_id'),
             name = F('group__userinfo__student_info__name'),
+            # total_posts = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)),
+            # no = F('group__no'),
+            # student_id = F('group__userinfo__student_info__student_id'),
+            # name = F('group__userinfo__student_info__name'),
             total_participation = Count('group__data', distinct=True, filter=Q(group__data__year=yearobj)&Q(group__data__sem=sem)&Q(group__data__participator__student_info__student_id=F('group__userinfo__student_info__student_id'))),
         ).order_by('no', 'student_id').filter(total_participation__gte=criterion)
 
 
         response = HttpResponse(content_type = 'text/csv')
-        response['Content-Disposition'] = 'attachment; filename="student_final.csv"'
+        response['Content-Disposition'] = 'attachment; filename="histudy_pass_student.csv"'
 
         writer = csv.writer(response, delimiter=',')
-        writer.writerow(['group', 'student_id', 'name', '%'])
+        writer.writerow(['이름', '학번', '그룹번호', '그룹 총 스터디 횟수', '개인별 총 스터디 횟수', '개인별 스터디 참여시간(분)'])
 
         for stu in pass_stu_list:
-            percent = float(stu['total_participation']) / float(stu['total_posts']) * 100
-            percent = round(percent, 2)
-            writer.writerow([stu['no'], stu['student_id'], stu['name'], percent])
+            study = Data.objects.filter(year=yearobj, sem=sem, group_id=stu['group_id'], participator__student_info__student_id=stu['student_id']).distinct().aggregate(
+                total_time = Sum('study_total_duration'), 
+                total_participation = Count('id')
+            )
+            stu['total_time'] = study['total_time']
+            stu['total_participation'] = study['total_participation']
+            writer.writerow([stu['name'], stu['student_id'], stu['no'], stu['total_posts'], stu['total_participation'], stu['total_time']])
 
+        # for stu in pass_stu_list:
+        #     percent = float(stu['total_participation']) / float(stu['total_posts']) * 100
+        #     percent = round(percent, 2)
+        #     writer.writerow([stu['no'], stu['student_id'], stu['name'], percent])
         return response
     else:
         return render(request, 'export_page.html', ctx)
@@ -676,7 +689,6 @@ def export_all_page(request):
         ).order_by('no', 'student_id').exclude(no=0)
 
         for stu in pass_stu_list:
-            study1 = Data.objects.filter(year=yearobj, sem=sem, group_id=stu['group_id'], participator__student_info__student_id=stu['student_id']).distinct()
             study = Data.objects.filter(year=yearobj, sem=sem, group_id=stu['group_id'], participator__student_info__student_id=stu['student_id']).distinct().aggregate(
                 total_time = Sum('study_total_duration'), 
                 total_participation = Count('id')
