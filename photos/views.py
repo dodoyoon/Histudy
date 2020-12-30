@@ -1689,7 +1689,7 @@ def img_download(request, year, sem):
     yearobj = Year.objects.get(year=year)
     user_list = User.objects.filter(profile__student_info__userinfo__year=yearobj, profile__student_info__userinfo__sem=sem)
 
-    group_list = Group.objects.all()
+    group_list = Group.objects.all().exclude(no=0)
 
     export_zip = zipfile.ZipFile("/home/chickadee/HGUstudy/histudy_img.zip", 'w')
     
