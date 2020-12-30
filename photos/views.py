@@ -1689,22 +1689,24 @@ def img_download(request, year, sem):
     yearobj = Year.objects.get(year=year)
     user_list = User.objects.filter(profile__student_info__userinfo__year=yearobj, profile__student_info__userinfo__sem=sem)
 
+    group_list = Group.objects.all()
+
     export_zip = zipfile.ZipFile("/home/chickadee/HGUstudy/histudy_img.zip", 'w')
+    
+    
+    for group in group_list:
+        cnt=1        
+        data_list = Data.objects.filter(year=yearobj, sem=sem, group=group)
 
-    for user in user_list:
-        cnt=1
-        if not user.is_staff:            
-            image_list = Data.objects.filter(year=yearobj, sem=sem, group=user.profile.group)
+        for data in data_list:
+            file_name = 'group'+ str(group.no) + '_' + str(cnt) + '.png'
+            product_image_url = data.image.url
 
-            for image in image_list:
-                file_name = 'group'+ str(user.profile.group.no) + '_' + user.username + '_' + str(cnt) + '.png'
-                product_image_url = image.image.url
+            image_path = settings.MEDIA_ROOT+ product_image_url[13:]
+            image_name = product_image_url; # Get your file name here.
 
-                image_path = settings.MEDIA_ROOT+ product_image_url[13:]
-                image_name = product_image_url; # Get your file name here.
-
-                export_zip.write(image_path, file_name)
-                cnt += 1
+            export_zip.write(image_path, file_name)
+            cnt += 1
 
     export_zip.close()
 
