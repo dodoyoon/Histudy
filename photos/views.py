@@ -1686,20 +1686,18 @@ def img_download(request, year, sem):
         return redirect('loginpage')
 
 
-    year = Year.objects.get(year=year)
-    year_id = year.id
-    user_list = User.objects.filter(profile__student_info__userinfo__year=year, profile__student_info__userinfo__sem=sem)
+    yearobj = Year.objects.get(year=year)
+    user_list = User.objects.filter(profile__student_info__userinfo__year=yearobj, profile__student_info__userinfo__sem=sem)
 
     export_zip = zipfile.ZipFile("/home/chickadee/HGUstudy/histudy_img.zip", 'w')
 
     for user in user_list:
         cnt=1
-        if not user.is_staff:
-            # print(">>> User: " + user.username)
-            image_list = Data.objects.raw('SELECT * FROM photos_data WHERE year_id = %s AND sem = %s', [year_id, sem])
+        if not user.is_staff:            
+            image_list = Data.objects.filter(year=yearobj, sem=sem, group=user.profile.group)
 
             for image in image_list:
-                file_name = user.username + '_' + str(cnt) + '.png'
+                file_name = 'group'+ user.profile.group.no + '_' + user.username + '_' + str(cnt) + '.png'
                 product_image_url = image.image.url
 
                 image_path = settings.MEDIA_ROOT+ product_image_url[13:]
@@ -1710,7 +1708,6 @@ def img_download(request, year, sem):
 
     export_zip.close()
 
-    # wrapper = FileWrapper(open('/Users/dodo4.0/histudy_img.zip', 'rb'))
     wrapper = FileWrapper(open('/home/chickadee/HGUstudy/histudy_img.zip', 'rb'))
     content_type = 'application/zip'
     content_disposition = 'attachment; filename=histudy_img.zip'
