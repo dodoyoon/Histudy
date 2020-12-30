@@ -13,7 +13,7 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-SECRET_BASE = '/home/chickadee/HisSecret'
+SECRET_BASE = '../HisSecret'
 secret_file = os.path.join(SECRET_BASE, 'secret.json')
 
 with open(secret_file) as f:

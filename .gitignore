@@ -9,4 +9,5 @@ myvenv
 *.png
 uploads/
 **/migrations/**
+!photos/migrations/__init__.py
 staticfiles/
