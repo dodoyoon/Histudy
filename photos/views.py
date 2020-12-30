@@ -1678,7 +1678,7 @@ def img_download(request, year, sem):
     year_id = year.id
     user_list = User.objects.filter(profile__student_info__userinfo__year=year, profile__student_info__userinfo__sem=sem)
 
-    export_zip = zipfile.ZipFile("/home/chickadee/projects/HGUstudy/histudy_img.zip", 'w')
+    export_zip = zipfile.ZipFile("/home/chickadee/HGUstudy/histudy_img.zip", 'w')
 
     for user in user_list:
         cnt=1
@@ -1699,7 +1699,7 @@ def img_download(request, year, sem):
     export_zip.close()
 
     # wrapper = FileWrapper(open('/Users/dodo4.0/histudy_img.zip', 'rb'))
-    wrapper = FileWrapper(open('/home/chickadee/projects/HGUstudy/histudy_img.zip', 'rb'))
+    wrapper = FileWrapper(open('/home/chickadee/HGUstudy/histudy_img.zip', 'rb'))
     content_type = 'application/zip'
     content_disposition = 'attachment; filename=histudy_img.zip'
 
