@@ -1697,7 +1697,7 @@ def img_download(request, year, sem):
             image_list = Data.objects.filter(year=yearobj, sem=sem, group=user.profile.group)
 
             for image in image_list:
-                file_name = 'group'+ user.profile.group.no + '_' + user.username + '_' + str(cnt) + '.png'
+                file_name = 'group'+ str(user.profile.group.no) + '_' + user.username + '_' + str(cnt) + '.png'
                 product_image_url = image.image.url
 
                 image_path = settings.MEDIA_ROOT+ product_image_url[13:]
