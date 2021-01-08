@@ -33,7 +33,7 @@ SECRET_KEY = get_secret("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'histudy.cafe24.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
