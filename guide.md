@@ -137,9 +137,6 @@ mysql -u root -p
 status
 ```
 
-아래와 같이 characterset에 utf8이 저장되었다면 성공적으로 설정이 된것이다 .
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96804b7b-7895-45e9-921b-4819c5bbb03c/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96804b7b-7895-45e9-921b-4819c5bbb03c/Untitled.png)
 
 'study'라는 이름의 DB 생성한다. 꼭 character set을 변경한 후에 생성해야지 데이터베이스의 character set도 utf로 설정된다.
 
@@ -328,6 +325,7 @@ python3 manage.py createsuperuser
 ```
 
 `https://{histudy ip address 또는 domain name}/admin` 으로 접속하면 관리자 페이지가 나온다. 
+관리자로 로그인 후, https://www.histudy.cafe24.com/set_current (이번 년도 & 학기 지정하기)로 가서 현재 년도와 학기를 지정해준다. 
 
 
 ### Reference
