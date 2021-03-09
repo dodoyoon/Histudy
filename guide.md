@@ -330,7 +330,7 @@ python3 manage.py createsuperuser
 관리자로 로그인 후, https://www.histudy.cafe24.com/set_current (이번 년도 & 학기 지정하기)로 가서 현재 년도와 학기를 지정해준다. 
 
 ### 개발 팁
-A. Super User 생성하기
+1. Super User 생성하기
 
 장고의 관리자 계정을 생성하기 위해서는 
 
@@ -340,14 +340,14 @@ A. Super User 생성하기
 
 이 과정을 거치면 Super User가 생성되고 장고 관리자 페이지(주소: Histutor_domain/admin)로 접속할 수 있게 된다.
 
-B. 더 자세한 에러메시지 보기
+2. 더 자세한 에러메시지 보기
 
 서버에서 문제가 생기면 Server Internal Error만 달랑 떠서 문제의 원인을 정확히 알 수 없다.
 그럴 때, ~/Histudy/pystagram/settings.py 파일에서 'DEBUG' 라는 변수를 True로 변경하면 됩니다.
 하지만 실제 서비스에서는 보안상의 이유로 DEBUG는 False 이어야 합니다. 
 따라서 에러를 고친 다음에는 DEBUG를 False로 변경해 주시기 바랍니다.
 
-C. Static File을 수정하거나 추가한 경우
+3. Static File을 수정하거나 추가한 경우
 
 장고에서는 Static File(css, js) 들을 한 곳에 모아두고 사용한다. 
 그래서 수정되거나 추가된 Static File들은 해당 디렉토리에 추가가 되어야 한다. 
