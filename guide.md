@@ -334,9 +334,9 @@ python3 manage.py createsuperuser
 
 장고의 관리자 계정을 생성하기 위해서는 
 
-1. 먼저 가상환경을 켜고: source ~/.virtualenvs/histudy/bin/activate
-2. manage.py 파일이 있는 디렉토리로 이동한다. : cd ~/Histudy
-3. Super User를 생성한다. : python3 manage.py createsuperuser
+	1. 먼저 가상환경을 켜고: source ~/.virtualenvs/histudy/bin/activate
+	2. manage.py 파일이 있는 디렉토리로 이동한다. : cd ~/Histudy
+	3. Super User를 생성한다. : python3 manage.py createsuperuser
 
 이 과정을 거치면 Super User가 생성되고 장고 관리자 페이지(주소: Histutor_domain/admin)로 접속할 수 있게 된다.
 
@@ -353,9 +353,9 @@ python3 manage.py createsuperuser
 그래서 수정되거나 추가된 Static File들은 해당 디렉토리에 추가가 되어야 한다. 
 이를 추가하기 위한 과정은 다음과 같다. 
 
-1. 먼저 가상환경을 켜고: source ~/.virtualenvs/histudy/bin/activate
-2. manage.py 파일이 있는 디렉토리로 이동한다. : cd ~/Histudy
-3. collectstatic 명령어를 실행한다. : python3 manage.py collectstatic
+	1. 먼저 가상환경을 켜고: source ~/.virtualenvs/histudy/bin/activate
+	2. manage.py 파일이 있는 디렉토리로 이동한다. : cd ~/Histudy
+	3. collectstatic 명령어를 실행한다. : python3 manage.py collectstatic
 
 그러면 'This will overwrite existing files!' 와 같은 경고문이 뜨는데 그냥 yes를 치면 된다.
 
