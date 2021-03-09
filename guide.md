@@ -359,6 +359,16 @@ python3 manage.py createsuperuser
 
 그러면 'This will overwrite existing files!' 와 같은 경고문이 뜨는데 그냥 yes를 치면 된다.
 
+4. 서버에서 자주 사용하는 명령어
+
+```bash
+# Apache 관련
+1. 에러로그파일 위치: /var/log/apache2/error.log
+2. 아파치 Config파일 위치: /etc/apache2/sites-available/000-default-le-ssl.conf
+3. 아파치 재시작: sudo service apache2 restart
+
+```
+
 
 ### Reference
 
