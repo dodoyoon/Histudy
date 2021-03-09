@@ -340,6 +340,8 @@ python3 manage.py createsuperuser
 
 이 과정을 거치면 Super User가 생성되고 장고 관리자 페이지(주소: Histutor_domain/admin)로 접속할 수 있게 된다.
 
+
+
 2. 더 자세한 에러메시지 보기
 
 서버에서 문제가 생기면 Server Internal Error만 달랑 떠서 문제의 원인을 정확히 알 수 없다.
@@ -349,6 +351,8 @@ python3 manage.py createsuperuser
 하지만 실제 서비스에서는 보안상의 이유로 DEBUG는 False 이어야 합니다. 
 
 따라서 에러를 고친 다음에는 DEBUG를 False로 변경해 주시기 바랍니다.
+
+
 
 3. Static File을 수정하거나 추가한 경우
 
@@ -363,6 +367,8 @@ python3 manage.py createsuperuser
 	3. collectstatic 명령어를 실행한다. : python3 manage.py collectstatic
 
 그러면 'This will overwrite existing files!' 와 같은 경고문이 뜨는데 그냥 yes를 치면 된다.
+
+
 
 4. 서버에서 자주 사용하는 명령어
 
