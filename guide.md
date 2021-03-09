@@ -330,7 +330,7 @@ python3 manage.py createsuperuser
 관리자로 로그인 후, https://www.histudy.cafe24.com/set_current (이번 년도 & 학기 지정하기)로 가서 현재 년도와 학기를 지정해준다. 
 
 ### 개발 팁
-1. Super User 생성하기
+**1. Super User 생성하기**
 
 장고의 관리자 계정을 생성하기 위해서는 
 
@@ -342,7 +342,7 @@ python3 manage.py createsuperuser
 
 
 
-2. 더 자세한 에러메시지 보기
+**2. 더 자세한 에러메시지 보기**
 
 서버에서 문제가 생기면 Server Internal Error만 달랑 떠서 문제의 원인을 정확히 알 수 없다.
 
@@ -354,7 +354,7 @@ python3 manage.py createsuperuser
 
 
 
-3. Static File을 수정하거나 추가한 경우
+**3. Static File을 수정하거나 추가한 경우**
 
 장고에서는 Static File(css, js) 들을 한 곳에 모아두고 사용한다. 
 
@@ -370,7 +370,7 @@ python3 manage.py createsuperuser
 
 
 
-4. 서버에서 자주 사용하는 명령어
+**4. 서버에서 자주 사용하는 명령어**
 
 ```bash
 # Apache 관련
