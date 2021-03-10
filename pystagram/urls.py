@@ -60,7 +60,7 @@ urlpatterns = [
     url(r'^upload/$', data_upload, name='upload'),
     url(r'^top3/$', top3, name='top3'),
     url(r'^summernote/', include('django_summernote.urls')),
-    url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    url(r'^upload_files/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     url(r'^photos/(?P<pk>[0-9]+)/edit', data_edit, name='edit'),
 ]
