@@ -21,7 +21,7 @@ from django.conf import settings
 
 from photos.views import detail, announce_write, announce_detail, confirm_delete_announce, confirm_delete_member, confirm_delete_user
 from photos.views import csv_upload, photoList, main, confirm_delete_data, userList, announce, inquiry, data_edit, export_page
-from photos.views import data_upload, top3, group_profile, rank, grid, export_all_page, set_current, warn_overwrite, new_userinfo, no_group_notice
+from photos.views import data_upload, top3, group_profile, rank, guideline, grid, export_all_page, set_current, warn_overwrite, new_userinfo, no_group_notice
 from photos.views import reset_profile_group
 
 from django.urls import include
@@ -54,6 +54,7 @@ urlpatterns = [
     url(r'^member_delete_confirm/(?P<pk>\d+)$', confirm_delete_member, name='confirm_delete_member'),
     url(r'^list/(?P<group>\w+)/(?P<year>\d+)/(?P<sem>\d+)$', photoList, name='list'),
     url(r'^rank/$', rank, name='rank'),
+    url(r'^guideline/$', guideline, name='guideline'),
     url(r'^profile/(?P<group_pk>\w+)$', group_profile, name='group_profile'),
     url(r'^user_delete_confirm/(?P<pk>\d+)$', confirm_delete_user, name='confirm_delete_user'),
     url(r'^inquiry/$', inquiry, name='inquiry'),
