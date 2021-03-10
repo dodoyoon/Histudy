@@ -823,6 +823,9 @@ def userList(request):
 
     return render(request, 'userlist.html', ctx)
 
+def guideline(request):
+    return render(request, 'histudy_guideline.html', {})
+
 def rank(request):
     ctx = {}
     if request.user.is_authenticated:
