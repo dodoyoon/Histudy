@@ -1,0 +1,677 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Histudy Guideline</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3081c03f-fef4-4ffa-9254-5ba787a55c31" class="page sans"><header><h1 class="page-title">Histudy Guideline</h1></header><div class="page-body"><p id="40d16cb7-afc4-4a65-8994-2572c0cfa11a" class="">
+</p><h3 id="58a70b56-8c1c-4ee4-bbcd-a2e8e623b114" class="">👋 Histudy Guideline에 오신 여러분을 환영합니다.</h3><p id="5f794a61-e229-428c-ad5c-dc115359f192" class="">
+</p><h1 id="b045952b-f206-4bed-bc90-bd8b54f5eb22" class="">1. 로그인</h1><div id="40985318-4755-4b62-ad89-856dd092b529" class="column-list"><div id="5143f2b1-63d6-4480-aefe-ded9f918cec5" style="width:50%" class="column"><figure id="97220542-f825-40b8-b7c1-53ec10394c78" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled.png"><img style="width:978px" src="histudy_guideline/Untitled.png"/></a></figure></div><div id="5005faaf-5385-4e2d-81cc-f762daa26f1e" style="width:50%" class="column"><p id="a2cb96fc-4cb3-466b-8c4d-60bbe1aaa22a" class=""><a href="https://histudy.lifove.net">https://histudy.lifove.net</a> 에 접속하면 로그인 화면이 왼쪽과 같이 뜹니다. </p><p id="2ff0a761-5c65-42a1-b9cc-149834e38943" class="">
+</p><p id="17568e18-465e-4d51-a83c-55a769f6d9be" class="">&#x27;SIGN IN WITH GOOGLE&#x27;을 클릭하여 자신의 한동대학교 구글 계정으로 로그인하면 됩니다. </p><p id="9411f637-5ae3-461e-826b-ef839d274939" class="">
+</p><p id="315f7926-3b5a-4032-9cb1-a430eb3b071f" class="">한동대학교 계정이 아닌 다른 계정으로 접속한 경우에는 서비스 사용이 불가합니다. </p><p id="e4ed54c4-f8a7-473a-866a-a5656e9b0af2" class="">
+</p><p id="3d5e6481-0381-4063-a80a-70ae09662395" class="">로그인이 제대로 되지 않는 경우에는 구글에 가서 한동 계정으로 로그인이 되어있는지 확인해 주시길 바랍니다. </p><p id="2818deef-1d2a-47d5-a579-8e0e1e5672a9" class="">
+</p></div></div><p id="6ab7b62d-9dd4-4955-a898-e91dfb1dbeee" class="">
+</p><p id="e8c7e3a4-0f75-4d32-9b3c-a6b6f83963f6" class="">
+</p><h1 id="0f27a9a2-9288-4690-8902-de1c27c0e832" class="">2. 스터디 그룹 배정이 되지 않은 경우</h1><figure id="bfcd1975-d285-4fc9-bc83-f2a6ce66c90e" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%201.png"><img style="width:480px" src="histudy_guideline/Untitled%201.png"/></a></figure><p id="3ee9091b-4509-475e-8431-6d69bca6228f" class="">
+</p><p id="351303c7-362b-45cc-afbc-ff14f68b6c23" class="">스터디 그룹에 배정이 되어있지 않는 경우가 스크린샷처럼 세 가지 이유가 있습니다. 이 세 이유에 해당하는 경우에는 남재창 교수님께 (jcname@handong.edu) 메일을 보내주시고 기타 문의와 오류는 저희에게 메일을 보내주시길 바랍니다. (hisystem@handong.edu)</p><p id="1d68ff86-c424-4481-99fa-55c7f5e2496d" class="">
+</p><div id="cb6ee55d-b982-45b2-abd5-6c02ae18718b" class="column-list"><div id="9efb323f-66f9-46fa-b17c-c507eae56649" style="width:93.75%" class="column"><h1 id="c7c39da2-7a80-4f5c-90c3-23661875fd20" class="">3. 스터디 현황 확인</h1><p id="676d860c-f8db-47ec-b30a-b35a62eea414" class="">
+</p></div><div id="42c24ab2-3f61-40c0-bc72-b513c9112a9a" style="width:6.25%" class="column"><p id="24501470-7b3c-43f9-9ac3-80cc2725af27" class="">
+</p></div></div><div id="1961e644-de6b-4786-adad-5fa9baeaeeb1" class="column-list"><div id="3c7b34fd-b7a4-424b-93b0-c1f2d4b4f13f" style="width:50%" class="column"><figure id="45fb0dd9-5c0e-49ae-a361-c8d859435043" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%202.png"><img style="width:1046px" src="histudy_guideline/Untitled%202.png"/></a></figure></div><div id="1815eb10-e68d-4e47-8b81-6d471e4c1740" style="width:50%" class="column"><ul id="f619d8d0-b810-447c-922d-d4a96437a255" class="bulleted-list"><li>페이지 하단의 버튼 3개 중 제일 왼쪽 버튼을 누르면 Group Member 정보를 보여주는 페이지로 이동합니다.</li></ul><p id="e8cd7176-26c5-491c-805e-d51d4bf0d4d0" class="">
+</p><ul id="c949a754-bd35-4035-b1f3-8eaef57d1b6b" class="bulleted-list"><li>이 그룹의 구성원들이 몇 번을 출석했는지 보여줍니다. 일정 수 이상을 출석한 학생의 이름은 Highlight 됩니다.</li></ul><p id="ea4c29d6-223c-4cc0-b112-31af0ab69367" class="">
+</p></div></div><p id="ed70f894-7d73-4f06-b284-904301ee3bcd" class="">
+</p><h1 id="8af16222-214b-430a-b05f-8437a234e3ce" class="">4. 등록된 보고서 보기</h1><div id="385bbf07-48cd-4e9d-9d1f-c6bbe5e77efa" class="column-list"><div id="f87dc1b2-558b-4ba8-ba91-cc72398d39e2" style="width:50%" class="column"><figure id="e0486a0c-e21f-405d-994f-d1544855e4aa" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%203.png"><img style="width:432px" src="histudy_guideline/Untitled%203.png"/></a></figure></div><div id="d7fd2a3d-9db6-499c-a064-738189331958" style="width:50%" class="column"><ul id="20cac42f-70ce-4c25-adef-05102a87f1f2" class="bulleted-list"><li>화면의 하단에 3개의 아이콘 중에 가운데 아이콘을 클릭하시면, 현재까지 작성했던 보고서들이 제일 최근 것부터 나타납니다.</li></ul><p id="8547da14-3d92-4d28-a94f-475dd39526fc" class="">
+</p><ul id="87bfd02a-58fc-4193-b1eb-85dc46268dd5" class="bulleted-list"><li>해당 보고서의 내용을 보려면, 제목을 누르면 됩니다.</li></ul></div></div><p id="3a26bbe1-bce2-48bc-a8b4-5cec82a684fd" class="">
+</p><p id="b0ab2471-a832-40e8-bb5d-88a60932334e" class="">
+</p><div id="20ac370c-3eaa-430f-a9cb-639dcfe04e17" class="column-list"><div id="2cb501ea-4b09-4342-90bc-dc8507018160" style="width:50%" class="column"><figure id="75007e3a-0a17-497f-b2d6-40055c59ff17" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%204.png"><img style="width:1002px" src="histudy_guideline/Untitled%204.png"/></a></figure></div><div id="c607b525-6723-40d9-9b47-a2a54544cbcf" style="width:50%" class="column"><ul id="ba07dd0e-c570-47b7-b8be-9901997bfa65" class="bulleted-list"><li>사진과 함께 보고서를 작성할 때 입력하였던 내용들이 나옵니다.</li></ul><p id="e8f4f7a4-b7bb-4ba0-9738-4c4976138fe1" class="">
+</p></div></div><p id="b1f41937-c7fc-4a21-8922-15b4bcdb1de0" class="">
+</p><p id="92b24c33-3706-44e7-9ff1-505d49a04b0f" class="">
+</p><h1 id="6d746ca3-fbf7-401b-b989-68c5c26f330b" class="">6. 보고서 등록(⭐중요⭐)</h1><p id="19c18f32-3bdd-4d3b-a735-2eb92a174f4d" class="">
+</p><div id="3e60db1c-2335-40f9-aec2-46f4218bd73d" class="column-list"><div id="1b2ba311-5bbe-4d7b-9664-60995a413217" style="width:50%" class="column"><figure id="ed7b2e67-b24b-4566-b415-292fdfe163b8" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%205.png"><img style="width:984px" src="histudy_guideline/Untitled%205.png"/></a></figure><p id="dd74050b-3f69-472c-b445-10ae796d5d9a" class="">
+</p><p id="6645b7d8-cdbd-4624-a929-54a7ab300bd1" class="">
+</p><p id="5834692f-48bb-4478-83ce-ae7512e8348d" class="">
+</p></div><div id="9df5ad38-d596-4891-80df-98a0ad3b00df" style="width:50%" class="column"><ul id="334ed575-97f1-4abd-8163-36109f5b58af" class="bulleted-list"><li>스터디 목록페이지 상단에 있는 &#x27;보고서 쓰기&#x27; 버튼을 누르면, 스터디를 한 후에 보고서를 쓸 수 있는 페이지가 나옵니다. 스터디 후에 보고서를 입력해 주세요.</li></ul><p id="40bdbe6f-b3ed-4d28-b3d7-a970e1f76add" class="">
+</p></div></div><div id="5710c933-38ee-4b5f-8a46-264253db88cb" class="column-list"><div id="97abb9d7-3b3a-48a1-8d83-6e2a80c31d8b" style="width:50%" class="column"><figure id="603426d8-0e60-43dc-98b6-09e6288e645f" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%206.png"><img style="width:1006px" src="histudy_guideline/Untitled%206.png"/></a></figure><p id="c30c62a7-f269-452e-8e00-41d0c1059952" class="">
+</p></div><div id="57f256c6-9779-4e83-a6ea-911bfe22529d" style="width:50%" class="column"><figure id="1040ffed-29a1-43da-8cb2-bbdd932cbdb6" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%207.png"><img style="width:336px" src="histudy_guideline/Untitled%207.png"/></a></figure></div></div><p id="9867a7d9-c201-4c8b-824f-c72a65149947" class="">
+</p><p id="371aef13-6e16-4cff-8a2f-88d77e9f5e59" class="">
+</p><p id="c811bfef-954a-4e0f-ad68-cd4365ac9bbc" class="">
+</p><p id="5ef0a806-13ce-4ad1-8d68-b476ab036d5b" class="">이때 <strong><mark class="highlight-red">주의해야 할 점</mark></strong>은 </p><ol id="6dfdfa11-2165-45af-8ae2-9be53ebcfc93" class="numbered-list" start="1"><li><mark class="highlight-red"><strong>모든 부분</strong></mark><mark class="highlight-red">을 입력</mark>해야지 보고서가 정상적으로 업로드됩니다. </li></ol><ol id="793369a2-9e21-487c-a915-ea93e69abfdd" class="numbered-list" start="2"><li>스마트폰에서 웹앱을 접속하면 바로 인증 사진을 업로드 하거나 사진을 찍을 수 있습니다. 
+사진을 찍을 때는 <mark class="highlight-red"><strong>반드시</strong></mark> <mark class="highlight-red">다른 멤버의 스마트폰에서 접속을 하여 코드 생성을 누른 후, 해당 코드와 함께 사진을 찍어서 올려주면 됩니다.</mark></li></ol><ol id="457db37c-34e3-4f0a-afa1-cca25f7905ee" class="numbered-list" start="3"><li>확인 코드는 <mark class="highlight-red">10분 동안만 지속됩니다. </mark></li></ol><ol id="b4cdd7ab-9098-4a73-acee-9b145f3e471f" class="numbered-list" start="4"><li><mark class="highlight-red">이미지파일 이름에 한글이 없도록 해주세요. </mark></li></ol><ol id="aa7ebcde-8373-45c2-9bc7-e96511a252ca" class="numbered-list" start="5"><li><mark class="highlight-red">스터디에 참여했던 멤버들은 꼭 체크해 주세요!</mark> 그래야 멤버별 스터디 횟수가 자동으로 집계됩니다.</li></ol><ol id="a2fe2cdd-44c8-402b-8dbf-54644db3bd74" class="numbered-list" start="6"><li>스터디 시작시간은 <mark class="highlight-red">hh:mm</mark> 형식으로 써주세요.</li></ol><ol id="1a7a2778-7834-402e-8da7-d938d97679a9" class="numbered-list" start="7"><li>스터디한 시간을 <mark class="highlight-red">분 단위</mark>로 입력해 주세요. </li></ol><p id="77376574-d1d5-4c90-b997-656eb07682f5" class="">
+</p><ul id="b4d7d8c5-f084-4a8b-8f47-592d64cb8a96" class="bulleted-list"><li>사진찍기 예시<figure id="7038c25a-37b2-4b88-99e4-a0cca82908c7" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/1.jpeg"><img style="width:528px" src="histudy_guideline/1.jpeg"/></a></figure></li></ul><p id="710c6aca-19cc-4ead-81d4-943b13b41a52" class="">
+</p><p id="540b1138-8f9d-4091-8c00-3f39062c0a19" class="">
+</p><ul id="78ad78ea-1740-4ec7-a77c-fcfa08f2511e" class="bulleted-list"><li>참고사항</li></ul><figure id="ed1a543c-2c53-47c8-8254-254381822362" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%208.png"><img style="width:432px" src="histudy_guideline/Untitled%208.png"/></a></figure><p id="6b258c94-849d-4b73-872e-de804e51523b" class="">Upload할 사진을 선택하면 &quot;C:\fakepath\&quot;라고 뜨는데,  무시하셔도 됩니다.</p><p id="12513190-6ece-476c-b5a6-713639ed612b" class="">
+</p><p id="d38f865f-9138-4eeb-ba39-3444542d3d72" class="">
+</p><h1 id="089d50c4-2288-48bd-84e8-ac3c7145a11e" class="">7. 공지사항 확인</h1><p id="fc0c1d53-3fef-43aa-a9e2-9e73d5615c79" class="">
+</p><div id="c387c2bf-3fd9-421c-812d-7ee070c36452" class="column-list"><div id="6778b57d-5219-4a28-af0d-a492c68d70dc" style="width:50%" class="column"><figure id="9a826abf-4e71-4ca2-8407-46111695869d" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%209.png"><img style="width:384px" src="histudy_guideline/Untitled%209.png"/></a></figure><p id="72aea074-1eaa-4f98-ae21-54e8db10ee69" class="">
+</p><p id="8836cf2b-765f-44cf-b1a5-d35ac70d6a76" class="">
+</p></div><div id="f08f1ff5-c7ff-4101-9cd5-b9ba1555a41e" style="width:50%" class="column"><ul id="e02d8329-8d83-4382-9732-247afd3fa762" class="bulleted-list"><li>화면의 하단에 3개의 아이콘 중에 오른쪽 아이콘을 클릭하시면, 공지사항을 확인할 수 있습니다. </li></ul><p id="b1b72c8e-df4a-4007-8aa0-e8f303297622" class="">
+</p><ul id="f13a552b-2571-4475-90ba-8f6a6c91a5db" class="bulleted-list"><li>해당 공지의 내용을 보려면, 제목을 클릭하시면 됩니다.</li></ul><p id="78862217-f3e6-46b6-be41-6a37e482e2f9" class="">
+</p></div></div><h1 id="64930dc9-05b3-4c7a-b1be-2de949ed83ef" class="">8. 문의 🙋‍♂️🙋‍♀️</h1><h3 id="4348209f-eecc-4cd0-9b5f-2a59e3a3f2f9" class=""><mark class="highlight-blue"><strong><a href="mailto:hisystem@handong.edu">hisystem@handong.edu </a></strong></mark></h3><p id="97f0f7c4-676c-421d-911d-2bcbc7301764" class="">
+</p><div id="865252df-0dce-42d5-9e02-e2b7fc822a3c" class="column-list"><div id="3a10fce5-491e-4fd9-92a4-60efc91465e5" style="width:50%" class="column"><figure id="e53a25cb-c6c8-4332-b709-c9e65de85954" class="image"><a href="Histudy%20Guideline%2097220542f82540b8b7c153ec10394c78/Untitled%2010.png"><img style="width:822px" src="histudy_guideline/Untitled%2010.png"/></a></figure></div><div id="19e72e77-0e26-4e08-9ca2-5d448c3eaa3e" style="width:50%" class="column"><ul id="3c5d6fbb-ab86-40ee-a58b-95956f77fef7" class="bulleted-list"><li>공지사항 페이지 상단의 문의 버튼을 통해 Team Chickadee에게 연락할 수 있습니다.</li></ul><ul id="aed62213-a693-41d6-9da3-d83cd7288b3f" class="bulleted-list"><li>그리고 Histutor GuideLine 링크도 있으니 사용법이 기억나지 않으실 때 사용해주세요.</li></ul><ul id="6df1d8cd-9901-438d-a896-7024f30ee1c0" class="bulleted-list"><li>버그😱가 발견되거나, 문의사항이 있으시다면, 언제든지 연락 주세요! </li></ul></div></div><p id="30489c24-4591-4d79-9f05-4fce88ed7114" class="">
+</p><p id="1a70c413-c946-4bb7-be4e-eb446301a7d0" class="">
+</p><p id="2dc7ee11-e6f5-494c-8452-e1fce499375e" class="">
+</p><p id="dc13a4a1-1ac3-4525-b201-1172ca86b567" class="">긴 글을 읽어주셔서 감사합니다 :0 </p><p id="725b64b6-64d8-4813-8c1a-d331bf0d7d07" class="">모두 스터디 파이팅 하세요!</p><p id="631a6037-0377-4b68-b35e-e973d93821bf" class="">
+</p><p id="35f43b42-36b9-48b7-bf6f-397721ac3ae6" class="">
+</p><h1 id="611d7af1-ae98-4298-80ba-9cfae001863a" class=""><strong>Contact us! </strong></h1><p id="0319823c-5f8f-4ff7-8c01-b30487efcbab" class="block-color-gray"><strong>Have a question?</strong>  <strong>
+Let us know any bug on our website</strong></p><p id="a874957a-1e08-4521-86e4-b9ca8998af47" class=""> hisystem@handong.edu <div class="indented"><p id="4c0df2fc-33b1-43ee-9532-7ca61d56ec58" class="">🌟Sung Min Kim</p><p id="a009ff83-ee17-4836-a65d-6d6fac960164" class="">🌟Doyoon Kim<div class="indented"><p id="7a81b6df-9875-4682-a44f-9038df56127f" class="">
+</p></div></p></div></p><p id="1259a0de-0f89-4bb8-b419-060cdccab570" class="">
+</p></div></article></body></html>
