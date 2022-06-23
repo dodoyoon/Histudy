@@ -28,7 +28,7 @@ incremental==17.5.0
 jdcal==1.4.1
 MarkupPy==1.14
 msgpack==0.6.2
-numpy==1.21.0
+numpy==1.22.0
 oauthlib==3.1.0
 odfpy==1.4.1
 openpyxl==3.0.3
